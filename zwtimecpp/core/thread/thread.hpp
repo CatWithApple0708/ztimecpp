@@ -30,13 +30,18 @@ using namespace std;
  * 给线程给予名字
  */
 class Thread {
-
+	function<void()> run;
+	unique_ptr<thread> workThread;
   public:
 	Thread(std::function<void()> run);
 
 	static void sleep();
 	static void sleepForMs(int ms);
 	static void yield();
+
+  private:
+	void work();
+
 };
 }
 }

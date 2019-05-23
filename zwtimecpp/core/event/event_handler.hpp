@@ -27,7 +27,10 @@ class EventHandler {
 	 */
 	EventHandler() {
 		// An error here indicates you're trying to implement EventHandler with a type that is not derived from Base
-		static_assert(std::is_base_of<BaseEvent, T>::value, "EventHandler<T>: T must be a class derived from BaseEvent");
+		/**
+		 * TODO:调试这里并通过
+		 */
+		static_assert(std::is_base_of<BaseEvent,T>::value, "EventHandler<T>: T must be a class derived from BaseEvent");
 	}
 
 
@@ -42,7 +45,7 @@ class EventHandler {
 	 *
 	 * @param The event instance
 	 */
-	virtual void onEvent(T &) = 0;
+	virtual void onEvent(shared_ptr<T> &) = 0;
 
 
 	/**
@@ -53,7 +56,7 @@ class EventHandler {
 	 *
 	 * @param e The event to dispatch
 	 */
-	void dispatch(BaseEvent & e) {
+	void dispatch(shared_ptr<BaseEvent> & e) {
 		onEvent(dynamic_cast<T &>(e));
 	}
 };

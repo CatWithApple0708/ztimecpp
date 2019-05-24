@@ -1,5 +1,5 @@
 //
-// Created by zhaohe on 19-5-21.
+// Created by zhaohe on 19-5-23.
 //
 
 #pragma once
@@ -13,25 +13,14 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include "zwtimecpp/core/object.hpp"
 #include "zwtimecpp/core/exception/base_exception.hpp"
-
 namespace zwsd {
 namespace core{
 using namespace std;
 
-class BaseEvent {
-	shared_ptr<Object> object;
+class NullException : public BaseException{
   public:
-	/**
-	 * @param object object != null 如果等于null 则抛出Null异常
-	 */
-	BaseEvent(shared_ptr<Object> object){
-		this->object = object;
-	}
-	BaseEvent(){
-
-	}
+	NullException(const string &description) : BaseException(description) {}
 };
 }
 }

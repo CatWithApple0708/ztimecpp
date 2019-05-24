@@ -15,10 +15,10 @@
 #include <set>
 #include <thread>
 
-
 namespace zwsd {
 namespace core {
 using namespace std;
+
 /**
  *	1. 保存栈信息 (ok)
  *  2. 使能和失能保存栈信息功能 ( )
@@ -40,6 +40,7 @@ class BaseException {
 	pthread_t getPthreadId() const {
 		return pthreadId;
 	}
+
   public:
 	/**
 	 * 构造一个基础类型的异常
@@ -52,8 +53,18 @@ class BaseException {
 	 * @param ...
 	 * @return
 	 */
-	static string format1024(const char* fmt,...) __attribute__ ((__format__ (__printf__, 1, 2)));
+	static string format1024(const char *fmt, ...) __attribute__ ((__format__ (__printf__, 1, 2)));
   private:
 };
+
+template<class T>
+static void throwException(const string &msg) {
+	shared_ptr<T> exception;
+	exception.reset(new T(msg));
+	throw exception;
+};
+
+
+
 }
 }

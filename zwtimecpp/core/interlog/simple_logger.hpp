@@ -29,15 +29,15 @@ using namespace std;
 class SimpleLogger {
 
 	static void log(const char* format,...){
-// #ifdef CORE_LOG_ENABLE
+ #ifdef CORE_LOG_ENABLE
 		va_list args;
 		va_start(args, format);
 		vprintf(format, args);
 		printf("\n");
 		va_end(args);
-// #else
+ #else
 
-// #endif
+ #endif
 	}
 };
 }

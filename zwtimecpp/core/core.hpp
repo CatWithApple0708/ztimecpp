@@ -1,5 +1,5 @@
 //
-// Created by zhaohe on 19-5-21.
+// Created by zhaohe on 19-5-24.
 //
 
 #pragma once
@@ -13,53 +13,51 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include "zwtimecpp/core/exception/exception_handler.hpp"
-#include "zwtimecpp/core/event/base_event.hpp"
-#include "zwtimecpp/core/event/event_handler.hpp"
 #include "zwtimecpp/core/exception/null_expection.hpp"
+#include "zwtimecpp/core/exception/base_exception.hpp"
+#include "zwtimecpp/core/event_bus.hpp"
+#include "zwtimecpp/core/exception_handle_center.hpp"
+#include "zwtimecpp/core/thread_state.hpp"
+#include "zwtimecpp/core/event_bus_state.hpp"
+
 namespace zwsd {
 namespace core {
 using namespace std;
-
-namespace internal{
-/*这个方法只是为了解决无法在Core中调用throwException*/
-template<class T>
-static void inline throwException2(const string &msg) {
-	throwException<T>(msg);
-};
-}
-
 class Core {
-	list<ExceptionHandler *> exceptionHandlers;
+  private:
 	Core() {}
-	static shared_ptr<Core> &instance() {
+	static shared_ptr<Core> &instance()
+	{
 		static shared_ptr<Core> value;
 		return value;
 	}
+
   public:
-	static shared_ptr<Core> Instance() {
-		if (instance() == nullptr) {
-			internal::throwException2<NullException>("Core has't been initialized Core::instance == nullptr");
+	static shared_ptr<Core> Instance()
+	{
+		if (instance() == nullptr)
+		{
+			throwException<NullException>("Core instance hasn't been initialized ZigbeeGatewayService::instance == nullptr");
 		}
 		return instance();
 	}
-	static void initialize() {
-		if (instance() != nullptr) {
-			internal::throwException2<BaseException>("Core has been initialized");
+	static void initialize()
+	{
+		if (instance() != nullptr)
+		{
+			throwException<BaseException>("Core has been initialized");
 		}
 		instance().reset(new Core());
+		EventBus::initialize();
 	}
 
-//exception api
-	void regExceptionHandler(ExceptionHandler *handler);
-	void throwException(shared_ptr<exception> expec);
-	void throwException(shared_ptr<BaseException> expec);
+	shared_ptr<EventBus> getEventBus(){ return EventBus::Instance();}
 
-//eventBus api
-	void fireEventSync(shared_ptr<BaseEvent> baseEvent);
-	void fireEventAsync(shared_ptr<BaseEvent> baseEvent);
-	template<class T>
-	void regEventHandler(shared_ptr<EventHandler<T>> handler) {}
+	ExceptionHandleCenter& getExceptionHandleCenter() {return ExceptionHandleCenter::instance();}
+
+	const EventBusState& getEvenBusState(){return EventBusState::instance();}
+
+	const ThreadState& getThreadState(){return ThreadState::Instance();}
 
 };
 }

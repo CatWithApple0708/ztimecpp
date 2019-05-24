@@ -18,12 +18,19 @@ set(CORE_RES
 	zwtimecpp/core/jobs/thread_pool_task_scheduler.cpp
 	zwtimecpp/core/jobs/thread_pool_task_scheduler.hpp
 	zwtimecpp/core/event/base_event.hpp
-	zwtimecpp/core/core.cpp
-	zwtimecpp/core/core.hpp
-	zwtimecpp/core/exception/exception_handler.hpp
-	zwtimecpp/core/event/event_handler.hpp
-	zwtimecpp/core/object.cpp
-	zwtimecpp/core/object.hpp zwtimecpp/core/exception/null_expection.hpp zwtimecpp/core/exception/exception_handle_center.cpp zwtimecpp/core/exception/exception_handle_center.hpp)
+	zwtimecpp/core/event_bus.cpp
+	zwtimecpp/core/event_bus.hpp
+	zwtimecpp/core/object.hpp
+	zwtimecpp/core/exception/null_expection.hpp
+	zwtimecpp/core/exception_handle_center.cpp
+	zwtimecpp/core/exception_handle_center.hpp
+	zwtimecpp/core/utils/signal.hpp
+	zwtimecpp/core/exception/unkown_type_exception.hpp
+	zwtimecpp/core/exception/system_or_third_lib_exception.hpp
+	zwtimecpp/core/event_bus_state.hpp
+	zwtimecpp/core/utils/backward_helper.hpp
+	zwtimecpp/core/thread_state.hpp
+	zwtimecpp/core/helper/exception_helper.hpp zwtimecpp/core/core.hpp zwtimecpp/core/exception/thread_unjointed_exception.hpp)
 
 add_library(zwtimecpp
 	${CORE_RES}
@@ -31,7 +38,7 @@ add_library(zwtimecpp
 
 add_executable(core_test
 	zwtimecpp/core/test/core_test.cpp
-	zwtimecpp/core/test/test_back_ward.hpp)
+	zwtimecpp/core/test/test_utils/tester_manager.cpp zwtimecpp/core/test/test_utils/tester_manager.hpp zwtimecpp/core/test/test_back_ward.cpp zwtimecpp/core/test/test_exception.cpp zwtimecpp/core/test/test_thread.cpp)
 target_link_libraries(
 	core_test
 	zwtimecpp

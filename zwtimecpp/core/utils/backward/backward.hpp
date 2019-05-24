@@ -3664,7 +3664,7 @@ class SignalHandling {
 public:
    static std::vector<int> make_default_signals() {
        const int posix_signals[] = {
-		// Signals for which the default action is "Core".
+		// Signals for which the default action is "EventBus".
 		SIGABRT,    // Abort signal from abort(3)
 		SIGBUS,     // Bus error (bad memory access)
 		SIGFPE,     // Floating point exception

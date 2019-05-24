@@ -1,5 +1,5 @@
 //
-// Created by zhaohe on 19-5-21.
+// Created by zhaohe on 19-5-24.
 //
 
 #pragma once
@@ -14,15 +14,12 @@
 #include <sstream>
 #include <set>
 #include "zwtimecpp/core/exception/base_exception.hpp"
-
 namespace zwsd {
-namespace core{
-
-class ExceptionHandler {
+namespace core {
+using namespace std;
+class ThreadUnjointedException : public BaseException{
   public:
-	virtual void onExceptionSync(shared_ptr<BaseException> expec) {};
-	virtual void onExceptionAsync(shared_ptr<BaseException> expec) {};
-	~ExceptionHandler() {};
+	ThreadUnjointedException(const string &description) : BaseException(description) {}
 };
 }
 }

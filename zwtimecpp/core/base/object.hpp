@@ -1,5 +1,5 @@
 //
-// Created by zhaohe on 19-5-21.
+// Created by zhaohe on 19-5-22.
 //
 
 #pragma once
@@ -13,20 +13,22 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include "zwtimecpp/core/base/object.hpp"
 
 namespace zwsd {
+namespace core{
 using namespace std;
-
 /**
- * 线程池
- * 任务调度
- * 线程池
- * 定时任务
+ * 所有类继承Object 方便未来扩展,目前无用处
  */
-class ThreadPoolTaskScheduler {
+class Object {
+  public:
 
+	Object(){
+	}
+	virtual ~Object(){
+	};
 };
+}
 }
 
 

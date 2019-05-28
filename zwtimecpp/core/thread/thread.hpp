@@ -15,6 +15,8 @@
 #include <set>
 #include <thread>
 #include "zwtimecpp/core/exception/base_exception.hpp"
+#include "zwtimecpp/core/base/object.hpp"
+#include "zwtimecpp/core/base/system_state.hpp"
 
 namespace zwsd {
 namespace core{
@@ -31,20 +33,27 @@ using namespace std;
  * 给线程给予名字
  */
 class Thread;
-class ThreadStateListener {
+
+class ThreadStateListener :public Object{
   public:
 	/**
 	 * @这个回调的位置线程还没有退出,不能在这里进行线程的回收需要另启一个线程进行这线程的回收.
 	 * @param baseException
 	 */
-	virtual void onExistSync(Thread *thread, shared_ptr<BaseException> baseException) = 0;
-
+	virtual void onCatchException(Thread *thread, const std::exception &baseException) = 0;
+	/**
+	 * 线程即将退出的时候进行回调,注意这个回调中不能调用thread->join,因为这个函数的运行环境是线程本身
+	 * @param thread
+	 */
+	virtual void onExistSync(Thread *thread) = 0;;
+	virtual ~ThreadStateListener(){};
 };
 
-class Thread {
+class Thread :public Object{
+  private:
 	function<void()> run;
 	unique_ptr<thread> workThread;
-	shared_ptr<ThreadStateListener> listener;
+	weak_ptr<ThreadStateListener> listener;
 	shared_ptr<BaseException> exitException;
 	bool hasJointd = false;
 	string name;
@@ -58,15 +67,13 @@ class Thread {
 	static void sleepForMs(int ms);
 	static void wake();
 
-	const shared_ptr<ThreadStateListener> &getListener() const;
-	const shared_ptr<BaseException> &getExitException() const;
 	void join();
 	pthread_t getId() const;
 	~Thread();
-
-	//don't call it outside
-	void processException(shared_ptr<BaseException> baseException);
   private:
+	const weak_ptr<ThreadStateListener> &getListener() const;
+	const shared_ptr<BaseException> &getExitException() const;
+	void callDefaultExceptionHandler(const std::exception& exception);
 
 };
 }

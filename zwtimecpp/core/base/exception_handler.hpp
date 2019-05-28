@@ -1,5 +1,5 @@
 //
-// Created by zhaohe on 19-5-22.
+// Created by zhaohe on 19-5-28.
 //
 
 #pragma once
@@ -13,15 +13,15 @@
 #include <vector>
 #include <sstream>
 #include <set>
-
+#include "object.hpp"
 namespace zwsd {
-namespace core{
+namespace core {
 using namespace std;
-/**
- * 所有类继承Object 方便未来扩展,目前无用处
- */
-class Object {
 
+class ExceptionHandler : public Object {
+  public:
+	virtual void onExceptionSync(const std::exception &expec) = 0;
+	~ExceptionHandler() {};
 };
 }
 }

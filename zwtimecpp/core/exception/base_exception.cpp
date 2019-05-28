@@ -7,8 +7,9 @@
 #include <stdarg.h>
 #include <thread>
 #include <iostream>
-#include "zwtimecpp/core/thread_state.hpp"
+#include "zwtimecpp/core/base/system_state.hpp"
 #include "zwtimecpp/core/exception_handle_center.hpp"
+#include "zwtimecpp/core/base/interlog/simple_logger.hpp"
 using namespace std;
 using namespace zwsd;
 using namespace core;
@@ -38,7 +39,6 @@ void BaseException::initialize(string description, string stdExceptionTypeinfo, 
 	p.snippet = true;
 	p.color_mode = ColorMode::always;
 	p.address = true;
-
 	ostringstream out;
 	p.print(st, out);
 
@@ -64,7 +64,7 @@ string BaseException::format1024(const char *fmt, ...) {
 
 	return string(buf);
 }
-string BaseException::toString() {
+string BaseException::toString() const{
 	string ret;
 	ret += "\n|-----------------------exceptionInfo-----------------------------\n";
 	ret += "|exception type:  " + string(typeid(*this).name()) + "\n";
@@ -75,17 +75,23 @@ string BaseException::toString() {
 	if (!this->stdExceptionWhat.empty())
 		ret += "|stdExceptionWhat: " + this->stdExceptionWhat + "\n";
 
-	ret += "|pthreadId: " + ThreadState::Instance().getThreadName(this->pthreadId) + "\n";
+	string threadInfo;
+
+//	ret += "|pthreadId: " + SystemState::Instance().get (this->pthreadId) + "\n";
 	ret += "|loseInfo: " + to_string(this->loseInfo) + "\n";
 	ret += "|stackTrace: \n" + this->stackInfo;
-
-	hasCalledToString = true;
+	hasCalledToString  = true;
 	return ret;
 }
 BaseException::~BaseException() {
+	SimpleLogger::trace("~BaseEvent");
 	if (!hasCalledToString)
 		std::cerr << toString();
+
 }
 bool BaseException::isHasCalledToString() const {
 	return hasCalledToString;
+}
+const char *BaseException::what() const _GLIBCXX_USE_NOEXCEPT {
+	return toString().c_str();
 }

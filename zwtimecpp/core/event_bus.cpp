@@ -3,75 +3,75 @@
 //
 
 #include "event_bus.hpp"
-#include "event_bus_state.hpp"
-#include "thread_state.hpp"
+#include "zwtimecpp/core/base/system_state.hpp"
 #include "exception_handle_center.hpp"
-#include "zwtimecpp/core/interlog/simple_logger.hpp"
+#include "zwtimecpp/core/base/interlog/simple_logger.hpp"
+#include "zwtimecpp/core/helper/exception_helper.hpp"
 using namespace std;
 using namespace zwsd;
 using namespace core;
 
 EventBus::EventBus() {
-
+	SimpleLogger::trace("EventBus");
 }
 void EventBus::internal_initialize() {
-	EventBusState::instance().getEvenAsyncHandleThread().reset(new Thread(
+	evenAsyncHandleThread.reset(new Thread(
 		"EventBus-EventHandleThread",
 		[this]() {
-			SimpleLogger::info("EventBus-EventHandledThread start");
-		  auto &un_handled_events = EventBusState::instance().getBaseEvents();
-		  while(1){
-		  	    shared_ptr<BaseEvent> event;
-				un_handled_events.wait_dequeue(event);
-				if (event != nullptr){
-					callHandler(event);
-				}
-				if (EventBusState::instance().isEventAsyncHandleStopFlag()){
-					break;
-				}
-			};
+		  busThreadRestartTimes = -1;
+		  while (!eventAsyncHandleStopFlag) {
+			  busThreadRestartTimes++;
+			  SimpleLogger::info("EventBus-EventHandledThread start, restartTimes %d",busThreadRestartTimes);
+			  //将捕获的异常抛给异常处理中心
+			  throwAllExceptionToExceptionCenter(
+				  [this]() {
+					while (!eventAsyncHandleStopFlag) {
+						shared_ptr<BaseEvent> event;
+						baseEvents.wait_dequeue(event);
+						if (event != nullptr) {
+							callHandler(event);
+						}
+					};
+				  }
+			  );
+		  }
 		},
 		Instance()));
 }
-
-void EventBus::onExistSync(Thread *thread, shared_ptr<BaseException> baseException) {
-	if (baseException != nullptr){
-		ExceptionHandleCenter::instance().postException(baseException);
-	}
-
-	//重启事件总线
-	if (!EventBusState::instance().isEventAsyncHandleStopFlag()){
-		//如果需要做些清理工作,在这里完成.
-//		internal_initialize();
-	}
-	SimpleLogger::info("EventBus-EventHandledThread start");
+void EventBus::onCatchException(Thread *thread, const std::exception &baseException) {
+	ExceptionHandleCenter::instance().postException(baseException);
 }
+void EventBus::onExistSync(Thread *thread) {
 
+}
 void EventBus::regEventHandler(shared_ptr<EventHandler> handler) {
 	if (handler != nullptr) {
-		EventBusState::instance().getEventHandlers().push_back(handler);
+		eventHandlers.push_back(handler);
 	}
 }
 void EventBus::fireEventSync(shared_ptr<BaseEvent> baseEvent) {
 	if (baseEvent == nullptr) {
 		return;
 	}
-
 }
-
 void EventBus::fireEventAsync(shared_ptr<BaseEvent> baseEvent) {
 	if (baseEvent == nullptr) {
 		return;
 	}
-	EventBusState::instance().getBaseEvents().enqueue(baseEvent);
+	baseEvents.enqueue(baseEvent);
 }
 void EventBus::callHandler(shared_ptr<BaseEvent> baseEvent) {
-	auto handlers = EventBusState::instance().getEventHandlers();
+	auto handlers = eventHandlers;
 	for (auto &var : handlers) {
 		type_index index = typeid(*baseEvent);
 		if (var->requiredEvent().find(index) != var->requiredEvent().end()) {
 			var->onEvent(baseEvent);
 		}
 	}
+}
+EventBus::~EventBus() {
+	SimpleLogger::trace("~EventBus");
+	eventAsyncHandleStopFlag = false;
+	evenAsyncHandleThread->join();
 }
 

@@ -14,7 +14,7 @@
 #include <sstream>
 #include <set>
 #include "base_exception.hpp"
-#include "zwtimecpp/core/thread_state.hpp"
+#include "zwtimecpp/core/base/system_state.hpp"
 
 namespace zwsd {
 using namespace std;

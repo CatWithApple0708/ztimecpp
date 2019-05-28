@@ -13,29 +13,34 @@
 #include <vector>
 #include <sstream>
 #include <set>
+#include <zwtimecpp/core/base/exception_handler.hpp>
 #include "zwtimecpp/core/exception/base_exception.hpp"
+#include "zwtimecpp/core/base/object.hpp"
+#include "zwtimecpp/core/base/interlog/simple_logger.hpp"
 
-namespace zwsd{
-namespace core{
 
-class ExceptionHandler {
-  public:
-	virtual void onExceptionSync(std::shared_ptr<zwsd::core::BaseException> expec) = 0;
-	~ExceptionHandler() {};
-};
+namespace zwsd {
+namespace core {
+
 
 using namespace std;
-class ExceptionHandleCenter {
+
+class ExceptionHandleCenter : public Object {
   private:
 
 	shared_ptr<ExceptionHandler> exceptionHandler;
 	list<shared_ptr<BaseException>> baseExceptions;
-	function<shared_ptr<BaseException>(const std::exception&)> transformer;
+	function<shared_ptr<BaseException>(const std::exception &)> transformer;
 
-	ExceptionHandleCenter(){};
+	ExceptionHandleCenter() {
+		SimpleLogger::trace("ExceptionHandleCenter");
+	};
   public:
-	static ExceptionHandleCenter &instance()
-	{
+	virtual ~ExceptionHandleCenter() {
+		SimpleLogger::trace("~ExceptionHandleCenter");
+	}
+
+	static ExceptionHandleCenter &instance() {
 		static ExceptionHandleCenter value;
 		return value;
 	}
@@ -45,11 +50,6 @@ class ExceptionHandleCenter {
 	 */
 	void regExceptionHandler(shared_ptr<ExceptionHandler> handler);
 	/**
-	 * 登记异常转换器,用来转换普通异常到BaseException
-	 * @param transformer
-	 */
-	void regExceptionTransformer(function<shared_ptr<BaseException>(const std::exception&)> transformer);
-	/**
 	 * 清除异常监听者
 	 */
 	void clearExceptionHandler();
@@ -57,11 +57,7 @@ class ExceptionHandleCenter {
 	 * 将希望统一处理的异常邮寄到异常处理中心
 	 * @param expec
 	 */
-	void postException(shared_ptr<BaseException> expec);
-
-	shared_ptr<BaseException> transformException(const std::exception& exception1);
-
-  public:
+	void postException(const exception &expec);
 
 };
 }

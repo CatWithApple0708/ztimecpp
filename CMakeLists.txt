@@ -13,24 +13,23 @@ set(CORE_RES
 	zwtimecpp/core/exception/base_exception.hpp
 	zwtimecpp/core/exception/base_exception.cpp
 	zwtimecpp/core/utils/backward/backward.hpp
-	zwtimecpp/core/interlog/simple_logger.cpp
-	zwtimecpp/core/interlog/simple_logger.hpp
+	zwtimecpp/core/base/interlog/simple_logger.cpp
+	zwtimecpp/core/base/interlog/simple_logger.hpp
 	zwtimecpp/core/jobs/thread_pool_task_scheduler.cpp
 	zwtimecpp/core/jobs/thread_pool_task_scheduler.hpp
-	zwtimecpp/core/event/base_event.hpp
+	zwtimecpp/core/base/base_event.hpp
 	zwtimecpp/core/event_bus.cpp
 	zwtimecpp/core/event_bus.hpp
-	zwtimecpp/core/object.hpp
+	zwtimecpp/core/base/object.hpp
 	zwtimecpp/core/exception/null_expection.hpp
 	zwtimecpp/core/exception_handle_center.cpp
 	zwtimecpp/core/exception_handle_center.hpp
 	zwtimecpp/core/utils/signal.hpp
 	zwtimecpp/core/exception/unkown_type_exception.hpp
 	zwtimecpp/core/exception/system_or_third_lib_exception.hpp
-	zwtimecpp/core/event_bus_state.hpp
 	zwtimecpp/core/utils/backward_helper.hpp
-	zwtimecpp/core/thread_state.hpp
-	zwtimecpp/core/helper/exception_helper.hpp zwtimecpp/core/core.hpp zwtimecpp/core/exception/thread_unjointed_exception.hpp)
+	zwtimecpp/core/base/system_state.hpp
+	zwtimecpp/core/helper/exception_helper.hpp zwtimecpp/core/core.hpp zwtimecpp/core/exception/thread_unjointed_exception.hpp zwtimecpp/core/base/exception_handler.hpp zwtimecpp/core/base/thread_info.hpp)
 
 add_library(zwtimecpp
 	${CORE_RES}

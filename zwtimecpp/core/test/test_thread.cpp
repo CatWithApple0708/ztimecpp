@@ -8,8 +8,9 @@ using namespace backward;
 using namespace core;
 
 class ExceptionHandlerImpl : public ExceptionHandler {
-	void onExceptionSync(std::shared_ptr<zwsd::core::BaseException> expec) override {
-		SimpleLogger::info("Catch exception %s", expec->toString().c_str());
+  public:
+	void onExceptionSync(const std::exception &expec) override {
+
 	}
 };
 

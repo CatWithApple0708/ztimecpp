@@ -28,7 +28,22 @@ int main(int argc, char const *argv[])
 		SimpleLogger::info("%s ClassName",argv[0]);
 		return 0;
 	}
+	// weak_ptr<string> value_wakeup;
+	// {
+	// 	shared_ptr<string> value(new string());
+	// 	value_wakeup = value;
+	// 	SimpleLogger::info("%p",value_wakeup.lock().get());
+	// }
+	// SimpleLogger::info("%p",value_wakeup.lock().get());
+
 	SimpleLogger::info("Run test %s---------------------->",argv[1]);
 	TesterManager::Instance().run(argv[1],argc,argv);
-    return 0;
+	Object& a = TesterManager::Instance();
+
+
+
+
+
+	printf("xxxxx %s\n", typeid(a).name());
+	return 0;
 }

@@ -1,5 +1,5 @@
 //
-// Created by zhaohe on 19-5-21.
+// Created by zhaohe on 19-5-28.
 //
 
 #pragma once
@@ -14,19 +14,16 @@
 #include <sstream>
 #include <set>
 #include "zwtimecpp/core/base/object.hpp"
-
+#include "zwtimecpp/core/utils/signal.hpp"
 namespace zwsd {
+namespace core {
 using namespace std;
-
-/**
- * 线程池
- * 任务调度
- * 线程池
- * 定时任务
- */
-class ThreadPoolTaskScheduler {
-
+class ThreadInfo : public Object{
+  public:
+	string name;
+	Singal signal;
 };
+}
 }
 
 

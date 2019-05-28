@@ -13,32 +13,55 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include "zwtimecpp/core/event/base_event.hpp"
+#include "zwtimecpp/core/base/base_event.hpp"
 #include "zwtimecpp/core/exception/null_expection.hpp"
 #include "zwtimecpp/core/thread/thread.hpp"
-#include "zwtimecpp/core/event_bus_state.hpp"
+#include <typeinfo>
+#include <typeindex>
+#include "utils/concurrentqueue/blockingconcurrentqueue.h"
 namespace zwsd {
 namespace core {
+using namespace moodycamel;
 using namespace std;
+class EventHandler : public Object {
+  public:
+	/**
+	 * \brief Default constructor that enforces the template type
+	 */
+	EventHandler() {
+	}
+	/**
+	 * \brief Empty virtual destructor
+	 */
+	virtual ~EventHandler() {}
+	/**
+	 * \brief Pure virtual method for implementing the body of the listener
+	 *
+	 * @param The event instance
+	 */
+	virtual void onEvent(shared_ptr<BaseEvent>) = 0;
 
-namespace internal{
-/*这个方法只是为了解决无法在Core中调用throwException*/
-template<class T>
-static void inline throwException2(const string &msg) {
-	throwException<T>(msg);
+	virtual const set<std::type_index> &requiredEvent() = 0;
 };
-}
+
 
 class EventBus :public ThreadStateListener{
+	BlockingConcurrentQueue<shared_ptr<BaseEvent>> baseEvents;
+	list<shared_ptr<EventHandler>> eventHandlers;
+	bool eventAsyncHandleStopFlag = false;
+	int busThreadRestartTimes = 0;
+
+  private:
 	EventBus();
 	static shared_ptr<EventBus> &instance() {
 		static shared_ptr<EventBus> value;
 		return value;
 	}
+	unique_ptr<Thread> evenAsyncHandleThread;
   public:
 	static shared_ptr<EventBus> Instance() {
 		if (instance() == nullptr) {
-			internal::throwException2<NullException>("EventBus has't been initialized EventBus::instance == nullptr");
+			throw NullException("EventBus has't been initialized EventBus::instance == nullptr");
 		}
 		return instance();
 	}
@@ -46,21 +69,23 @@ class EventBus :public ThreadStateListener{
 	//call it in core.hpp
 	static void initialize() {
 		if (instance() != nullptr) {
-			internal::throwException2<BaseException>("EventBus has been initialized");
+			throw BaseException("EventBus has been initialized");
 		}
 		instance().reset(new EventBus());
 		instance()->internal_initialize();
 	}
-//eventBus api
+	//eventBus api
 	void fireEventSync(shared_ptr<BaseEvent> baseEvent);
 	void fireEventAsync(shared_ptr<BaseEvent> baseEvent);
-	void onExistSync(Thread *thread, shared_ptr<BaseException> baseException) override;
 	void regEventHandler(shared_ptr<EventHandler> handler);
 
+	//override ThreadStateListener
+	void onCatchException(Thread *thread, const std::exception &baseException) override;
+	void onExistSync(Thread *thread) override;
+	~EventBus();
   private:
 	void internal_initialize();
 	void callHandler(shared_ptr<BaseEvent> event);
-	void start();
 };
 }
 }

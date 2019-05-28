@@ -13,12 +13,13 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include <zwtimecpp/core/interlog/simple_logger.hpp>
+#include <zwtimecpp/core/base/interlog/simple_logger.hpp>
 #include "zwtimecpp/core/exception/base_exception.hpp"
 #include "zwtimecpp/core/exception_handle_center.hpp"
 #include "zwtimecpp/core/exception/system_or_third_lib_exception.hpp"
 #include "zwtimecpp/core/exception/unkown_type_exception.hpp"
 #include "zwtimecpp/core/exception/null_expection.hpp"
+#include "zwtimecpp/core/base/object.hpp"
 
 namespace zwsd {
 namespace core {
@@ -31,8 +32,8 @@ using namespace std;
  * @param final 异常回收工作
  */
 static inline void tryCatchException(function<void()> work,
-                                        function<void(shared_ptr<BaseException> baseException)> onException,
-                                        function<void()> final = nullptr) {
+                                     function<void(const exception &)> onException,
+                                     function<void()> final = nullptr) {
 	if (work == nullptr) {
 		SimpleLogger::fatal("core::catchExceptionSimple work == nullptr");
 	}
@@ -44,18 +45,8 @@ static inline void tryCatchException(function<void()> work,
 	try {
 		work();
 	}
-	catch (const shared_ptr<BaseException> baseException) {
-		onException(baseException);
-	}
-	catch (const BaseException &baseException) {
-		shared_ptr<BaseException> newException;
-		newException.reset(new BaseException(baseException));
-		newException->setLoseInfo(true);
-		onException(newException);
-	}
 	catch (const std::exception &exception) {
-		shared_ptr<BaseException> newException = ExceptionHandleCenter::instance().transformException(exception);
-		onException(newException);
+		onException(exception);
 	}
 	catch (...) {
 		/**
@@ -63,10 +54,8 @@ static inline void tryCatchException(function<void()> work,
 		   *
 		   *	TODO:处理 线程独有的打断异常,当调用pthread_yield时产生的异常,这个异常要抛出交给系统处理,属于线程的正常退出,如果截断会导致程序退出.
 		   */
-		shared_ptr<BaseException> newException;
-		newException.reset(new UnkownTypeException("unkownException from thread"));
-		newException->setLoseInfo(true);
-		onException(newException);
+		UnkownTypeException unkownTypeException("unkownException from thread");
+		onException(unkownTypeException);
 	}
 
 	if (final) {
@@ -85,18 +74,9 @@ static inline void throwAllExceptionToExceptionCenter(function<void()> work){
 	try {
 		work();
 	}
-	catch (const shared_ptr<BaseException> baseException) {
-		ExceptionHandleCenter::instance().postException(baseException);
-	}
-	catch (const BaseException &baseException) {
-		shared_ptr<BaseException> newException;
-		newException.reset(new BaseException(baseException));
-		newException->setLoseInfo(true);
-		ExceptionHandleCenter::instance().postException(newException);
-	}
+
 	catch (const std::exception & exception_value) {
-		shared_ptr<BaseException> newException = ExceptionHandleCenter::instance().transformException(exception_value);
-		ExceptionHandleCenter::instance().postException(newException);
+		ExceptionHandleCenter::instance().postException(exception_value);
 	}
 	catch (...) {
 		/**
@@ -104,10 +84,8 @@ static inline void throwAllExceptionToExceptionCenter(function<void()> work){
 		   *
 		   *	TODO:处理 线程独有的打断异常,当调用pthread_yield时产生的异常,这个异常要抛出交给系统处理,属于线程的正常退出,如果截断会导致程序退出.
 		   */
-		shared_ptr<BaseException> newException;
-		newException.reset(new UnkownTypeException("unkownException from thread"));
-		newException->setLoseInfo(true);
-		ExceptionHandleCenter::instance().postException(newException);
+		UnkownTypeException unkownTypeException("unkownException from thread");
+		ExceptionHandleCenter::instance().postException(unkownTypeException);
 	}
 }
 }

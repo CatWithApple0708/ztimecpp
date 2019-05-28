@@ -14,6 +14,7 @@
 #include <sstream>
 #include <set>
 #include <thread>
+#include "zwtimecpp/core/base/object.hpp"
 
 namespace zwsd {
 namespace core {
@@ -26,7 +27,7 @@ using namespace std;
  *  4. 集中处理所有异常
  *  5. 获得线程的相关信息
  */
-class BaseException  {
+  class BaseException  :public std::exception,public Object{
   protected:
 	string stackInfo;
 	string description;
@@ -34,8 +35,8 @@ class BaseException  {
 	bool loseInfo = false; //这个
 	string stdExceptionWhat;
 	string stdExceptionTypeinfo;
-
-	bool hasCalledToString = false;
+    protected:
+	  mutable bool hasCalledToString = false;
   public://Getter
 	virtual const string &getStackInfo() const {
 		return stackInfo;
@@ -53,7 +54,8 @@ class BaseException  {
 	virtual void setLoseInfo(bool loseInfo) {
 		BaseException::loseInfo = loseInfo;
 	}
-  public:
+	  const char *what() const _GLIBCXX_USE_NOEXCEPT override;
+    public:
 	/**
   	 * 构造一个基础类型的异常
      * @param description
@@ -63,7 +65,7 @@ class BaseException  {
 	BaseException(string description, const std::exception &stdexcep);
 
 	~BaseException();
-	virtual string toString();
+	virtual string toString() const;
 
 	/**
 	 * 格式化字符串,最大字符长度1024
@@ -78,13 +80,5 @@ class BaseException  {
   private:
 	void initialize(string description, string stdExceptionTypeinfo = "", string baseExceptionWhat = "");
 };
-
-template<class T>
-static void throwException(const string &msg) {
-	shared_ptr<T> exception;
-	exception.reset(new T(msg));
-	throw exception;
-};
-
 }
 }

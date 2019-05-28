@@ -8,8 +8,10 @@ using namespace backward;
 using namespace core;
 
 class ExceptionHandlerImpl : public ExceptionHandler {
-	void onExceptionSync(std::shared_ptr<zwsd::core::BaseException> expec) override {
-		SimpleLogger::info("Catch exception %s", expec->toString().c_str());
+
+  public:
+	void onExceptionSync(const std::exception &expec) override {
+		SimpleLogger::info("Catch exception %s", expec.what());
 	}
 };
 
@@ -22,12 +24,8 @@ class TestException : public TestElement {
 		//测试注册异常回调
 		Core::initialize();
 //		Core::Instance()->getExceptionHandleCenter().regExceptionHandler(std::make_shared<ExceptionHandlerImpl>());
-//		Core::Instance()->getExceptionHandleCenter().regExceptionTransformer([](const std::exception &ec) {
-//		  return std::make_shared<BaseException>("TestException: transformerException");
-//		});
-//		Core::Instance()->getExceptionHandleCenter().postException(std::make_shared<BaseException>("TestException"));
-//		Core::Instance()->getExceptionHandleCenter().postException(Core::Instance()->getExceptionHandleCenter().transformException(
-//			std::exception()));
+//		BaseException baseException("TestException");
+//		Core::Instance()->getExceptionHandleCenter().postException(baseException);
 	}
 	void run() override {
 	}

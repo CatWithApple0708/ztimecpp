@@ -13,26 +13,28 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include "zwtimecpp/core/interlog/simple_logger.hpp"
+#include "zwtimecpp/core/base/interlog/simple_logger.hpp"
+#include "zwtimecpp/core/base/object.hpp"
+
 namespace {
-class Initializer {
+  class Initializer : public zwsd::core::Object {
   public:
 	Initializer(std::function<void()> init) {
 		init();
 	}
-};
+  };
 }
 namespace zwsd {
 namespace core {
 using namespace std;
 
-class TestElement {
+class TestElement :public Object{
   public:
 	virtual void run() = 0;
 	virtual void run(int argc, char const *argv[]) = 0;
 };
 
-class TesterManager {
+class TesterManager :public Object{
 	map<string, shared_ptr<TestElement>> testElementsMap;
 	TesterManager() {};
 

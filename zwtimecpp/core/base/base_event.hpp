@@ -13,8 +13,10 @@
 #include <vector>
 #include <sstream>
 #include <set>
-#include "zwtimecpp/core/object.hpp"
+#include "zwtimecpp/core/base/object.hpp"
 #include "zwtimecpp/core/exception/base_exception.hpp"
+#include "zwtimecpp/core/base/object.hpp"
+#include "zwtimecpp/core/base/interlog/simple_logger.hpp"
 
 namespace zwsd {
 namespace core{
@@ -32,6 +34,9 @@ class BaseEvent {
 	BaseEvent(){
 
 	}
+	~BaseEvent(){
+		SimpleLogger::trace("~BaseEvent");
+	};
 };
 }
 }

@@ -23,13 +23,13 @@ class TestException : public TestElement {
 	void run(int argc, const char **argv) override {
 		//测试注册异常回调
 		Core::initialize();
-//		Core::Instance()->getExceptionHandleCenter().regExceptionHandler(std::make_shared<ExceptionHandlerImpl>());
-//		BaseException baseException("TestException");
-//		Core::Instance()->getExceptionHandleCenter().postException(baseException);
+		shared_ptr<ExceptionHandlerImpl> exceptionHandler = std::make_shared<ExceptionHandlerImpl>();
+		Core::Instance()->getExceptionHandleCenter().regExceptionHandler(exceptionHandler);
+		BaseException baseException("TestException");
+		Core::Instance()->getExceptionHandleCenter().postException(baseException);
 	}
 	void run() override {
 	}
-
 };
 
 ENABLE_TEST(TestException);

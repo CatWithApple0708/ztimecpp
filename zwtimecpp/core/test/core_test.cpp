@@ -40,10 +40,5 @@ int main(int argc, char const *argv[])
 	TesterManager::Instance().run(argv[1],argc,argv);
 	Object& a = TesterManager::Instance();
 
-
-
-
-
-	printf("xxxxx %s\n", typeid(a).name());
 	return 0;
 }

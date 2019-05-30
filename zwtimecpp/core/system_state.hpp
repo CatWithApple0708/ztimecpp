@@ -30,9 +30,8 @@ class SystemState : public Object
 
 	std::mutex lock_;
 	atomic_int ourThreadNum;
-	weak_ptr<ExceptionHandler> threadDefaultExceptionHandler;
+	weak_ptr<ExceptionHandler> exceptionHandler;
 	SystemState() {
-		SimpleLogger::trace("SystemState");
 	}
 
   public:
@@ -79,12 +78,14 @@ class SystemState : public Object
 		}
 	}
 
-	void setThreadExceptionHandler(shared_ptr<ExceptionHandler> handler){
-		threadDefaultExceptionHandler = handler;
-	}
+	shared_ptr<ExceptionHandler> setDefaultExceptionHandler(shared_ptr<ExceptionHandler> exceptionHandler){
+		shared_ptr<ExceptionHandler> last = this->exceptionHandler.lock();
+		this->exceptionHandler = exceptionHandler;
+		return last;
+	};
 
-	shared_ptr<ExceptionHandler> getThreadExceptionHandler(){
-		return threadDefaultExceptionHandler.lock();
+	shared_ptr<ExceptionHandler> getDefaultExceptionHandler(){
+		return exceptionHandler.lock();
 	}
 
 	int getOurThreadNum()const {return ourThreadNum.load();}

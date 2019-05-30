@@ -14,6 +14,7 @@
 #include <sstream>
 #include <set>
 #include <zwtimecpp/core/base/exception_handler.hpp>
+#include <zwtimecpp/core/exception/unkown_type_exception.hpp>
 #include "zwtimecpp/core/exception/base_exception.hpp"
 #include "zwtimecpp/core/base/object.hpp"
 #include "zwtimecpp/core/base/interlog/simple_logger.hpp"
@@ -33,11 +34,9 @@ class ExceptionHandleCenter : public Object {
 	function<shared_ptr<BaseException>(const std::exception &)> transformer;
 
 	ExceptionHandleCenter() {
-		SimpleLogger::trace("ExceptionHandleCenter");
 	};
   public:
 	virtual ~ExceptionHandleCenter() {
-		SimpleLogger::trace("~ExceptionHandleCenter");
 	}
 
 	static ExceptionHandleCenter &instance() {
@@ -60,7 +59,35 @@ class ExceptionHandleCenter : public Object {
 	void postException(const exception &expec);
 
 };
+
+/**
+ * 不处理任何异常,直接将所有异常抛给异常处理中心
+ * @param work
+ */
+static inline void throwAllExceptionToExceptionCenter(function<void()> work){
+	if (work == nullptr) {
+		SimpleLogger::fatal("core::catchExceptionSimple work == nullptr");
+	}
+	try {
+		work();
+	}
+
+	catch (const std::exception & exception_value) {
+		ExceptionHandleCenter::instance().postException(exception_value);
+	}
+	catch (...) {
+		/**
+		   *	特殊情况只知道存在异常但异常是什么不知道
+		   *
+		   *	TODO:处理 线程独有的打断异常,当调用pthread_yield时产生的异常,这个异常要抛出交给系统处理,属于线程的正常退出,如果截断会导致程序退出.
+		   */
+		UnkownTypeException unkownTypeException("unkownException from thread");
+		ExceptionHandleCenter::instance().postException(unkownTypeException);
+	}
 }
 }
+}
+
+
 
 

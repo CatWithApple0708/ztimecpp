@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include <thread>
 #include <iostream>
-#include "zwtimecpp/core/base/system_state.hpp"
+#include "zwtimecpp/core/system_state.hpp"
 #include "zwtimecpp/core/exception_handle_center.hpp"
 #include "zwtimecpp/core/base/interlog/simple_logger.hpp"
 using namespace std;
@@ -66,27 +66,28 @@ string BaseException::format1024(const char *fmt, ...) {
 }
 string BaseException::toString() const{
 	string ret;
-	ret += "\n|-----------------------exceptionInfo-----------------------------\n";
-	ret += "|exception type:  " + string(typeid(*this).name()) + "\n";
-	ret += "|description: " + this->description + "\n";
+	ret += "\n#-----------------------exceptionInfo-----------------------------\n";
+	ret += "#exception type:  " + string(typeid(*this).name()) + "\n";
+	ret += "#description: " + this->description + "\n";
 
 	if (!this->stdExceptionTypeinfo.empty())
-		ret += "|stdExceptionTypeinfo: " + this->stdExceptionTypeinfo + "\n";
+		ret += "#stdExceptionTypeinfo: " + this->stdExceptionTypeinfo + "\n";
 	if (!this->stdExceptionWhat.empty())
-		ret += "|stdExceptionWhat: " + this->stdExceptionWhat + "\n";
+		ret += "#stdExceptionWhat: " + this->stdExceptionWhat + "\n";
 
 	string threadInfo;
 
-//	ret += "|pthreadId: " + SystemState::Instance().get (this->pthreadId) + "\n";
-	ret += "|loseInfo: " + to_string(this->loseInfo) + "\n";
-	ret += "|stackTrace: \n" + this->stackInfo;
+//	ret += "#pthreadId: " + SystemState::Instance().get (this->pthreadId) + "\n";
+	ret += "#loseInfo: " + to_string(this->loseInfo) + "\n";
+	ret += "#stackTrace: \n" + this->stackInfo;
 	hasCalledToString  = true;
 	return ret;
 }
 BaseException::~BaseException() {
-	SimpleLogger::trace("~BaseEvent");
-	if (!hasCalledToString)
+	if (!hasCalledToString){
+		std::cerr << "#Show exception message, because not call exception->toString before it destroy";
 		std::cerr << toString();
+	}
 
 }
 bool BaseException::isHasCalledToString() const {

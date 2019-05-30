@@ -3556,7 +3556,7 @@ private:
 		}
 
 	void print_header(std::ostream& os, size_t thread_id) {
-		os << "Stack trace (most recent call last)";
+		os << "#Stack trace (most recent call last)";
 		if (thread_id) {
 			os << " in thread " << thread_id;
 		}

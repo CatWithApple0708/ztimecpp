@@ -23,12 +23,17 @@ namespace zwsd {
 namespace core {
 using namespace moodycamel;
 using namespace std;
-class EventHandler : public Object {
-  public:
+class EventBus;
+class EventHandler : public Object
+{
+	set<std::type_index> requiredEvent;
+	friend EventBus;
+public:
 	/**
 	 * \brief Default constructor that enforces the template type
 	 */
-	EventHandler() {
+	EventHandler()
+	{
 	}
 	/**
 	 * \brief Empty virtual destructor
@@ -40,14 +45,11 @@ class EventHandler : public Object {
 	 * @param The event instance
 	 */
 	virtual void onEvent(shared_ptr<BaseEvent>) = 0;
-
-	virtual const set<std::type_index> &requiredEvent() = 0;
 };
 
-
-class EventBus :public ThreadStateListener{
+class EventBus {
 	BlockingConcurrentQueue<shared_ptr<BaseEvent>> baseEvents;
-	list<shared_ptr<EventHandler>> eventHandlers;
+	list<weak_ptr<EventHandler>> eventHandlers;
 	bool eventAsyncHandleStopFlag = false;
 	int busThreadRestartTimes = 0;
 
@@ -77,11 +79,9 @@ class EventBus :public ThreadStateListener{
 	//eventBus api
 	void fireEventSync(shared_ptr<BaseEvent> baseEvent);
 	void fireEventAsync(shared_ptr<BaseEvent> baseEvent);
-	void regEventHandler(shared_ptr<EventHandler> handler);
+	void regEventHandler(shared_ptr<EventHandler> handler, set<std::type_index> requiredEvent);
 
 	//override ThreadStateListener
-	void onCatchException(Thread *thread, const std::exception &baseException) override;
-	void onExistSync(Thread *thread) override;
 	~EventBus();
   private:
 	void internal_initialize();

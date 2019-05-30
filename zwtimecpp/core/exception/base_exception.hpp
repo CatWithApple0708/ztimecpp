@@ -14,6 +14,7 @@
 #include <sstream>
 #include <set>
 #include <thread>
+#include <zwtimecpp/core/base/interlog/simple_logger.hpp>
 #include "zwtimecpp/core/base/object.hpp"
 
 namespace zwsd {
@@ -57,14 +58,16 @@ using namespace std;
 	  const char *what() const _GLIBCXX_USE_NOEXCEPT override;
     public:
 	/**
-  	 * 构造一个基础类型的异常
+  	 * 构造一个基础类型的异常,
+  	 *
+  	 * 特性: 构造异常之后如果异常在析构前没有被调用toString, 则会自动调用异常的toString, 但不要依赖这个特性去写代码, 因为非继承于BaseException的异常会被忽悠掉
      * @param description
      */
 	BaseException(string description, string stdExceptionTypeinfo = "", string baseExceptionWhat = "");
 
 	BaseException(string description, const std::exception &stdexcep);
 
-	~BaseException();
+	virtual ~BaseException();
 	virtual string toString() const;
 
 	/**
@@ -80,5 +83,7 @@ using namespace std;
   private:
 	void initialize(string description, string stdExceptionTypeinfo = "", string baseExceptionWhat = "");
 };
+
+
 }
 }

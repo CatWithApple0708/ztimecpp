@@ -34,8 +34,7 @@ class BaseEvent {
 	BaseEvent(){
 
 	}
-	~BaseEvent(){
-		SimpleLogger::trace("~BaseEvent");
+	virtual ~BaseEvent(){
 	};
 };
 }

@@ -6,7 +6,30 @@ include_directories(
 	.
 	./zwtimecpp/core/logger
 )
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -pthread -fexceptions -pthread  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables -fomit-frame-pointer")
+#ARCH can be x86 or arm32
+if (${ARCH} MATCHES "x86")
+	set(CMAKE_SYSTEM_NAME Linux)
+	if (NOT CMAKE_C_COMPILER)
+		set(CMAKE_C_COMPILER gcc)
+	endif ()
+	if (NOT CMAKE_CXX_COMPILER)
+		set(CMAKE_CXX_COMPILER g++)
+	endif ()
+	set(CMAKE_C_FLAGS "-O1 -g -Wall -Wfatal-errors")
+	set(CMAKE_CXX_FLAGS "-O1 -g -Wall -std=c++14 -Wno-deprecated-declarations -pthread -Wfatal-errors -DWEBRTC_POSIX -DWEBRTC_LINUX")
+elseif (${ARCH} MATCHES "arm32")
+	set(CMAKE_SYSTEM_NAME Linux)
+	if (NOT CMAKE_C_COMPILER)
+		set(CMAKE_C_COMPILER arm-linux-gnueabihf-gcc)
+	endif ()
+	if (NOT CMAKE_CXX_COMPILER)
+		set(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)
+	endif ()
+	set(CMAKE_C_FLAGS "-O1 -g -Wall -Wfatal-errors -s -fexceptions  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables ")
+	set(CMAKE_CXX_FLAGS "-O1 -g -Wall -std=c++14 -g3 -s -fexceptions  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables -mfpu=neon -Wno-deprecated-declarations -Wfatal-errors")
+else ()
+	message(FATAL_ERROR,"Not set ARCH,please set by exec `cmake .. -DARCH=????`")
+endif ()
 
 set(CORE_RES
 	zwtimecpp/core/thread/thread.cpp
@@ -35,6 +58,9 @@ set(CORE_RES
 add_library(zwtimecpp
 	${CORE_RES}
 	)
+target_link_libraries(zwtimecpp
+	pthread
+)
 
 add_executable(core_test
 	zwtimecpp/core/test/core_test.cpp
@@ -45,5 +71,5 @@ target_link_libraries(
 )
 add_dependencies(core_test
 	zwtimecpp
-)
+	)
 

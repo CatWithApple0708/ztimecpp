@@ -48,10 +48,8 @@ class Core : public Object {
 			throw BaseException("Core has been initialized");
 		}
 		instance().reset(new Core());
-
 		//基础数据结构初始化
 		SystemState::Instance();
-
 		EventBus::initialize();
 		ExceptionHandleCenter::instance();
 	}
@@ -60,7 +58,7 @@ class Core : public Object {
 
 	ExceptionHandleCenter &getExceptionHandleCenter() { return ExceptionHandleCenter::instance(); }
 
-	const SystemState &getSystemState() { return SystemState::Instance(); }
+	SystemState &getSystemState() { return SystemState::Instance(); }
 
 	const void closeMain() { std::abort(); }
 };

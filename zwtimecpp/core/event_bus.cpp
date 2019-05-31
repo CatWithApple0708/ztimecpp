@@ -75,7 +75,8 @@ void EventBus::callHandler(shared_ptr<BaseEvent> baseEvent) {
 	}
 }
 EventBus::~EventBus() {
-	eventAsyncHandleStopFlag = false;
-	evenAsyncHandleThread->join();
+    baseEvents.enqueue(nullptr);
+    eventAsyncHandleStopFlag = true;
+    evenAsyncHandleThread->join();
 }
 

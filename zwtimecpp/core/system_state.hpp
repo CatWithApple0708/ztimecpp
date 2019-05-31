@@ -98,7 +98,6 @@ class SystemState : public Object
 		return ourThreadNum;
 	}
 	virtual ~SystemState() {
-		SimpleLogger::trace("SystemState");
 	}
 private:
 

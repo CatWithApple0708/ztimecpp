@@ -115,7 +115,6 @@ Thread::Thread(string name, function<void()> run) {
 		  else
 			  throw unkownTypeException;
 	  }
-	  std::cout<<"...................\n";
 	}));
 
 	while (!threadInitialized) {
@@ -156,8 +155,6 @@ void Thread::join() {
 };
 
 Thread::~Thread() {
-	SimpleLogger::trace("~Thread");
-
 	SystemState::Instance().clearThreadInfo(id);
 	SystemState::Instance().decreaseOurThreadNum();
 	if (!hasJointd)

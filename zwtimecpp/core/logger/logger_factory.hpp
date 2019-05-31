@@ -24,6 +24,8 @@ namespace zwsd {
 namespace core {
 using namespace std;
 using namespace spdlog;
+typedef shared_ptr<logger> logger_t;
+
 class SpdLoggerFactory {
   public:
 
@@ -83,5 +85,4 @@ class SpdLoggerFactory {
     }
 };
 } // namespace core
-
 } // namespace zwsd

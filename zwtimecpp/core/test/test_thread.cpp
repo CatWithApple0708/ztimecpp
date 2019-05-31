@@ -31,7 +31,7 @@ class TestThread : public TestElement, public enable_shared_from_this<TestThread
 #if 1
 		//处理异常会在上面 onExceptionSync中打印
 		shared_ptr<ExceptionHandler> exceptionHandler = std::make_shared<ExceptionHandlerImpl>();
-		SystemState::Instance().setDefaultExceptionHandler(exceptionHandler);
+		CoreSystemState::Instance().setDefaultExceptionHandler(exceptionHandler);
 		//线程运行测试
 		Thread thread("TestThread", [this]() {
 			SimpleLogger::info("TestThread run.......");
@@ -41,7 +41,7 @@ class TestThread : public TestElement, public enable_shared_from_this<TestThread
 #if 0
 		//处理异常会在上面 onExceptionSync被回调,但如果没有调用exception->toString, 会自动将exception会自动调用toString
 		shared_ptr<ExceptionHandler> exceptionHandler = std::make_shared<ExceptionHandlerImpl2>();
-		SystemState::Instance().setDefaultExceptionHandler(exceptionHandler);
+		CoreSystemState::Instance().setDefaultExceptionHandler(exceptionHandler);
 		//线程运行测试
 		Thread thread("TestThread", [this]() {
 		  SimpleLogger::info("TestThread run.......");

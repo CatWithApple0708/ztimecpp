@@ -82,6 +82,20 @@ class EventBus {
     }
     //eventBus api
     void fireEventAsync(shared_ptr<BaseEvent> baseEvent);
+
+    /**
+     * @brief 
+     * 
+     * @param handler 
+     * @param requiredEvent 
+     * 
+     * @Usage
+     *    class TestEvent1 :public BaseEvent
+     *    {};
+     *    class TestEvent2 :public BaseEvent
+     *    {};
+		 *    regEventHandler(handler, {typeid(TestEvent1), typeid(TestEvent2)});
+     */
     void regEventHandler(shared_ptr<EventHandler> handler, set<std::type_index> requiredEvent);
 
     //override ThreadStateListener

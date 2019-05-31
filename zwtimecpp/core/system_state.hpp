@@ -24,19 +24,19 @@ namespace core{
 using namespace std;
 using namespace core;
 
-class SystemState : public Object
+class CoreSystemState : public Object
 {
 	map<pthread_t, shared_ptr<ThreadInfo>> threadInfoMap;
 
 	std::mutex lock_;
 	atomic_int ourThreadNum;
 	weak_ptr<ExceptionHandler> exceptionHandler;
-	SystemState() {
+	CoreSystemState() {
 	}
 
   public:
-	static SystemState &Instance() {
-		static SystemState value;
+	static CoreSystemState &Instance() {
+		static CoreSystemState value;
 		return value;
 	}
 	/**
@@ -97,7 +97,7 @@ class SystemState : public Object
 		ourThreadNum--;
 		return ourThreadNum;
 	}
-	virtual ~SystemState() {
+	virtual ~CoreSystemState() {
 	}
 private:
 

@@ -18,6 +18,7 @@
 #include "zwtimecpp/core/event_bus.hpp"
 #include "zwtimecpp/core/exception_handle_center.hpp"
 #include "system_state.hpp"
+#include "zwtimecpp/core/logger/logger.hpp"
 
 namespace zwsd {
 namespace core {
@@ -49,7 +50,7 @@ class Core : public Object {
 		}
 		instance().reset(new Core());
 		//基础数据结构初始化
-		SystemState::Instance();
+		CoreSystemState::Instance();
 		EventBus::initialize();
 		ExceptionHandleCenter::instance();
 	}
@@ -58,7 +59,7 @@ class Core : public Object {
 
 	ExceptionHandleCenter &getExceptionHandleCenter() { return ExceptionHandleCenter::instance(); }
 
-	SystemState &getSystemState() { return SystemState::Instance(); }
+	CoreSystemState &getSystemState() { return CoreSystemState::Instance(); }
 
 	const void closeMain() { std::abort(); }
 };

@@ -32,7 +32,7 @@ void EventBus::internal_initialize() {
 					};
 				  },
 				  [this](const exception &exception) {
-					auto exHandler = SystemState::Instance().getDefaultExceptionHandler();
+					auto exHandler = CoreSystemState::Instance().getDefaultExceptionHandler();
 					if (exHandler)
 						exHandler->onExceptionSync(exception);
 					else

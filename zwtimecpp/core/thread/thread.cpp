@@ -33,7 +33,7 @@ using namespace moodycamel;
 //	{
 //		SimpleLogger::info("CoreThreadMonitor initialized...");
 //		threadW.reset(new thread([this]() {
-//			SystemState::Instance().createThreadInfo("CoreThreadMonitor-Thread");
+//			CoreSystemState::Instance().createThreadInfo("CoreThreadMonitor-Thread");
 //			while (1)
 //			{
 //				shared_ptr<ThreadInfo> threadInfo = nullptr;
@@ -50,7 +50,7 @@ using namespace moodycamel;
 //				}
 //
 //				//直到所有我们创建的线程退出后,这个线程才真正的退出.
-//				if (stopFlag == true && SystemState::Instance().getOurThreadNum() == 0)
+//				if (stopFlag == true && CoreSystemState::Instance().getOurThreadNum() == 0)
 //				{
 //					break;
 //				}
@@ -87,14 +87,14 @@ Thread::Thread(string name, function<void()> run) {
 
 	workThread.reset(new thread([this]() {
 	  this->id = pthread_self();
-	  SystemState::Instance().createThreadInfo(this->name);
+	  CoreSystemState::Instance().createThreadInfo(this->name);
 	  this->threadInitialized = true;
 
 	  try {
 		  this->run();
 	  }
 	  catch (const std::exception &exception) {
-		  auto exHandler = SystemState::Instance().getDefaultExceptionHandler();
+		  auto exHandler = CoreSystemState::Instance().getDefaultExceptionHandler();
 		  if (exHandler)
 			  exHandler->onExceptionSync(exception);
 		  else
@@ -109,7 +109,7 @@ Thread::Thread(string name, function<void()> run) {
 
 		  UnkownTypeException unkownTypeException("unkownException from thread");
 		  unkownTypeException.setLoseInfo(true);
-		  auto exHandler = SystemState::Instance().getDefaultExceptionHandler();
+		  auto exHandler = CoreSystemState::Instance().getDefaultExceptionHandler();
 		  if (exHandler)
 			  exHandler->onExceptionSync(unkownTypeException);
 		  else
@@ -120,33 +120,33 @@ Thread::Thread(string name, function<void()> run) {
 	while (!threadInitialized) {
 		usleep(1);
 	}
-	SystemState::Instance().increaseOurThreadNum();
+	CoreSystemState::Instance().increaseOurThreadNum();
 }
 void Thread::sleep() {
-	shared_ptr<ThreadInfo> threadInfo = SystemState::Instance().getThreadInfo(pthread_self());
+	shared_ptr<ThreadInfo> threadInfo = CoreSystemState::Instance().getThreadInfo(pthread_self());
 	if (threadInfo)
 		threadInfo->signal.sleep();
 	else
 		throw BaseException(BaseException::format1024(
-			"Thread %s not call SystemState::Instance().createThreadInfo(name)",
+			"Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
 			to_string(pthread_self()).c_str()));
 }
 void Thread::sleepForMs(int ms) {
-	shared_ptr<ThreadInfo> threadInfo = SystemState::Instance().getThreadInfo(pthread_self());
+	shared_ptr<ThreadInfo> threadInfo = CoreSystemState::Instance().getThreadInfo(pthread_self());
 	if (threadInfo)
 		threadInfo->signal.sleep_for_us(ms * 1000);
 	else
 		throw BaseException(BaseException::format1024(
-			"Thread %s not call SystemState::Instance().createThreadInfo(name)",
+			"Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
 			to_string(pthread_self()).c_str()));
 }
 void Thread::wake() {
-	shared_ptr<ThreadInfo> threadInfo = SystemState::Instance().getThreadInfo(pthread_self());
+	shared_ptr<ThreadInfo> threadInfo = CoreSystemState::Instance().getThreadInfo(pthread_self());
 	if (threadInfo)
 		threadInfo->signal.notify();
 	else
 		throw BaseException(BaseException::format1024(
-			"Thread %s not call SystemState::Instance().createThreadInfo(name)",
+			"Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
 			to_string(pthread_self()).c_str()));
 }
 void Thread::join() {
@@ -155,8 +155,8 @@ void Thread::join() {
 };
 
 Thread::~Thread() {
-	SystemState::Instance().clearThreadInfo(id);
-	SystemState::Instance().decreaseOurThreadNum();
+	CoreSystemState::Instance().clearThreadInfo(id);
+	CoreSystemState::Instance().decreaseOurThreadNum();
 	if (!hasJointd)
 		throw ThreadUnjointedException("ThreadUnjointedException");
 }
@@ -167,7 +167,7 @@ pthread_t Thread::getId() const {
 	return id;
 }
 void Thread::callDefaultExceptionHandler(const std::exception &exception) {
-	auto handler = SystemState::Instance().getDefaultExceptionHandler();
+	auto handler = CoreSystemState::Instance().getDefaultExceptionHandler();
 	if (handler) {
 		handler->onExceptionSync(exception);
 	} else {

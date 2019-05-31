@@ -77,7 +77,7 @@ string BaseException::toString() const{
 
 	string threadInfo;
 
-//	ret += "#pthreadId: " + SystemState::Instance().get (this->pthreadId) + "\n";
+//	ret += "#pthreadId: " + CoreSystemState::Instance().get (this->pthreadId) + "\n";
 	ret += "#loseInfo: " + to_string(this->loseInfo) + "\n";
 	ret += "#stackTrace: \n" + this->stackInfo;
 	hasCalledToString  = true;

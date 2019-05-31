@@ -47,12 +47,10 @@ class TestEventBus : public TestElement {
 		{
 			shared_ptr<EventHandler> handler = make_shared<EventHandlerImpl>();
 			Core::Instance()->getEventBus()->regEventHandler(handler, {typeid(TestEvent1), typeid(TestEvent2)});
-
-
 			SimpleLogger::info("onEvent testEventSync");
-			Core::Instance()->getEventBus()->fireEventSync(make_shared<TestEvent1>());
-			Core::Instance()->getEventBus()->fireEventSync(make_shared<TestEvent2>());
-			Core::Instance()->getEventBus()->fireEventSync(make_shared<TestEvent3>());
+			// Core::Instance()->getEventBus()->fireEventSync(make_shared<TestEvent1>());
+			// Core::Instance()->getEventBus()->fireEventSync(make_shared<TestEvent2>());
+			// Core::Instance()->getEventBus()->fireEventSync(make_shared<TestEvent3>());
 			SimpleLogger::info("onEvent testEventSync end");
 			SimpleLogger::info("--");
 			SimpleLogger::info("onEvent testEventAsync");

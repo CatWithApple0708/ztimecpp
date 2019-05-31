@@ -5,8 +5,9 @@
 #pragma once
 #include "spdlog/spdlog.h"
 
-#include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/daily_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "zwtimecpp/core/logger/spdlog/spdlog.h"
 #include <fstream>
@@ -33,20 +34,23 @@ class SpdLoggerFactory {
 // #define SPDLOG_LEVEL_ERROR 4
 // #define SPDLOG_LEVEL_CRITICAL 5
     static shared_ptr<logger> createLogger(string loggerName) {
-        if (get("root")) {
-            return get("root");
+        if (get("default")) {
+            return get("default");
         } else {
             mkdirIfNotExist("logs/");
+            auto fatal = make_shared<sinks::daily_file_sink_mt>("logs/fatal", 0, 1);
+            fatal->set_level(level::critical);
             auto error = make_shared<sinks::daily_file_sink_mt>("logs/error", 0, 1);
             error->set_level(level::err);
             auto info = make_shared<sinks::daily_file_sink_mt>("logs/info", 0, 1);
             info->set_level(level::info);
             auto debug = make_shared<sinks::daily_file_sink_mt>("logs/debug", 0, 1);
             debug->set_level(level::debug);
-            auto trace = make_shared<sinks::daily_file_sink_mt>("logs/trace", 0, 1);
-            trace->set_level(level::trace);
 
-            auto rootLogger = make_shared<logger>("root", sinks_init_list{error, info, debug});
+            auto stdoutsink = make_shared<sinks::stderr_color_sink_mt>();
+            stdoutsink->set_level(level::info);
+
+            auto rootLogger = make_shared<logger>("default", sinks_init_list{stdoutsink, error, info, debug});
             register_logger(rootLogger);
             return rootLogger;
         }

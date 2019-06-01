@@ -44,10 +44,21 @@ void EventBus::internal_initialize() {
 }
 
 void EventBus::regEventHandler(shared_ptr<EventHandler> handler,
-                               set<std::type_index> requiredEvent) {
+                               set<type_index> requiredEvent) {
+                                 
+  if (!evenAsyncHandleThread ||
+      pthread_self() == evenAsyncHandleThread->getId()) {
+    throw BaseException("Don't call regEventHandler in onEvent");
+  }
+
+  lock_guard<mutex> lock(lock_);
   if (handler != nullptr) {
     handler->requiredEvent = requiredEvent;
     eventHandlers.push_back(handler);
+
+    for (auto &typeindex : requiredEvent) {
+      eventHandlersQuickFind[typeindex].push_back(handler);
+    }
   }
 }
 void EventBus::fireEventSync(shared_ptr<BaseEvent> baseEvent) {
@@ -69,6 +80,8 @@ void EventBus::fireEventAsync(shared_ptr<BaseEvent> baseEvent) {
 }
 
 void EventBus::callHandler(shared_ptr<BaseEvent> baseEvent) {
+//简单方法查找handler调用
+#if 0
   auto handlers = eventHandlers;
   for (auto &var : handlers) {
     shared_ptr<EventHandler> eventHandler = var.lock();
@@ -78,6 +91,15 @@ void EventBus::callHandler(shared_ptr<BaseEvent> baseEvent) {
           eventHandler->requiredEvent.end()) {
         eventHandler->onEvent(baseEvent);
       }
+    }
+  }
+#endif
+  type_index index = typeid(*baseEvent);
+  {
+    lock_guard<mutex> lock(lock_);
+    for (auto &handler : eventHandlersQuickFind[index]) {
+      auto eventHandler = handler.lock();
+      if (eventHandler) eventHandler->onEvent(baseEvent);
     }
   }
 }

@@ -47,6 +47,10 @@ class EventHandler : public Object {
 
 class EventBus {
     BlockingConcurrentQueue<shared_ptr<BaseEvent>> baseEvents;
+    /**
+     * @TODO
+     *  优化存储方式,map(key = event, value = handlers)去存储handler,加速事件处理速度
+     */
     list<weak_ptr<EventHandler>> eventHandlers;
     bool eventAsyncHandleStopFlag = false;
     int busThreadRestartTimes = 0;

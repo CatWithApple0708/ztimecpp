@@ -1,0 +1,23 @@
+commit 89f9c68bba69a53bcb7c3f6e4980312a86cf21b0
+Merge: ad2d25c 7e5c0ed
+Author: r-lyeh <35402248+r-lyeh@users.noreply.github.com>
+Date:   Sat May 18 10:28:20 2019 +0200
+
+    Merge pull request #25 from MisterTea/patch-2
+    
+    localtime_r() doesn't exist on mingw so use localtime()
+
+commit 7e5c0eddc3877d93be401bb50f7c51022055f232
+Author: Jason Gauci <jgmath2000@gmail.com>
+Date:   Fri May 17 22:26:50 2019 -0700
+
+    localtime_r() doesn't exist on mingw so use localtime()
+
+commit ad2d25cc0a622f006b65fb449606edf457dd2566
+Merge: 653a25a ff14f0b
+Author: r-lyeh <35402248+r-lyeh@users.noreply.github.com>
+Date:   Sun May 5 10:46:33 2019 +0200
+
+    Merge pull request #24 from MisterTea/patch-1
+    
+    Change "class hash" to "struct hash" to avoid compiler warnings on Xcode

@@ -236,9 +236,9 @@ bool FileUtil::writeToFile(const string &fileName, const string &buf) {
     return writeToFile(fileName, vc);
 }
 
-void FileUtil::moveFile(string src, string des) {
-    system((string("mv ") + src + " " + des).c_str());
-}
+// void FileUtil::moveFile(string src, string des) {
+//   int ret = system((string("mv ") + src + " " + des).c_str());
+// }
 
 std::vector<char> FileUtil::readFileAsBuffer(const string &filePath) {
     std::vector<char> ret;

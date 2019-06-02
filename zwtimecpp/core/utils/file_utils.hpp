@@ -52,7 +52,7 @@ class FileUtil {
 
     static bool writeToFile(const string &fileName, const string &buf);
 
-    static void moveFile(string src, string des);
+    // static void moveFile(string src, string des);
 
     /**
 	 * 新分配Buffer，读取文件到Buffer，Buffer使用完之后需要使用者手动释放。

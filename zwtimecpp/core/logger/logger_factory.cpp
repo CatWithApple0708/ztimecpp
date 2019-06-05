@@ -79,7 +79,7 @@ static map<string, shared_ptr<logger>> s_loggers;
 static set<shared_ptr<LoggerAndSinks>> s_loggerAndSinks;
 
 static void insertLogger(shared_ptr<logger> var_logger) {
-  if (s_loggers.find(var_logger->name()) != s_loggers.end()) {
+  if (s_loggers.find(var_logger->name()) == s_loggers.end()) {
     s_loggers[var_logger->name()] = var_logger;
   } else {
     spdlog::critical("Add the logger {} fail", var_logger->name());
@@ -88,7 +88,7 @@ static void insertLogger(shared_ptr<logger> var_logger) {
 };
 
 static void insertSink(string name, sink_ptr sink) {
-  if (s_sinks.find(name) != s_sinks.end()) {
+  if (s_sinks.find(name) == s_sinks.end()) {
     s_sinks[name] = sink;
   } else {
     spdlog::critical("Add the sink {} fail", name);
@@ -273,10 +273,8 @@ static bool c_stderr_color_sink_mt(json j) {
 };
 
 /**
- * default root
- * logger-----------------------------------------------------------------------------------------------------
+ * default_root_logger-----------------------------------------------------------------------------------------------------
  */
-
 static logger_t createRootLogger() {
   mkdirIfNotExist("logs/");
   auto fatal = make_shared<sinks::daily_file_sink_mt>("logs/fatal", 0, 1);
@@ -292,6 +290,17 @@ static logger_t createRootLogger() {
   auto rootLogger = make_shared<logger>(
       kRootLogerName, sinks_init_list{stdoutsink, error, info, debug});
   return rootLogger;
+}
+/**
+ * @brief
+ */
+/**
+ * @brief 当使用 daily_logger_mt时候会自动注册logger, 而使用make_shared<logger>
+ * 则不会自动注册logger
+ * @param var_logger
+ */
+static void myRegLogger(logger_t var_logger) {
+  if (!get(var_logger->name())) register_logger(var_logger);
 }
 
 void core::SpdLoggerFactory::parseSphLogConfig(string path) {
@@ -336,8 +345,9 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
 
       for (auto& sink : sinks) logger->sinks().push_back(sink);
     }
-    for (auto& var : s_loggers) register_logger(var.second);
-    if (!get(kRootLogerName)) register_logger(createRootLogger());
+    for (auto& var : s_loggers) myRegLogger(var.second);
+    if (!get(kRootLogerName)) myRegLogger(createRootLogger());
+
     spdlog::info("Logger initialize ok");
   } catch (const exception& e) {
     spdlog::critical("parse logger config fail {}", e.what());
@@ -359,9 +369,9 @@ shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
           parseConfig = true;
         }
       }
-      if (parseConfig) {
+      if (!parseConfig) {
         spdlog::warn("can't find logger config file use default config");
-        register_logger(createRootLogger());
+        myRegLogger(createRootLogger());
       }
       initializeLogger = true;
     }
@@ -377,7 +387,7 @@ shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
       exit(-1);
     }
     logger_t newLogger = rootLogger->clone(loggerName);
-    register_logger(newLogger);
+    myRegLogger(newLogger);
     return newLogger;
   }
   return nullptr;

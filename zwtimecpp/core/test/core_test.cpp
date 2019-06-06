@@ -22,6 +22,7 @@ using namespace core;
 int main(int argc, char const* argv[]) {
   //    TestBackWard::run();
 
+
   SimpleLogger::enableLog();
   if (argc <= 1) {
     SimpleLogger::info("%s ClassName", argv[0]);

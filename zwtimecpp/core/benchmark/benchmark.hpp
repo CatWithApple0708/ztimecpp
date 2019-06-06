@@ -30,6 +30,19 @@ class Benchmark {
   bool isEnable = false;
   // std::ofstream tv_voice_file(outfile_name, std::ios::binary |
   // std::ios::out);
+ public:
+  class AutoCall {
+    shared_ptr<Benchmark> b;
+
+   public:
+    AutoCall(shared_ptr<Benchmark> b) {
+      this->b = b;
+      if (b) b->start();
+    }
+    ~AutoCall() {
+      if (b) b->end();
+    }
+  };
 
  public:
   Benchmark(const string &loggerFile, bool enable = true)
@@ -78,5 +91,9 @@ class Benchmark {
     return duration_cast<milliseconds>(ns).count();
   }
 };
+
 }  // namespace core
 }  // namespace zwsd
+
+#define BENCHMARK(benchmark) \
+  zwsd::core::Benchmark::AutoCall __benchAutocall(benchmark);

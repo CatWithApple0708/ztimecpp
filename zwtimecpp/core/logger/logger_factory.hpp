@@ -26,6 +26,12 @@ using namespace std;
 using namespace spdlog;
 typedef shared_ptr<logger> logger_t;
 
+#define ENABLE_LOGGER(loggerName) \
+  logger_t logger = SpdLoggerFactory::createLogger(#loggerName);
+
+#define ENABLE_LOGGER_STATIC(loggerName) \
+  static logger_t logger = SpdLoggerFactory::createLogger(#loggerName);
+
 class SpdLoggerFactory {
  public:
   static shared_ptr<logger> createLogger(string loggerName);
@@ -34,3 +40,5 @@ class SpdLoggerFactory {
 };
 }  // namespace core
 }  // namespace zwsd
+
+

@@ -164,6 +164,7 @@ void Thread::wake() {
         to_string(pthread_self()).c_str()));
 }
 void Thread::join() {
+  wake();
   workThread->join();
   hasJointd = true;
 };

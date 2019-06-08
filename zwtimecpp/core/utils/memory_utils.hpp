@@ -77,3 +77,17 @@ static inline bool instanceof(const Base &val) {
 	return typeid(T) == typeid(val);
 }
 }
+
+namespace zwsd {
+namespace core {
+template <typename T>
+weak_ptr<T> toWeak(shared_ptr<T> ptr) {
+  weak_ptr<T> value = ptr;
+  return value;
+};
+template <typename T>
+shared_ptr<T> toShare(weak_ptr<T> v) {
+  return v.lock();
+}
+}  // namespace core
+}  // namespace zwsd

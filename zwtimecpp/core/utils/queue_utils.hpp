@@ -24,12 +24,19 @@ class QueueUtils {
   static void dumpTo(ConcurrentQueue<shared_ptr<T>>& from,
                      ConcurrentQueue<shared_ptr<T>>& to) {
     shared_ptr<T> t;
-    while (1) {
+    while (from.size_approx() > 0) {
       from.try_dequeue(t);
-      if (t)
-        to.enqueue(t);
-      else
-        break;
+      to.enqueue(t);
+    }
+  }
+
+  template <class T>
+  static void dumpTo(BlockingConcurrentQueue<shared_ptr<T>>& from,
+                     BlockingConcurrentQueue<shared_ptr<T>>& to) {
+    shared_ptr<T> t;
+    while (from.size_approx() > 0) {
+      from.try_dequeue(t);
+      to.enqueue(t);
     }
   }
 
@@ -44,6 +51,43 @@ class QueueUtils {
       else
         break;
     }
+  }
+
+  template <class T>
+  static void dumpTo(BlockingConcurrentQueue<unique_ptr<T>>& from,
+                     BlockingConcurrentQueue<unique_ptr<T>>& to) {
+    unique_ptr<T> t;
+    while (1) {
+      from.try_dequeue(t);
+      if (t)
+        to.enqueue(move(t));
+      else
+        break;
+    }
+  }
+
+  template <class T>
+  static void removeOne(ConcurrentQueue<T>& from) {
+    T v;
+    from.try_dequeue(v);
+  }
+
+  template <class T>
+  static void removeOne(BlockingConcurrentQueue<T>& from) {
+    T v;
+    from.try_dequeue(v);
+  }
+
+  template <class T>
+  static void clear(ConcurrentQueue<T>& from) {
+    T v;
+    while (from.size_approx() > 0) from.try_dequeue(v);
+  }
+
+  template <class T>
+  static void clear(BlockingConcurrentQueue<T>& from) {
+    T v;
+    while (from.size_approx() > 0) from.try_dequeue(v);
   }
 };
 }  // namespace core

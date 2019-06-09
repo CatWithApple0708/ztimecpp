@@ -67,15 +67,17 @@ class QueueUtils {
   }
 
   template <class T>
-  static void removeOne(ConcurrentQueue<T>& from) {
+  static T removeOne(ConcurrentQueue<T>& from) {
     T v;
     from.try_dequeue(v);
+    return move(v);
   }
 
   template <class T>
-  static void removeOne(BlockingConcurrentQueue<T>& from) {
+  static T removeOne(BlockingConcurrentQueue<T>& from) {
     T v;
     from.try_dequeue(v);
+    return move(v);
   }
 
   template <class T>

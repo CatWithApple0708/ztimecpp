@@ -89,5 +89,19 @@ template <typename T>
 shared_ptr<T> toShare(weak_ptr<T> v) {
   return v.lock();
 }
+
+template <typename T>
+static inline T* zmemcpy(T *des,const T *src, size_t s) {
+  return static_cast<T *>(::memcpy(static_cast<void *>(des),
+                                   static_cast<const void *>(src), s * sizeof(T)));
+}
+
+template <typename T>
+static inline T *zmemcpy(T *des, T *src, size_t s) {
+  return static_cast<T*>(::memcpy(static_cast<void *>(des), static_cast<void *>(src),
+                  s * sizeof(T)));
+}
+
 }  // namespace core
 }  // namespace zwsd
+

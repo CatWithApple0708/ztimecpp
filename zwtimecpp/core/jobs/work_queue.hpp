@@ -9,7 +9,7 @@
  * -----
  * Copyright 2017 - 2018 zwsd, zwsd
  */
-
+#pragma once
 #include <fstream>
 #include <functional>
 #include <iostream>

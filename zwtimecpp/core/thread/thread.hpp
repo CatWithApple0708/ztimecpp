@@ -63,6 +63,7 @@ class Thread : public Object {
   string name;
   pthread_t id = 0;
   bool threadInitialized = false;
+  bool threadExitFlag = false;
   Thread(std::function<void()> run);
 
  public:
@@ -73,6 +74,7 @@ class Thread : public Object {
   static void wake(pthread_t threadid);
 
   void wake();
+  bool getExitFlag();
 
   void join();
   pthread_t getId() const;

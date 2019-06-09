@@ -163,8 +163,11 @@ void Thread::wake() {
         "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
         to_string(pthread_self()).c_str()));
 }
+bool Thread::getExitFlag() { return threadExitFlag; };
+
 void Thread::join() {
   wake();
+  threadExitFlag = true;
   workThread->join();
   hasJointd = true;
 };

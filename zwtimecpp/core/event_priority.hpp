@@ -16,8 +16,7 @@
 #include "zwtimecpp/core/utils/better-enums/enum.h"
 namespace zwsd {
 namespace core {
-BETTER_ENUM(EventPriority_t, int, Low = -1, Medium = 0, Hight = 1);
+BETTER_ENUM(EventPriority_t, int, Minimum = -5, Low = -1, Medium = 0, Hight = 1,
+            Highest = 5);
 }
-}
-
-
+}  // namespace zwsd

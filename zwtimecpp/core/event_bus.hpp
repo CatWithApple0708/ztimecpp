@@ -19,14 +19,22 @@
 #include "zwtimecpp/core/base/base_event.hpp"
 #include "zwtimecpp/core/exception/null_expection.hpp"
 #include "zwtimecpp/core/thread/thread.hpp"
-
+#include "zwtimecpp/core/event_priority.hpp"
 namespace zwsd {
 namespace core {
 using namespace moodycamel;
 using namespace std;
 class EventBus;
+typedef map<type_index, EventPriority_t> EventPriorityMap_t;
+
+static inline pair<type_index, EventPriority_t> zmake_pair(type_index typeindex,
+                                            EventPriority_t priority) {
+  return move(make_pair(typeindex, priority));
+}
+
 class EventHandler : public Object {
   set<type_index> requiredEvent;
+  map<type_index, EventPriority_t> requiredEventPriority;
   friend EventBus;
 
  public:
@@ -108,6 +116,10 @@ class EventBus {
    */
   void regEventHandler(shared_ptr<EventHandler> handler,
                        set<type_index> requiredEvent);
+
+  void regEventHandler(shared_ptr<EventHandler> handler,
+                       set<type_index> requiredEvent,
+                       map<type_index, EventPriority_t> priority);
 
   // override ThreadStateListener
   ~EventBus();

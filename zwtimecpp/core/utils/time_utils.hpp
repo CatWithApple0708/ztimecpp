@@ -20,20 +20,26 @@ using namespace std;
 using namespace chrono;
 class TimeUtils {
  public:
-  static int64_t getMicroseconds() {
+  static time_point<system_clock> zero() {
+    return time_point<system_clock>(nanoseconds(0));
+  }
+
+  static time_point<system_clock> now() { return move(system_clock::now()); }
+
+  static int64_t getus() {
     return duration_cast<microseconds>(system_clock::now().time_since_epoch())
         .count();
   }
 
-  static int64_t getSeconds() {
+  static int64_t gets() {
     return duration_cast<seconds>(system_clock::now().time_since_epoch())
         .count();
   }
-  static int64_t getMilliseconds() {
+  static int64_t getms() {
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch())
         .count();
   }
-  static int64_t getHours() {
+  static int64_t geth() {
     return duration_cast<hours>(system_clock::now().time_since_epoch()).count();
   }
 
@@ -61,74 +67,81 @@ class TimeUtils {
     return duration_cast<seconds>(t.time_since_epoch()).count();
   }
 
-  static int64_t durationToMs(nanoseconds ns) {
+  static int64_t dToMs(nanoseconds ns) {
     return duration_cast<milliseconds>(ns).count();
   }
-  static int64_t durationToUs(nanoseconds ns) {
+  static int64_t dToUs(nanoseconds ns) {
     return duration_cast<microseconds>(ns).count();
   }
-  static int64_t durationToS(nanoseconds ns) {
+  static int64_t dToS(nanoseconds ns) {
     return duration_cast<seconds>(ns).count();
   }
-  static int64_t durationToNs(nanoseconds ns) { return ns.count(); }
+  static int64_t dToNs(nanoseconds ns) { return ns.count(); }
+
+  static inline time_point<system_clock> msToTp(int64_t ms) {
+    time_point<system_clock> tp = time_point<system_clock>(milliseconds(ms));
+    return move(tp);
+  }
+
+  
 
   /**
    * @brief 时间操作
    */
-
-  static inline time_point<system_clock> addHours(
+  static inline time_point<system_clock> addh(
       time_point<system_clock> point, int value) {
     return point + hours(value);
   }
-  static inline time_point<system_clock> addSeconds(
+  static inline time_point<system_clock> adds(
       time_point<system_clock> point, int value) {
     return point + seconds(value);
   }
-  static inline time_point<system_clock> addMilliseconds(
+  static inline time_point<system_clock> addms(
       time_point<system_clock> point, int value) {
     return point + milliseconds(value);
   }
-  static inline time_point<system_clock> addMicroseconds(
+  static inline time_point<system_clock> addus(
       time_point<system_clock> point, int value) {
     return point + microseconds(value);
   }
 
-  static inline time_point<system_clock> addHours(int value) {
+  static inline time_point<system_clock> addh(int value) {
     time_point<system_clock> now = system_clock::now();
-    return addHours(now, value);
+    return addh(now, value);
   }
-  static inline time_point<system_clock> addSeconds(int value) {
+  static inline time_point<system_clock> adds(int value) {
     time_point<system_clock> now = system_clock::now();
-    return addHours(now, value);
+    return adds(now, value);
   }
-  static inline time_point<system_clock> addMilliseconds(int value) {
+  static inline time_point<system_clock> addms(int value) {
     time_point<system_clock> now = system_clock::now();
-    return addHours(now, value);
+    return addms(now, value);
   }
-  static inline time_point<system_clock> addMicroseconds(int value) {
+  static inline time_point<system_clock> addus(int value) {
     time_point<system_clock> now = system_clock::now();
-    return addHours(now, value);
+    return addus(now, value);
   }
+
   /**
    * @brief 计算流逝时间
    */
 
   static int64_t elapsedTimeS(time_point<system_clock> begin) {
-    return durationToS(system_clock::now() - begin);
+    return dToS(system_clock::now() - begin);
   }
   static int64_t elapsedTimeMs(time_point<system_clock> begin) {
-    return durationToMs(system_clock::now() - begin);
+    return dToMs(system_clock::now() - begin);
   }
   static int64_t elapsedTimeUs(time_point<system_clock> begin) {
-    return durationToUs(system_clock::now() - begin);
+    return dToUs(system_clock::now() - begin);
   }
 
   static int64_t elapsedTimeS(int64_t ms) {
-    return (getMilliseconds() - ms) / 1000;
+    return (getms() - ms) / 1000;
   }
-  static int64_t elapsedTimeMs(int64_t ms) { return (getMilliseconds() - ms); }
+  static int64_t elapsedTimeMs(int64_t ms) { return (getms() - ms); }
   static int64_t elapsedTimeUs(int64_t ms) {
-    return (getMilliseconds() - ms) / 1000 / 1000;
+    return (getms() - ms) / 1000 / 1000;
   }
 
   /**
@@ -136,16 +149,16 @@ class TimeUtils {
    *
    */
   static int64_t countdownTimeS(time_point<system_clock> endtime) {
-    return durationToS(endtime - system_clock::now());
+    return dToS(endtime - system_clock::now());
   }
   static int64_t countdownTimeMs(time_point<system_clock> endtime) {
-    return durationToMs(endtime - system_clock::now());
+    return dToMs(endtime - system_clock::now());
   }
   static int64_t countdownTimeUs(time_point<system_clock> endtime) {
-    return durationToUs(endtime - system_clock::now());
+    return dToUs(endtime - system_clock::now());
   }
   static int64_t countdownTimeNs(time_point<system_clock> endtime) {
-    return durationToNs(endtime - system_clock::now());
+    return dToNs(endtime - system_clock::now());
   }
 };
 };  // namespace core

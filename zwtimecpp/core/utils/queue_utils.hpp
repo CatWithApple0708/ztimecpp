@@ -29,6 +29,14 @@ class QueueUtils {
       to.enqueue(t);
     }
   }
+  
+  template <class T>
+  static inline shared_ptr<T> try_dequeue(
+      ConcurrentQueue<shared_ptr<T>>& from) {
+    shared_ptr<T> t;
+    from.try_dequeue(t);
+    return t;
+  }
 
   template <class T>
   static void dumpTo(BlockingConcurrentQueue<shared_ptr<T>>& from,

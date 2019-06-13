@@ -27,10 +27,12 @@ using namespace spdlog;
 typedef shared_ptr<logger> logger_t;
 
 #define ENABLE_LOGGER(loggerName) \
-  logger_t logger = SpdLoggerFactory::createLogger(#loggerName);
+  zwsd::core::logger_t logger =   \
+      zwsd::core::SpdLoggerFactory::createLogger(#loggerName);
 
 #define ENABLE_LOGGER_STATIC(loggerName) \
-  static logger_t logger = SpdLoggerFactory::createLogger(#loggerName);
+  static zwsd::core::logger_t logger =   \
+      zwsd::core::SpdLoggerFactory::createLogger(#loggerName);
 
 class SpdLoggerFactory {
  public:

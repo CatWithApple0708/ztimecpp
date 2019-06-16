@@ -14,6 +14,7 @@
 #include <vector>
 
 namespace zwsd {
+namespace core {
 using namespace std;
 class ContainerUtils {
  public:
@@ -24,11 +25,12 @@ class ContainerUtils {
     return move(to);
   }
 
-  //   template <class Key, class T>
-  //   static list<shared_ptr<T>> ConstructList(map<Key, shared_ptr<T>> from) {
-  //     list<shared_ptr<T>> to;
-  //     for (auto& var : from) to.push_back(var->second);
-  //     return move(to);
-  //   }
+  template <class Key, class T>
+  static list<shared_ptr<T>> ConstructList(map<Key, shared_ptr<T>> from) {
+    list<shared_ptr<T>> to;
+    for (auto& var : from) to.push_back(var.second);
+    return move(to);
+  }
 };
+}  // namespace core
 }  // namespace zwsd

@@ -19,7 +19,7 @@ using namespace nlohmann;
 using namespace spdlog;
 
 const static string kRootLogerName = "root";
-const static set<string> kConfigPaths = {"spd_logger_cfg.json"};
+const static char* kConfigPaths[] = {"spd_logger_cfg.json"};
 
 // const static string kDefaultLoggerBeforeConfig = "DefaultLoggerBeforeConfig";
 
@@ -358,15 +358,15 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
 shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
   static std::mutex lock_;
   static bool initializeLogger = false;
-
   if (!initializeLogger) {
     std::lock_guard<std::mutex> lock(lock_);
     if (!initializeLogger) {
       bool parseConfig = false;
-      for (auto& var : kConfigPaths) {
+      for (auto var : kConfigPaths) {
         if (exist(var)) {
           parseSphLogConfig(var);
           parseConfig = true;
+          break;
         }
       }
       if (!parseConfig) {

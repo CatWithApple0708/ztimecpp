@@ -141,8 +141,11 @@ class TimeUtils {
   static int64_t elapsedTimeS(int64_t ms) {
     return (getms() - ms) / 1000;
   }
-  static int64_t elapsedTimeMs(int64_t ms) { return (getms() - ms); }
-  static int64_t elapsedTimeUs(int64_t ms) {
+  static int64_t inline elapsedTimeMs(int64_t ms) { return (getms() - ms); }
+  static int64_t inline elapsedTimeMs(int64_t now, int64_t ms) {
+    return (now - ms);
+  }
+  static int64_t inline elapsedTimeUs(int64_t ms) {
     return (getms() - ms) / 1000 / 1000;
   }
 

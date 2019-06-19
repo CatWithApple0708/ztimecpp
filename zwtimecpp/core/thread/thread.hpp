@@ -16,7 +16,7 @@
 #include "zwtimecpp/core/base/object.hpp"
 #include "zwtimecpp/core/exception/base_exception.hpp"
 #include "zwtimecpp/core/system_state.hpp"
-
+#include "zwtimecpp/core/logger/logger.hpp"
 namespace zwsd {
 namespace core {
 using namespace std;
@@ -52,6 +52,8 @@ class Thread;
 //};
 
 class Thread : public Object {
+  ENABLE_LOGGER(Thread);
+
  public:
   typedef function<void(const std::exception &expec)> exceptionHandler_t;
 

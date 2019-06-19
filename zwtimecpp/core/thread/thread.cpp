@@ -205,7 +205,10 @@ void Thread::join() {
 Thread::~Thread() {
   CoreSystemState::Instance().clearThreadInfo(id);
   CoreSystemState::Instance().decreaseOurThreadNum();
-  if (!hasJointd) throw ThreadUnjointedException("ThreadUnjointedException");
+  if (!hasJointd) {
+    logger->critical("Thread: {} unjoin!!!!!!!!!!", name);
+    exit(-1);
+  }
 }
 const shared_ptr<BaseException> &Thread::getExitException() const {
   return exitException;

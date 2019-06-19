@@ -11,7 +11,8 @@
 #include <mutex>
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/daily_file_sink.h"
-
+#include "zwtimecpp/core/utils/compliler.h"
+#include "default_logger_config.hpp"
 using namespace std;
 using namespace zwsd;
 using namespace core;
@@ -19,19 +20,25 @@ using namespace nlohmann;
 using namespace spdlog;
 
 const static string kRootLogerName = "root";
-const static char* kConfigPaths[] = {"spd_logger_cfg.json"};
+const static char* kSpdDefaultConfigPaths[] = {"spd_logger_cfg.json"};
+
+// const string WEAK spdLoggerConfig() { return ""; }
 
 // const static string kDefaultLoggerBeforeConfig = "DefaultLoggerBeforeConfig";
 
 //     {
 //         "name": "LoggerName",
-//         "leve": 2,
+//         "level": 2,
 //         "type":"daily_logger_mt",
 //         "filename":"fileName",
 //         "hour":0,
 //         "minute":0,
 //         "truncate":false
 //     }
+
+// 1. 没设置type,统统被当做logger处理
+// 2. 所有的logger,sink loggerAndSink,name都不能重复
+// 3.  
 
 #define ASSININ_VALUE(value) \
   if (config_item.key() == #value) item.at(#value).get_to(config.value);
@@ -74,9 +81,9 @@ class LoggerAndSinks {
   set<string> sinkNames;
 };
 
-static map<string, sink_ptr> s_sinks;
-static map<string, shared_ptr<logger>> s_loggers;
-static set<shared_ptr<LoggerAndSinks>> s_loggerAndSinks;
+static map<string, sink_ptr> s_sinks = {};
+static map<string, shared_ptr<logger>> s_loggers = {};
+static set<shared_ptr<LoggerAndSinks>> s_loggerAndSinks = {};
 
 static void insertLogger(shared_ptr<logger> var_logger) {
   if (s_loggers.find(var_logger->name()) == s_loggers.end()) {
@@ -283,12 +290,12 @@ static logger_t createRootLogger() {
   error->set_level(level::err);
   auto info = make_shared<sinks::daily_file_sink_mt>("logs/info", 0, 1);
   info->set_level(level::info);
-  auto debug = make_shared<sinks::daily_file_sink_mt>("logs/debug", 0, 1);
-  debug->set_level(level::debug);
+
   auto stdoutsink = make_shared<sinks::stderr_color_sink_mt>();
-  stdoutsink->set_level(level::info);
+  stdoutsink->set_level(level::debug);
   auto rootLogger = make_shared<logger>(
-      kRootLogerName, sinks_init_list{stdoutsink, error, info, debug});
+      kRootLogerName, sinks_init_list{stdoutsink, error, info});
+  rootLogger->set_level(level::info);
   return rootLogger;
 }
 /**
@@ -300,11 +307,59 @@ static logger_t createRootLogger() {
  * @param var_logger
  */
 static void myRegLogger(logger_t var_logger) {
-  if (!get(var_logger->name())) register_logger(var_logger);
+  if (!get(var_logger->name())) {
+    register_logger(var_logger);
+  }
+  if (!get(var_logger->name())) {
+    spdlog::critical("reg root logger fail {}");
+    exit(-1);
+  }
 }
 
+static void __parseSphLogConfig(json var) {
+  if (c_daily_logger_mt(var)) {
+  } else if (c_basic_logger_mt(var)) {
+  } else if (c_daily_file_sink_mt(var)) {
+  } else if (c_logger(var)) {
+  } else if (c_stderr_color_sink_mt(var)) {
+  } else {
+    spdlog::critical("no such type {}", var.dump());
+    exit(-1);
+  }
+}
+
+static logger_t createLoggerWithoutType(json j){
+  TRY_GET(int, level, 2);
+  GET(string, name);
+  TRY_GET(string, pattern, "");
+  auto rootLogger = get(kRootLogerName);
+  if (!rootLogger) {
+    spdlog::critical("func: createLoggerWithoutType,can't find rootLogger");
+    exit(-1);
+  }
+  auto newLogger = rootLogger->clone(name);
+  newLogger->set_level(to_level(level));
+  if (!pattern.empty()) newLogger->set_pattern(pattern);
+  return newLogger;
+}
+
+/**
+ * @brief
+ *
+ * 构造logger思路
+ * 1. 首先找到所有定义了type了的logger和sink
+ * 2. 绑定所有的logger和对应的sink
+ * 3. 查看是否创建rootLogger,没有则创建rootLogger
+ * 4. 遍历所有没有定义type的logger,继承于rootLogger,并为其设置level
+ * @param path
+ */
 void core::SpdLoggerFactory::parseSphLogConfig(string path) {
   try {
+    //这里必须清空，因为这个方法可能在main函数之前启动，所以数量可能未初始化
+    s_sinks.clear();
+    s_loggers.clear();
+    s_loggerAndSinks.clear();
+
     fstream infile(path, ios::binary | ios::in);
     stringstream sstream;
     sstream << infile.rdbuf();
@@ -313,21 +368,17 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
     string jsonStr(sstream.str());
     sstream.clear();
 
-    json j = json::parse(jsonStr);
-    for (auto& var : j) {
-      if (c_daily_logger_mt(var)) {
-      } else if (c_basic_logger_mt(var)) {
-      } else if (c_daily_file_sink_mt(var)) {
-      } else if (c_logger(var)) {
-      } else if (c_stderr_color_sink_mt(var)) {
-      } else {
-        spdlog::critical("no such type {}", var.dump());
-        exit(-1);
+    json configjson = json::parse(jsonStr);
+    for (auto& j : configjson) {
+      TRY_GET(string, type, "");
+      if (!type.empty()) {
+        __parseSphLogConfig(j);
       }
     }
 
     //组装logger and sink
     for (auto& las : s_loggerAndSinks) {
+      spdlog::info("sssss");
       logger_t logger = s_loggers[las->loggerName];
       if (logger == nullptr) {
         spdlog::critical("can't find  logger", las->loggerName);
@@ -342,11 +393,43 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
         }
         sinks.insert(result->second);
       }
-
       for (auto& sink : sinks) logger->sinks().push_back(sink);
     }
     for (auto& var : s_loggers) myRegLogger(var.second);
+
+    //如果没有rootLogger,构造rootLogger
+    if (!get(kRootLogerName)) {
+      for (auto& j : configjson) {
+        GET(string, name);
+        TRY_GET(string, type, "");
+        if (name == kRootLogerName) {
+          if (type.empty()) {
+            TRY_GET(int, level, 2);
+            TRY_GET(string, pattern, "");
+            auto rootLogger = createRootLogger();
+            rootLogger->set_level(to_level(level));
+            if (!pattern.empty()) rootLogger->set_pattern(pattern);
+            myRegLogger(rootLogger);
+          } else {
+            spdlog::critical("shouldn't go here");
+            exit(-1);
+          }
+          break;
+        }
+      }
+    }
+    //如果依然没有构造rootLogger则构造默认logger
     if (!get(kRootLogerName)) myRegLogger(createRootLogger());
+
+    //构造没有type的logger
+    for (auto& j : configjson) {
+      TRY_GET(string, type, "");
+      GET(string, name);
+      if (type.empty() && name != kRootLogerName) {
+        auto newlogger = createLoggerWithoutType(j);
+        myRegLogger(newlogger);
+      }
+    }
 
     spdlog::info("Logger initialize ok");
   } catch (const exception& e) {
@@ -356,25 +439,40 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
 }
 
 shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
-  static std::mutex lock_;
-  static bool initializeLogger = false;
+  static std::mutex lock;
+  static atomic_bool initializeLogger = {false};
+  lock_guard<mutex> lock_gu(lock);
+
+  // TODO:当使用gtest进行单元测试的时候，logger似乎会被清空，原因未知
+  if (!get(kRootLogerName)) {
+    initializeLogger = false;
+  }
+
   if (!initializeLogger) {
-    std::lock_guard<std::mutex> lock(lock_);
-    if (!initializeLogger) {
-      bool parseConfig = false;
-      for (auto var : kConfigPaths) {
+    bool parseConfig = false;
+    if (spdLoggerConfig) {
+      if (exist(spdLoggerConfig())) {
+        parseSphLogConfig(spdLoggerConfig());
+        parseConfig = true;
+      }else{
+        spdlog::warn("can't find spdLoggerConfig file {}", spdLoggerConfig());
+      }
+    }
+
+    if (!parseConfig) {
+      for (auto var : kSpdDefaultConfigPaths) {
         if (exist(var)) {
           parseSphLogConfig(var);
           parseConfig = true;
           break;
         }
       }
-      if (!parseConfig) {
-        spdlog::warn("can't find logger config file use default config");
-        myRegLogger(createRootLogger());
-      }
-      initializeLogger = true;
     }
+    if (!parseConfig) {
+      spdlog::warn("can't find logger config file use default config");
+      myRegLogger(createRootLogger());
+    }
+    initializeLogger = true;
   }
 
   logger_t ret_logger = get(loggerName);

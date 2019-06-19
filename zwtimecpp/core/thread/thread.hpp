@@ -63,19 +63,20 @@ class Thread : public Object {
   string name;
   pthread_t id = 0;
   bool threadInitialized = false;
-  bool threadExitFlag = false;
   Thread(std::function<void()> run);
 
  public:
   Thread(string name, function<void()> run);
 
+  //下面的static方法都是针对于当前线程,与具体的线程对象无关
   static void sleep();
   static void sleepForMs(int ms);
+  //这个方法 Thread::getExitFlag(pthread_self());,调用join的时候会自动设置为true
+  // TODO:修改这个api，很容易勿用,不要使用这个api,使用getCurrentThreadExitFlag
+  static bool getExitFlag(); 
+
   static void wake(pthread_t threadid);
-
   void wake();
-  bool getExitFlag();
-
   void join();
   pthread_t getId() const;
   ~Thread();
@@ -100,5 +101,12 @@ class Thread : public Object {
   const shared_ptr<BaseException> &getExitException() const;
   void callDefaultExceptionHandler(const std::exception &exception);
 };
+class ThreadHelper {
+ public:
+  static inline bool getExitFlag() { return Thread::getExitFlag(); }
+  static inline void sleep() { return Thread::sleep(); }
+  static inline void sleepForMs(int ms) { return Thread::sleepForMs(ms); }
+};
+
 }  // namespace core
 }  // namespace zwsd

@@ -20,6 +20,7 @@
 #include "zwtimecpp/core/exception/null_expection.hpp"
 #include "zwtimecpp/core/thread/thread.hpp"
 #include "zwtimecpp/core/event_priority.hpp"
+#include "zwtimecpp/core/logger/logger.hpp"
 namespace zwsd {
 namespace core {
 using namespace moodycamel;
@@ -55,6 +56,7 @@ class EventHandler : public Object {
 };
 
 class EventBus {
+  ENABLE_LOGGER(EventBus);
   BlockingConcurrentQueue<shared_ptr<BaseEvent>> baseEvents;
   /**
    * @TODO

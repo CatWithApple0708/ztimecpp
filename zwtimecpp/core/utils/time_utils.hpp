@@ -122,6 +122,8 @@ class TimeUtils {
     return addus(now, value);
   }
 
+  static inline int64_t ms2us(int64_t ms) { return ms * 1000; }
+
   /**
    * @brief 计算流逝时间
    */

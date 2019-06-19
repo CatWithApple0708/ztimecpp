@@ -53,7 +53,36 @@ set(CORE_RES
 	zwtimecpp/core/exception/system_or_third_lib_exception.hpp
 	zwtimecpp/core/utils/backward_helper.hpp
 	zwtimecpp/core/system_state.hpp
-	zwtimecpp/core/exception/exception_helper.hpp zwtimecpp/core/core.hpp zwtimecpp/core/exception/thread_unjointed_exception.hpp zwtimecpp/core/base/exception_handler.hpp zwtimecpp/core/base/thread_info.hpp zwtimecpp/core/utils/memory_utils.hpp zwtimecpp/core/utils/data.hpp zwtimecpp/core/utils/mapper/json_helper.hpp zwtimecpp/core/utils/file_utils.cpp zwtimecpp/core/utils/file_utils.hpp zwtimecpp/core/logger/logger_factory.cpp zwtimecpp/core/logger/logger_factory.hpp zwtimecpp/core/logger/logger.hpp zwtimecpp/core/utils/blocking_concurrent_queue_helper.cpp zwtimecpp/core/utils/blocking_concurrent_queue_helper.hpp zwtimecpp/core/utils/time_utils.cpp zwtimecpp/core/utils/time_utils.hpp zwtimecpp/core/utils/queue_utils.hpp zwtimecpp/core/benchmark/benchmark.cpp zwtimecpp/core/benchmark/benchmark.hpp zwtimecpp/core/constant.hpp zwtimecpp/core/benchmark/benchmark_factory.cpp zwtimecpp/core/benchmark/benchmark_factory.hpp zwtimecpp/core/event_priority.hpp zwtimecpp/core/utils/map_utils.cpp zwtimecpp/core/utils/map_utils.hpp zwtimecpp/core/utils/any.hpp zwtimecpp/core/utils/container_utils.hpp)
+	zwtimecpp/core/exception/exception_helper.hpp
+	zwtimecpp/core/core.hpp
+	zwtimecpp/core/exception/thread_unjointed_exception.hpp
+	zwtimecpp/core/base/exception_handler.hpp
+	zwtimecpp/core/base/thread_info.hpp
+	zwtimecpp/core/utils/memory_utils.hpp
+	zwtimecpp/core/utils/data.hpp
+	zwtimecpp/core/utils/mapper/json_helper.hpp
+	zwtimecpp/core/utils/file_utils.cpp
+	zwtimecpp/core/utils/file_utils.hpp
+	zwtimecpp/core/logger/logger_factory.cpp
+	zwtimecpp/core/logger/logger_factory.hpp
+	zwtimecpp/core/logger/logger.hpp
+	zwtimecpp/core/utils/blocking_concurrent_queue_helper.cpp
+	zwtimecpp/core/utils/blocking_concurrent_queue_helper.hpp
+	zwtimecpp/core/utils/time_utils.cpp
+	zwtimecpp/core/utils/time_utils.hpp
+	zwtimecpp/core/utils/queue_utils.hpp
+	zwtimecpp/core/benchmark/benchmark.cpp
+	zwtimecpp/core/benchmark/benchmark.hpp
+	zwtimecpp/core/constant.hpp
+	zwtimecpp/core/benchmark/benchmark_factory.cpp
+	zwtimecpp/core/benchmark/benchmark_factory.hpp
+	zwtimecpp/core/event_priority.hpp
+	zwtimecpp/core/utils/map_utils.cpp
+	zwtimecpp/core/utils/map_utils.hpp
+	zwtimecpp/core/utils/any.hpp
+	zwtimecpp/core/utils/container_utils.hpp
+	zwtimecpp/core/utils/compliler.h
+	zwtimecpp/core/logger/default_logger_config.hpp zwtimecpp/core/utils/auto_call_when_exist.hpp)
 
 add_library(zwtimecpp
 	${CORE_RES}
@@ -64,7 +93,13 @@ target_link_libraries(zwtimecpp
 
 add_executable(core_test
 	zwtimecpp/core/test/core_test.cpp
-	zwtimecpp/core/test/test_utils/tester_manager.cpp zwtimecpp/core/test/test_utils/tester_manager.hpp zwtimecpp/core/test/test_back_ward.cpp zwtimecpp/core/test/test_exception.cpp zwtimecpp/core/test/test_thread.cpp zwtimecpp/core/test/test_event_bus.cpp zwtimecpp/core/test/test_benchmark.cpp)
+	zwtimecpp/core/test/test_utils/tester_manager.cpp
+	zwtimecpp/core/test/test_utils/tester_manager.hpp
+	zwtimecpp/core/test/test_back_ward.cpp
+	zwtimecpp/core/test/test_exception.cpp
+	zwtimecpp/core/test/test_thread.cpp
+	zwtimecpp/core/test/test_event_bus.cpp
+	zwtimecpp/core/test/test_benchmark.cpp)
 target_link_libraries(
 	core_test
 	zwtimecpp

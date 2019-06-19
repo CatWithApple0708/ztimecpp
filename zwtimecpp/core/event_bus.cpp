@@ -113,6 +113,7 @@ void EventBus::fireEventAsync(shared_ptr<BaseEvent> baseEvent) {
   if (baseEvent == nullptr) {
     return;
   }
+  logger->debug("fireEventAsync {}", typeid(*baseEvent).name());
   baseEvents.enqueue(baseEvent);
 }
 

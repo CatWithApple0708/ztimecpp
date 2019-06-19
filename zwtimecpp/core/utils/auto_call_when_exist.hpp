@@ -1,9 +1,10 @@
 //
-// Created by zhaohe on 19-5-28.
+// Created by zhaohe on 19-6-18.
 //
 
 #pragma once
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <map>
@@ -12,16 +13,18 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "zwtimecpp/core/base/object.hpp"
-#include "zwtimecpp/core/utils/signal.hpp"
+
 namespace zwsd {
 namespace core {
 using namespace std;
-class ThreadInfo : public Object {
+class AutoCallWhenExist {
+  function<void()> autoCall;
+
  public:
-  string name;
-  Singal signal;
-  atomic_bool threadExitFlag = {false};
+  AutoCallWhenExist(function<void()> func) : autoCall(func) {}
+  ~AutoCallWhenExist() {
+    if (autoCall) autoCall();
+  }
 };
 }  // namespace core
 }  // namespace zwsd

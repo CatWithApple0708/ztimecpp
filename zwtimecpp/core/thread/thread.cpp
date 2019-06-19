@@ -42,10 +42,11 @@ using namespace moodycamel;
 //				if (threadInfo != nullptr)
 //				{
 //					//   if (thread->getListener().lock()) {
-//					// 	  if (thread->getListener().lock())
+//					// 	  if
+//(thread->getListener().lock())
 //{
 //					//
-//thread->getListener().lock()->onExistSync(thread);
+// thread->getListener().lock()->onExistSync(thread);
 //					// 	  } else {
 //					// 	  }
 //					//   }
@@ -53,7 +54,7 @@ using namespace moodycamel;
 //
 //				//直到所有我们创建的线程退出后,这个线程才真正的退出.
 //				if (stopFlag == true &&
-//CoreSystemState::Instance().getOurThreadNum() == 0)
+// CoreSystemState::Instance().getOurThreadNum() == 0)
 //				{
 //					break;
 //				}
@@ -163,11 +164,40 @@ void Thread::wake() {
         "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
         to_string(pthread_self()).c_str()));
 }
-bool Thread::getExitFlag() { return threadExitFlag; };
+/**
+ * @brief
+ * 这里不将变量threadExitFlag放在Thread对象中，是因为很多使用用户的使用方式如下
+ *
+ * uniq_ptr<Thread> thread(new Thread("name",[this](){
+ *  while(thread->getExitFlag()){}//这种情况会暴段错误，因为thread对象可能并没有初始化完成.
+ * }));
+ *
+ * @return true
+ * @return false
+ */
+bool Thread::getExitFlag() {
+  shared_ptr<ThreadInfo> threadInfo =
+      CoreSystemState::Instance().getThreadInfo(pthread_self());
+  if (threadInfo)
+    return threadInfo->threadExitFlag;
+  else
+    throw BaseException(BaseException::format1024(
+        "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
+        to_string(pthread_self()).c_str()));
+  return false;
+};
 
 void Thread::join() {
   wake();
-  threadExitFlag = true;
+  shared_ptr<ThreadInfo> threadInfo =
+      CoreSystemState::Instance().getThreadInfo(this->id);
+  if (threadInfo)
+    threadInfo->threadExitFlag = true;
+  else
+    throw BaseException(BaseException::format1024(
+        "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
+        to_string(pthread_self()).c_str()));
+
   workThread->join();
   hasJointd = true;
 };

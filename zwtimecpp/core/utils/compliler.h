@@ -11,6 +11,8 @@
 #define HAVE_BUILTIN_CONSTANT_P (1)
 #define HAVE_WARN_UNUSED_RESULT (1)
 
+#define WEAK __attribute__((weak))
+
 #ifndef COLD
 #if HAVE_ATTRIBUTE_COLD
 /**
@@ -236,4 +238,4 @@
 #define WARN_UNUSED_RESULT
 #endif
 #endif
-#endif /* CCAN_COMPILER_H */
+

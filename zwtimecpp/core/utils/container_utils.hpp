@@ -31,6 +31,12 @@ class ContainerUtils {
     for (auto& var : from) to.push_back(var.second);
     return move(to);
   }
+  // template <class T>
+  // static inline void cpyVectorToArray(const vector<T>& src, T* arry,
+  //                                     size_t arrary_size) {
+  //   memcpy((void*)array, (void*)&src[0],
+  //          (arrary_size < src.size() ? arrary_size : src.size()) * sizeof(T));
+  // }
 };
 }  // namespace core
 }  // namespace zwsd

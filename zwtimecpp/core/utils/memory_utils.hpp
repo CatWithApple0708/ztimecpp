@@ -102,6 +102,11 @@ static inline T *zmemcpy(T *des, T *src, size_t s) {
                   s * sizeof(T)));
 }
 
+template <typename T>
+static inline T *zmemset(T *des, int c, size_t s) {
+  return static_cast<T *>(::memset(static_cast<void *>(des), c, s * sizeof(T)));
+}
+
 }  // namespace core
 }  // namespace zwsd
 

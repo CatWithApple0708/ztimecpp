@@ -31,6 +31,14 @@ class ContainerUtils {
     for (auto& var : from) to.push_back(var.second);
     return move(to);
   }
+
+  template <class T>
+  static T VGet(const vector<T>& v, size_t offset, T defaultValue) {
+    if (offset < v.size()) {
+      return v[offset];
+    }
+    return defaultValue;
+  }
   // template <class T>
   // static inline void cpyVectorToArray(const vector<T>& src, T* arry,
   //                                     size_t arrary_size) {

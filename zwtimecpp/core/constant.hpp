@@ -20,8 +20,12 @@ using namespace std;
 class CoreConstant {
  public:
   static constexpr const char* BenckmarkRootDir = "benchmarkLog";
-  static constexpr int MaxBenckmarkFileNum =
-      100;  //同一个benchmark最多创建的文件数
+  //同一个benchmark最多创建的文件数
+  static constexpr int MaxBenckmarkFileNum = 100;
+
+  //最大cxv创建的日志文件数量
+  static constexpr int MaxCxvLoggerFileNum = 100;
+  static constexpr const char* CxvLoggerRootDir = "cvxLog";
 
   template <class T>
   static T value(T value) {

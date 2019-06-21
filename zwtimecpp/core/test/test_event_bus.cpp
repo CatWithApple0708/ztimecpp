@@ -8,11 +8,17 @@ using namespace zwsd;
 using namespace backward;
 using namespace core;
 
-class TestEvent1 : public BaseEvent {};
+class TestEvent1 : public BaseEvent {
+  DECLEAR_EVENT(TestEvent1)
+};
 
-class TestEvent2 : public BaseEvent {};
+class TestEvent2 : public BaseEvent {
+  DECLEAR_EVENT(TestEvent2)
+};
 
-class TestEvent3 : public BaseEvent {};
+class TestEvent3 : public BaseEvent {
+  DECLEAR_EVENT(TestEvent3)
+};
 
 class EventHandlerImpl : public EventHandler {
  public:

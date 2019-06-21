@@ -147,7 +147,7 @@ static void logger_common_config(logger_t var_logger, json j) {
 }
 
 static void sink_common_config(sink_ptr sink, json j) {
-  TRY_GET(int, level, 2);
+  TRY_GET(int, level, 0);
   TRY_GET(string, pattern, "");
   TRY_GET(set<string>, sinks, {});
   sink->set_level(to_level(level));
@@ -283,18 +283,10 @@ static bool c_stderr_color_sink_mt(json j) {
  * default_root_logger-----------------------------------------------------------------------------------------------------
  */
 static logger_t createRootLogger() {
-  mkdirIfNotExist("logs/");
-  auto fatal = make_shared<sinks::daily_file_sink_mt>("logs/fatal", 0, 1);
-  fatal->set_level(level::critical);
-  auto error = make_shared<sinks::daily_file_sink_mt>("logs/error", 0, 1);
-  error->set_level(level::err);
-  auto info = make_shared<sinks::daily_file_sink_mt>("logs/info", 0, 1);
-  info->set_level(level::info);
-
   auto stdoutsink = make_shared<sinks::stderr_color_sink_mt>();
   stdoutsink->set_level(level::debug);
-  auto rootLogger = make_shared<logger>(
-      kRootLogerName, sinks_init_list{stdoutsink, error, info});
+  auto rootLogger =
+      make_shared<logger>(kRootLogerName, sinks_init_list{stdoutsink});
   rootLogger->set_level(level::info);
   return rootLogger;
 }

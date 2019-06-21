@@ -433,15 +433,16 @@ void FileUtil::DataFileHelper::closeFile() {
 
 string FileUtil::getRepetitionFileName(string fileName, string suffix,
                                        int maxNum) {
-  if (maxNum > 0) {
+  string curName;
+  if (maxNum >= 0) {
     for (int i = 0; i < maxNum; i++) {
-      fileName = fmt::format("{}{}.{}", fileName, i, suffix);
-      if (!FileUtil::exist(fileName)) return fileName;
+      curName = fmt::format("{}{}.{}", fileName, i, suffix);
+      if (!FileUtil::exist(curName)) return curName;
     }
   } else {
     for (int i = 0;; i++) {
-      fileName = fmt::format("{}{}.{}", fileName, i, suffix);
-      if (!FileUtil::exist(fileName)) return fileName;
+      curName = fmt::format("{}{}.{}", fileName, i, suffix);
+      if (!FileUtil::exist(curName)) return curName;
     }
   }
 

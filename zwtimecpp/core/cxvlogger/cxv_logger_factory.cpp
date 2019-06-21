@@ -14,17 +14,11 @@ CxvLogger::CxvLogger(string name, bool enable) {
     return;
   }
   string fileName;
-  for (size_t i = 0; i < CoreConstant::MaxCxvLoggerFileNum; i++) {
-    if (FileUtil::exist(fmt::format("{}{}.cxv", name, i))) {
-      continue;
-    } else {
-      fileName = fmt::format("{}{}.cxv", name, i);
-    }
-  }
+  fileName = FileUtil::getRepetitionFileName(name, "cxv",
+                                             CoreConstant::MaxCxvLoggerFileNum);
   if (fileName.empty()) {
     fileName = fmt::format("{}{}.cxv", name, "_reachMaxNumFile");
   }
-
   ofile.reset(
       new ofstream(name, std::ios::trunc | std::ios::binary | std::ios::out));
 }

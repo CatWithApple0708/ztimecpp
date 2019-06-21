@@ -6,6 +6,18 @@ include_directories(
 	.
 	./zwtimecpp/core/logger
 )
+
+set(COMMON_FLAGS "") 
+set(COMMON_FLAGS "${COMMON_FLAGS} -Werror=return-type -Wfatal-errors  -Wall  -Wno-deprecated-declarations")
+# 栈信息配置
+set(COMMON_FLAGS "${COMMON_FLAGS} -fexceptions  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables ")
+# 调试和编译等级配置
+set(COMMON_FLAGS "${COMMON_FLAGS} -O1 -g3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} -std=c++14 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
+
 #ARCH can be x86 or arm32
 if (${ARCH} MATCHES "x86")
 	set(CMAKE_SYSTEM_NAME Linux)
@@ -15,8 +27,8 @@ if (${ARCH} MATCHES "x86")
 	if (NOT CMAKE_CXX_COMPILER)
 		set(CMAKE_CXX_COMPILER g++)
 	endif ()
-	set(CMAKE_C_FLAGS "-O1 -g -Wall -Wfatal-errors")
-	set(CMAKE_CXX_FLAGS "-O1 -g -Wall -std=c++14 -Wno-deprecated-declarations -pthread -Wfatal-errors -DWEBRTC_POSIX -DWEBRTC_LINUX")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 elseif (${ARCH} MATCHES "arm32")
 	set(CMAKE_SYSTEM_NAME Linux)
 	if (NOT CMAKE_C_COMPILER)
@@ -25,8 +37,8 @@ elseif (${ARCH} MATCHES "arm32")
 	if (NOT CMAKE_CXX_COMPILER)
 		set(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)
 	endif ()
-	set(CMAKE_C_FLAGS "-O1 -g -Wall -Wfatal-errors -s -fexceptions  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables ")
-	set(CMAKE_CXX_FLAGS "-O1 -g -Wall -std=c++14 -g3 -s -fexceptions  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables -mfpu=neon -Wno-deprecated-declarations -Wfatal-errors")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s ")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s -mfpu=neon")
 else ()
 	message(FATAL_ERROR,"Not set ARCH,please set by exec `cmake .. -DARCH=????`")
 endif ()

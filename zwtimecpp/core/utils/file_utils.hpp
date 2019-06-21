@@ -30,72 +30,84 @@ using namespace std;
  * @author <a href="http://www.xfyun.cn">讯飞开放平台</a>
  */
 class FileUtil {
-  public:
-    static bool exist(const string &path);
+ public:
+  static bool exist(const string &path);
 
-    static bool isDirectory(const string &path);
+  static bool isDirectory(const string &path);
 
-    /**
-	 * 当目录路径不存在时创建目录。
-	 *
-	 * @param path 路径，以"/"结尾
-	 */
-    static bool makeDirIfNoExist(const string &path);
+  /**
+   * 当目录路径不存在时创建目录。
+   *
+   * @param path 路径，以"/"结尾
+   */
+  static bool makeDirIfNoExist(const string &path);
 
-    static bool delFile(const string &filePath);
+  static bool delFile(const string &filePath);
 
-    static string readFileAsString(const string &filePath);
+  static string readFileAsString(const string &filePath);
 
-    static string getCurrentTime();
+  static string getCurrentTime();
 
-    static bool writeToFile(const string &fileName,const std::vector<char> &buf);
+  /**
+   * @brief
+   * @note
+   * @param  fileName: 文件名字
+   * @param  suffix:　文件后缀
+   * @param  maxNum: name.txt name1.txt name2.txt ..... nameMax.txt 
+   * @retval
+   */
+  static string getRepetitionFileName(string fileName, string suffix,
+                                      int maxNum = -1);
 
-    static bool writeToFile(const string &fileName, const string &buf);
+  static bool writeToFile(const string &fileName, const std::vector<char> &buf);
 
-    // static void moveFile(string src, string des);
+  static bool writeToFile(const string &fileName, const string &buf);
 
-    /**
-	 * 新分配Buffer，读取文件到Buffer，Buffer使用完之后需要使用者手动释放。
-	 *
-	 * @return Buffer地址，文件读取错误返回NULL
-	 */
-    static std::vector<char> readFileAsBuffer(const string &filePath);
+  // static void moveFile(string src, string des);
 
-    class DataFileHelper {
-      private:
-        pthread_mutex_t mMutex;
+  /**
+   * 新分配Buffer，读取文件到Buffer，Buffer使用完之后需要使用者手动释放。
+   *
+   * @return Buffer地址，文件读取错误返回NULL
+   */
+  static std::vector<char> readFileAsBuffer(const string &filePath);
 
-        const string mFileDir;
+  class DataFileHelper {
+   private:
+    pthread_mutex_t mMutex;
 
-        fstream mIn;
+    const string mFileDir;
 
-        fstream mOut;
+    fstream mIn;
 
-      public:
-        DataFileHelper(const string &fileDir);
+    fstream mOut;
 
-        ~DataFileHelper();
+   public:
+    DataFileHelper(const string &fileDir);
 
-        bool openReadFile(const string &filePath, bool inCurrentDir = true);
+    ~DataFileHelper();
 
-        int read(char *buffer, int bufferLen);
+    bool openReadFile(const string &filePath, bool inCurrentDir = true);
 
-        string readLine();
+    int read(char *buffer, int bufferLen);
 
-        void rewindReadFile();
+    string readLine();
 
-        void closeReadFile();
+    void rewindReadFile();
 
-        void createWriteFile(const string &suffix, bool append);
+    void closeReadFile();
 
-        void createWriteFile(const string &filename, const string &suffix, bool append, bool inCurrentDir = true);
+    void createWriteFile(const string &suffix, bool append);
 
-        bool write(const char *data, int dataLen, int offset, int writeLen);
+    void createWriteFile(const string &filename, const string &suffix,
+                         bool append, bool inCurrentDir = true);
 
-        void closeWriteFile();
+    bool write(const char *data, int dataLen, int offset, int writeLen);
 
-        void closeFile();
-    };
+    void closeWriteFile();
+
+    void closeFile();
+  };
 };
-} // namespace core
-} // namespace zwsd
+}  // namespace core
+}  // namespace zwsd

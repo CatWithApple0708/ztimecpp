@@ -51,6 +51,7 @@ class WorkQueue {
       /*clear queue*/
     }
   };
+  size_t getSize() { return queue_.size_approx(); }
   void EnQueue(function<void(void)> func) { queue_.enqueue(func); }
   ~WorkQueue() {
     is_running_ = false;

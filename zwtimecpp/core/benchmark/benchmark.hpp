@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include "zwtimecpp/core/logger/logger.hpp"
+#include "zwtimecpp/core/utils/time_utils.hpp"
 namespace zwsd {
 namespace core {
 using namespace std;
@@ -24,8 +25,16 @@ using namespace chrono;
 /**
  */
 class Benchmark {
+  class Mark {
+   public:
+    string name;
+    int64_t hasPast;
+  };
+
   string loggerFile;
   time_point<system_clock> startT;
+  vector<Mark> marks;
+  time_point<system_clock> lastSetMarkTime;
   unique_ptr<ofstream> ofile;
   bool isEnable = false;
   // std::ofstream tv_voice_file(outfile_name, std::ios::binary |
@@ -68,20 +77,37 @@ class Benchmark {
     if (bm) bm->end();
   }
 
+  static void setMark(shared_ptr<Benchmark> bm,string name) {
+    if (bm) bm->setMark(name);
+  }
+
  private:
   void start() {
     if (!isEnable) return;
     startT = system_clock::now();
+    lastSetMarkTime = startT;
   };
 
   void end() {
     if (!isEnable) return;
 
     time_point<system_clock> now = system_clock::now();
-    string result = fmt::format("{},{},{}\n", tpToMs(startT), tpToMs(now),
-                                durationToMs(now - startT));
+    string result = fmt::format("{},{}", tpToMs(startT), tpToMs(now));
+    for (auto& var : marks) {
+      result.append(fmt::format(",[{}] {}", var.name, var.hasPast));
+    }
+    result.append(fmt::format(",[total] {}\n", durationToMs(now - startT)));
+    marks.clear();
     ofile->write(result.data(), result.size());
   };
+
+  void setMark(string mark_name){
+    Mark mark;
+    mark.name = mark_name;
+    mark.hasPast = TimeUtils::elapsedTimeMs(lastSetMarkTime);
+    lastSetMarkTime = TimeUtils::now();
+    marks.push_back(move(mark));
+  }
 
   static int64_t tpToMs(time_point<system_clock> t) {
     return duration_cast<milliseconds>(t.time_since_epoch()).count();
@@ -97,3 +123,6 @@ class Benchmark {
 
 #define BENCHMARK(benchmark) \
   zwsd::core::Benchmark::AutoCall __benchAutocall(benchmark);
+
+#define BENCHSETMARK(benchmark, name) \
+  zwsd::core::Benchmark::setMark(benchmark, #name);

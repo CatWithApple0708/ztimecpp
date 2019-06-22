@@ -58,6 +58,7 @@ class FileUtil {
    */
   static string getRepetitionFileName(string fileName, string suffix,
                                       int maxNum = -1);
+  static string getRepetitionDirName(string fileName, int maxNum = -1);
 
   static bool writeToFile(const string &fileName, const std::vector<char> &buf);
 

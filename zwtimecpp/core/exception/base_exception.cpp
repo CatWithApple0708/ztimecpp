@@ -10,6 +10,7 @@
 #include "zwtimecpp/core/system_state.hpp"
 #include "zwtimecpp/core/exception_handle_center.hpp"
 #include "zwtimecpp/core/base/interlog/simple_logger.hpp"
+#include "zwtimecpp/core/logger/logger.hpp"
 using namespace std;
 using namespace zwsd;
 using namespace core;
@@ -94,5 +95,9 @@ bool BaseException::isHasCalledToString() const {
 	return hasCalledToString;
 }
 const char *BaseException::what() const _GLIBCXX_USE_NOEXCEPT {
-	return toString().c_str();
+  // return toString().c_str();
+  //之所以在这里打印log，因为在arm上由系统自动打印的，what()可能会出现乱码.
+  spdlog::critical("Catch exception \n{}", toString());
+  spdlog::default_logger()->flush();
+  return "end";
 }

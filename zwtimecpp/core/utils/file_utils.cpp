@@ -440,11 +440,28 @@ string FileUtil::getRepetitionFileName(string fileName, string suffix,
       if (!FileUtil::exist(curName)) return curName;
     }
   } else {
-    for (int i = 0;; i++) {
+    for (int i = 0; i <= 65536; i++) {
       curName = fmt::format("{}{}.{}", fileName, i, suffix);
       if (!FileUtil::exist(curName)) return curName;
     }
   }
 
   return fmt::format("{}{}.{}", fileName, "reachMax", suffix);
+}
+
+string FileUtil::getRepetitionDirName(string fileName, int maxNum) {
+  string curName;
+  if (maxNum >= 0) {
+    for (int i = 0; i < maxNum; i++) {
+      curName = fmt::format("{}{}", fileName, i);
+      if (!FileUtil::exist(curName)) return curName + "/";
+    }
+  } else {
+    for (int i = 0; i <= 65536; i++) {
+      curName = fmt::format("{}{}", fileName, i);
+      if (!FileUtil::exist(curName)) return curName + "/";
+    }
+  }
+
+  return "";
 }

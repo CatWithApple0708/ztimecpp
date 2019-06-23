@@ -107,6 +107,17 @@ static inline T *zmemset(T *des, int c, size_t s) {
   return static_cast<T *>(::memset(static_cast<void *>(des), c, s * sizeof(T)));
 }
 
+/**
+ * @brief  给const类型的变量赋值，注意此功能只可以在测试代码中使用
+ * @note
+ * @param  *v:
+ * @param  value:
+ * @retval
+ */
+template <typename T>
+static inline void zAssignToConst(const T *v, T value) {
+  (*(T *)(v)) = value;
+}
 }  // namespace core
 }  // namespace zwsd
 

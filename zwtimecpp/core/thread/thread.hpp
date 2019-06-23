@@ -15,8 +15,8 @@
 #include <vector>
 #include "zwtimecpp/core/base/object.hpp"
 #include "zwtimecpp/core/exception/base_exception.hpp"
-#include "zwtimecpp/core/system_state.hpp"
 #include "zwtimecpp/core/logger/logger.hpp"
+#include "zwtimecpp/core/system_state.hpp"
 namespace zwsd {
 namespace core {
 using namespace std;
@@ -71,11 +71,11 @@ class Thread : public Object {
   Thread(string name, function<void()> run);
 
   //下面的static方法都是针对于当前线程,与具体的线程对象无关
-  static void sleep();
-  static void sleepForMs(int ms);
+  // static void sleep();
+  // static void sleepForMs(int ms);
   //这个方法 Thread::getExitFlag(pthread_self());,调用join的时候会自动设置为true
   // TODO:修改这个api，很容易勿用,不要使用这个api,使用getCurrentThreadExitFlag
-  static bool getExitFlag(); 
+  // static bool getExitFlag();
 
   static void wake(pthread_t threadid);
   void wake();
@@ -103,11 +103,14 @@ class Thread : public Object {
   const shared_ptr<BaseException> &getExitException() const;
   void callDefaultExceptionHandler(const std::exception &exception);
 };
-class ThreadHelper {
+class ThisThread {
+  shared_ptr<ThreadInfo> threadInfo;
+
  public:
-  static inline bool getExitFlag() { return Thread::getExitFlag(); }
-  static inline void sleep() { return Thread::sleep(); }
-  static inline void sleepForMs(int ms) { return Thread::sleepForMs(ms); }
+  ThisThread();
+  bool getExitFlag();
+  void sleep();
+  void sleepForMs(int ms);
 };
 
 }  // namespace core

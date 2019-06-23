@@ -18,6 +18,8 @@
 #include "zwtimecpp/core/base/thread_info.hpp"
 #include "zwtimecpp/core/utils/signal.hpp"
 
+#define Z_WARP_THREAD(name) \
+  zwsd::core::CoreSystemState::Instance().createThreadInfo(#name);
 namespace zwsd {
 namespace core {
 using namespace std;
@@ -49,14 +51,12 @@ class CoreSystemState : public Object {
     if (result != threadInfoMap.end()) {
       return result->second;
     } else {
-      //			 shared_ptr<ThreadInfo> threadInfo;
-      //			 threadInfo.reset(new ThreadInfo());
-      //			 threadInfoMap[id] = threadInfo;
       return nullptr;
     }
   }
 
   shared_ptr<ThreadInfo> createThreadInfo(string name) {
+    std::lock_guard<std::mutex> lock(lock_);
     shared_ptr<ThreadInfo> threadInfo;
     threadInfo.reset(new ThreadInfo());
     threadInfo->name = name;

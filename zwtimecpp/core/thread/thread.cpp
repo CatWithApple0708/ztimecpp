@@ -14,6 +14,7 @@
 #include "zwtimecpp/core/exception/unkown_type_exception.hpp"
 #include "zwtimecpp/core/system_state.hpp"
 #include "zwtimecpp/core/utils/concurrentqueue/blockingconcurrentqueue.h"
+#include "zwtimecpp/core/utils/fatall_error.hpp"
 #include "zwtimecpp/core/utils/signal.hpp"
 // #include <zwtimecpp/core/helper/exception_helper.hpp>
 using namespace std;
@@ -123,26 +124,27 @@ Thread::Thread(string name, function<void()> run) {
   }
   CoreSystemState::Instance().increaseOurThreadNum();
 }
-void Thread::sleep() {
-  shared_ptr<ThreadInfo> threadInfo =
-      CoreSystemState::Instance().getThreadInfo(pthread_self());
-  if (threadInfo)
-    threadInfo->signal.sleep();
-  else
-    throw BaseException(BaseException::format1024(
-        "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
-        to_string(pthread_self()).c_str()));
-}
-void Thread::sleepForMs(int ms) {
-  shared_ptr<ThreadInfo> threadInfo =
-      CoreSystemState::Instance().getThreadInfo(pthread_self());
-  if (threadInfo)
-    threadInfo->signal.sleep_for_us(ms * 1000);
-  else
-    throw BaseException(BaseException::format1024(
-        "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
-        to_string(pthread_self()).c_str()));
-}
+// void Thread::sleep() {
+//   shared_ptr<ThreadInfo> threadInfo =
+//       CoreSystemState::Instance().getThreadInfo(pthread_self());
+//   if (threadInfo)
+//     threadInfo->signal.sleep();
+//   else
+//     throw BaseException(BaseException::format1024(
+//         "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
+//         to_string(pthread_self()).c_str()));
+// }
+// void Thread::sleepForMs(int ms) {
+//   shared_ptr<ThreadInfo> threadInfo =
+//       CoreSystemState::Instance().getThreadInfo(pthread_self());
+//   if (threadInfo)
+//     threadInfo->signal.sleep_for_us(ms * 1000);
+//   else
+//     throw BaseException(BaseException::format1024(
+//         "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
+//         to_string(pthread_self()).c_str()));
+// }
+
 void Thread::wake(pthread_t id) {
   shared_ptr<ThreadInfo> threadInfo =
       CoreSystemState::Instance().getThreadInfo(id);
@@ -155,14 +157,19 @@ void Thread::wake(pthread_t id) {
 }
 
 void Thread::wake() {
-  shared_ptr<ThreadInfo> threadInfo =
-      CoreSystemState::Instance().getThreadInfo(this->id);
-  if (threadInfo)
-    threadInfo->signal.notify();
-  else
-    throw BaseException(BaseException::format1024(
-        "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
-        to_string(pthread_self()).c_str()));
+  if (!hasJointd) {
+    shared_ptr<ThreadInfo> threadInfo =
+        CoreSystemState::Instance().getThreadInfo(this->id);
+    if (threadInfo)
+      threadInfo->signal.notify();
+    else
+      throw BaseException(BaseException::format1024(
+          "Thread %s not call "
+          "CoreSystemState::Instance().createThreadInfo(name)",
+          to_string(pthread_self()).c_str()));
+  }else{
+    logger->warn("wake fail Thread {} has been joined", name);
+  }
 }
 /**
  * @brief
@@ -175,17 +182,17 @@ void Thread::wake() {
  * @return true
  * @return false
  */
-bool Thread::getExitFlag() {
-  shared_ptr<ThreadInfo> threadInfo =
-      CoreSystemState::Instance().getThreadInfo(pthread_self());
-  if (threadInfo)
-    return threadInfo->threadExitFlag;
-  else
-    throw BaseException(BaseException::format1024(
-        "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
-        to_string(pthread_self()).c_str()));
-  return false;
-};
+// bool Thread::getExitFlag() {
+//   shared_ptr<ThreadInfo> threadInfo =
+//       CoreSystemState::Instance().getThreadInfo(pthread_self());
+//   if (threadInfo)
+//     return threadInfo->threadExitFlag;
+//   else
+//     throw BaseException(BaseException::format1024(
+//         "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
+//         to_string(pthread_self()).c_str()));
+//   return false;
+// };
 
 void Thread::join() {
   wake();
@@ -199,16 +206,20 @@ void Thread::join() {
         to_string(pthread_self()).c_str()));
 
   workThread->join();
+  /**
+   * 之所以在这里清理线程信息，而非在析构中清理线程信息的原因是当某个线程被join之后其pthreadId可能会在创建新的线程的时候被使用
+   * 如果在析构函数中清理，可能会导致新创建的线程的ThreadInfo被清理掉
+   */
+  CoreSystemState::Instance().clearThreadInfo(id);
+  CoreSystemState::Instance().decreaseOurThreadNum();
   hasJointd = true;
 };
 
 Thread::~Thread() {
-  CoreSystemState::Instance().clearThreadInfo(id);
-  CoreSystemState::Instance().decreaseOurThreadNum();
   if (!hasJointd) {
-    logger->critical("Thread: {} unjoin!!!!!!!!!!", name);
-    exit(-1);
+    FatallError(logger, fmt::format("Thread {} unjoin ", name));
   }
+
 }
 const shared_ptr<BaseException> &Thread::getExitException() const {
   return exitException;
@@ -221,4 +232,21 @@ void Thread::callDefaultExceptionHandler(const std::exception &exception) {
   } else {
     throw exception;
   }
+}
+
+ThisThread::ThisThread() {
+  threadInfo =
+      CoreSystemState::Instance().getThreadInfo(pthread_self());
+  if (!threadInfo) {
+    ENABLE_LOGGER(ThisThread);
+    FatallError(logger,fmt::format(
+                "Thread {} not call "
+                "CoreSystemState::Instance().createThreadInfo(name)",pthread_self()));
+  }
+};
+
+bool ThisThread::getExitFlag() { return threadInfo->threadExitFlag; }
+void ThisThread::sleep() { threadInfo->signal.sleep(); }
+void ThisThread::sleepForMs(int ms) {
+  threadInfo->signal.sleep_for_us(ms * 1000);
 }

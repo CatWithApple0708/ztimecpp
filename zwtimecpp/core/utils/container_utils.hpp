@@ -41,13 +41,13 @@ class ContainerUtils {
   }
 
   template <class T>
-  static bool contain(set<T> set_container, const T& value) {
+  static bool contain(const set<T>& set_container, const T& value) {
     if (sets.find(value) != sets.end()) return true;
     return false;
   }
 
   template <class T>
-  static bool contain(list<T> list_container, const T& value) {
+  static bool contain(const list<T> &list_container, const T& value) {
     for (auto& var : list_container)
       if (var == value) return true;
 

@@ -40,6 +40,8 @@ typedef shared_ptr<logger> logger_t;
 class SpdLoggerFactory {
  public:
   static shared_ptr<logger> createLogger(string loggerName);
+  static void startMonitoringConfigFile();
+
  private:
   static void parseSphLogConfig(string path);
 };

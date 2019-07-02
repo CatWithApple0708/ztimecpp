@@ -430,6 +430,43 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
   }
 }
 
+
+static string getConfigFilePath() {
+  if (spdLoggerConfig) {
+    if (exist(spdLoggerConfig())) {
+      return spdLoggerConfig();
+    } else {
+      spdlog::warn("can't find spdLoggerConfig file {}", spdLoggerConfig());
+    }
+  }
+  for (auto var : kSpdDefaultConfigPaths) {
+    if (exist(var)) {
+      return var;
+    }
+  }
+  return "";
+}
+
+class MonitoringSpdLoggerConfigTask {
+  unique_ptr<thread> wthread;
+
+ public:
+  MonitoringSpdLoggerConfigTask() {
+    wthread.reset(new thread([]() {
+
+    }));
+  }
+  ~MonitoringSpdLoggerConfigTask() { wthread->join(); }
+};
+
+static unique_ptr<MonitoringSpdLoggerConfigTask> spdMonitoringtask;
+
+void SpdLoggerFactory::startMonitoringConfigFile() {
+  if (!spdMonitoringtask) {
+    spdMonitoringtask.reset(new MonitoringSpdLoggerConfigTask());
+  }
+}
+
 shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
   static std::mutex lock;
   static atomic_bool initializeLogger = {false};
@@ -441,26 +478,10 @@ shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
   }
 
   if (!initializeLogger) {
-    bool parseConfig = false;
-    if (spdLoggerConfig) {
-      if (exist(spdLoggerConfig())) {
-        parseSphLogConfig(spdLoggerConfig());
-        parseConfig = true;
-      }else{
-        spdlog::warn("can't find spdLoggerConfig file {}", spdLoggerConfig());
-      }
-    }
-
-    if (!parseConfig) {
-      for (auto var : kSpdDefaultConfigPaths) {
-        if (exist(var)) {
-          parseSphLogConfig(var);
-          parseConfig = true;
-          break;
-        }
-      }
-    }
-    if (!parseConfig) {
+    string configFilePath = getConfigFilePath();
+    if (!configFilePath.empty() && exist(configFilePath)) {
+      parseSphLogConfig(configFilePath);
+    } else {
       spdlog::warn("can't find logger config file use default config");
       myRegLogger(createRootLogger());
     }

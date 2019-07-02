@@ -39,11 +39,26 @@ class ContainerUtils {
     }
     return defaultValue;
   }
+
+  template <class T>
+  static bool contain(set<T> set_container, const T& value) {
+    if (sets.find(value) != sets.end()) return true;
+    return false;
+  }
+
+  template <class T>
+  static bool contain(list<T> list_container, const T& value) {
+    for (auto& var : list_container)
+      if (var == value) return true;
+
+    return false;
+  }
   // template <class T>
   // static inline void cpyVectorToArray(const vector<T>& src, T* arry,
   //                                     size_t arrary_size) {
   //   memcpy((void*)array, (void*)&src[0],
-  //          (arrary_size < src.size() ? arrary_size : src.size()) * sizeof(T));
+  //          (arrary_size < src.size() ? arrary_size : src.size()) *
+  //          sizeof(T));
   // }
 };
 }  // namespace core

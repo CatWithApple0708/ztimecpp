@@ -121,3 +121,56 @@ static inline OStream &operator<<(OStream &os, const std::list<int64_t> &c) {
   nlohmann::json j = c;
   return os << j.dump();
 }
+//--------------------------------------------------------------------------------------
+
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<bool> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os,
+                                  const std::set<std::string> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<uint8_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<uint16_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<uint32_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<uint64_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<int8_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<int16_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<int32_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, const std::set<int64_t> &c) {
+  nlohmann::json j = c;
+  return os << j.dump();
+}

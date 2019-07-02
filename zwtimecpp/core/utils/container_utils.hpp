@@ -42,7 +42,7 @@ class ContainerUtils {
 
   template <class T>
   static bool contain(const set<T>& set_container, const T& value) {
-    if (sets.find(value) != sets.end()) return true;
+    if (set_container.find(value) != set_container.end()) return true;
     return false;
   }
 

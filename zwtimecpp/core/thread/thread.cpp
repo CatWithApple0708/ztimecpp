@@ -194,17 +194,17 @@ void Thread::wake() {
 //   return false;
 // };
 
-void Thread::join() {
-  wake();
+void Thread::join(function<void()> wakeFunc) {
   shared_ptr<ThreadInfo> threadInfo =
       CoreSystemState::Instance().getThreadInfo(this->id);
-  if (threadInfo)
-    threadInfo->threadExitFlag = true;
-  else
+  if (!threadInfo)
     throw BaseException(BaseException::format1024(
         "Thread %s not call CoreSystemState::Instance().createThreadInfo(name)",
         to_string(pthread_self()).c_str()));
 
+  threadInfo->threadExitFlag = true;
+  threadInfo->signal.notify();
+  if (wakeFunc) wakeFunc();
   workThread->join();
   /**
    * 之所以在这里清理线程信息，而非在析构中清理线程信息的原因是当某个线程被join之后其pthreadId可能会在创建新的线程的时候被使用

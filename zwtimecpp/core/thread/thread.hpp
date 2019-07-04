@@ -79,7 +79,7 @@ class Thread : public Object {
 
   static void wake(pthread_t threadid);
   void wake();
-  void join();
+  void join(function<void()>wakeFunc = nullptr);
   pthread_t getId() const;
   ~Thread();
 

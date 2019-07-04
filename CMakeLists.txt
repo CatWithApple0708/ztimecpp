@@ -94,7 +94,7 @@ set(CORE_RES
 	zwtimecpp/core/utils/any.hpp
 	zwtimecpp/core/utils/container_utils.hpp
 	zwtimecpp/core/utils/compliler.h
-	zwtimecpp/core/logger/default_logger_config.hpp zwtimecpp/core/utils/auto_call_when_exist.hpp zwtimecpp/core/cxvlogger/cxv_logger_factory.cpp zwtimecpp/core/cxvlogger/cxv_logger_factory.hpp zwtimecpp/core/core.cpp zwtimecpp/core/utils/backward/backward.cpp zwtimecpp/core/utils/fatall_error.hpp zwtimecpp/core/utils/type_name.hpp)
+	zwtimecpp/core/logger/default_logger_config.hpp zwtimecpp/core/utils/auto_call_when_exist.hpp zwtimecpp/core/cxvlogger/cxv_logger_factory.cpp zwtimecpp/core/cxvlogger/cxv_logger_factory.hpp zwtimecpp/core/core.cpp zwtimecpp/core/utils/backward/backward.cpp zwtimecpp/core/utils/fatall_error.hpp zwtimecpp/core/utils/type_name.hpp zwtimecpp/core/utils/instance.hpp)
 
 add_library(zwtimecpp
 	${CORE_RES}

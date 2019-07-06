@@ -28,6 +28,12 @@
     return name##var;                           \
   };
 
+#define DEFINE_CONSTANT_PURE(name, type, value) \
+  static inline type name() {        \
+    static type name##var = value;              \
+    return name##var;                           \
+  };
+
 namespace zwsd {
 namespace core {}
 }  // namespace zwsd

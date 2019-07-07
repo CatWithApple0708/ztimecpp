@@ -13,6 +13,8 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <mutex>
+
 #include "zwtimecpp/core/base/object.hpp"
 #include "zwtimecpp/core/exception/base_exception.hpp"
 #include "zwtimecpp/core/logger/logger.hpp"
@@ -56,12 +58,13 @@ class Thread : public Object {
 
  public:
   typedef function<void(const std::exception &expec)> exceptionHandler_t;
+  std::mutex lock_;
 
  private:
   function<void()> run;
   unique_ptr<thread> workThread;
   shared_ptr<BaseException> exitException;
-  bool hasJointd = false;
+  atomic_bool hasJointd = {false};
   string name;
   pthread_t id = 0;
   bool threadInitialized = false;

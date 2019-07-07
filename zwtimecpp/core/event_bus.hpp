@@ -17,10 +17,10 @@
 #include <vector>
 #include "utils/concurrentqueue/blockingconcurrentqueue.h"
 #include "zwtimecpp/core/base/base_event.hpp"
-#include "zwtimecpp/core/exception/null_expection.hpp"
-#include "zwtimecpp/core/thread/thread.hpp"
 #include "zwtimecpp/core/event_priority.hpp"
+#include "zwtimecpp/core/exception/null_expection.hpp"
 #include "zwtimecpp/core/logger/logger.hpp"
+#include "zwtimecpp/core/thread/thread.hpp"
 namespace zwsd {
 namespace core {
 using namespace moodycamel;
@@ -28,8 +28,8 @@ using namespace std;
 class EventBus;
 typedef map<type_index, EventPriority_t> EventPriorityMap_t;
 
-static inline pair<type_index, EventPriority_t> zmake_pair(type_index typeindex,
-                                            EventPriority_t priority) {
+static inline pair<type_index, EventPriority_t> zmake_pair(
+    type_index typeindex, EventPriority_t priority) {
   return move(make_pair(typeindex, priority));
 }
 
@@ -57,6 +57,7 @@ class EventHandler : public Object {
 
 class EventBus {
   ENABLE_LOGGER(EventBus);
+  typedef map<type_index, vector<weak_ptr<EventHandler>>> quickFindMap_t;
   BlockingConcurrentQueue<shared_ptr<BaseEvent>> baseEvents;
   /**
    * @TODO
@@ -64,10 +65,13 @@ class EventBus {
    * handlers)去存储handler,加速事件处理速度
    */
   list<weak_ptr<EventHandler>> eventHandlers;
-  map<type_index, vector<weak_ptr<EventHandler>>> eventHandlersQuickFind;
+  quickFindMap_t eventHandlersQuickFind;
+  quickFindMap_t
+      urgentEventHandlersQuickFind;  //时效高的队列，要求所有的监听者，均以线程的形式处理事件
   bool eventAsyncHandleStopFlag = false;
   int busThreadRestartTimes = 0;
   mutex lock_;
+  mutex lock2_;
 
  private:
   EventBus();
@@ -101,6 +105,13 @@ class EventBus {
     instance()->internal_initialize();
   }
   // eventBus api
+  /**
+   * @brief  对于　urgen　== true的监听者来说，是同步事件调用,所以就要求
+   * urgen==true的监听者要尽可能的少，同时，事件处理要异步
+   * @note
+   * @param  baseEvent:
+   * @retval None
+   */
   void fireEventAsync(shared_ptr<BaseEvent> baseEvent);
 
   /**
@@ -117,11 +128,12 @@ class EventBus {
    *    regEventHandler(handler, {typeid(TestEvent1), typeid(TestEvent2)});
    */
   void regEventHandler(shared_ptr<EventHandler> handler,
-                       set<type_index> requiredEvent);
+                       set<type_index> requiredEvent, bool urgen = false);
 
   void regEventHandler(shared_ptr<EventHandler> handler,
                        set<type_index> requiredEvent,
-                       map<type_index, EventPriority_t> priority);
+                       map<type_index, EventPriority_t> priority,
+                       bool urgen = false);
 
   // override ThreadStateListener
   ~EventBus();

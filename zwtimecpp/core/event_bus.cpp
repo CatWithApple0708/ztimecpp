@@ -45,18 +45,29 @@ void EventBus::internal_initialize() {
 }
 
 void EventBus::regEventHandler(shared_ptr<EventHandler> handler,
-                               set<type_index> requiredEvent) {
-  regEventHandler(handler, requiredEvent, {});
+                               set<type_index> requiredEvent, bool urgen) {
+  regEventHandler(handler, requiredEvent, {}, urgen);
 }
 void EventBus::regEventHandler(shared_ptr<EventHandler> handler,
                                set<type_index> requiredEvent,
-                               map<type_index, EventPriority_t> priority) {
+                               map<type_index, EventPriority_t> priority,
+                               bool urgen) {
+  quickFindMap_t *quickMap;
+  mutex* cur_lock;
+  if (urgen) {
+    quickMap = &urgentEventHandlersQuickFind;
+    cur_lock = &lock2_;
+  } else {
+    quickMap = &eventHandlersQuickFind;
+    cur_lock = &lock_;
+  }
+
   if (!evenAsyncHandleThread ||
       pthread_self() == evenAsyncHandleThread->getId()) {
     throw BaseException("Don't call regEventHandler in onEvent");
   }
 
-  lock_guard<mutex> lock(lock_);
+  lock_guard<mutex> lock(*cur_lock);
   if (handler != nullptr) {
     //对于没有设置优先的设置默认优先级
     for (auto &typeindex : requiredEvent) {
@@ -70,9 +81,9 @@ void EventBus::regEventHandler(shared_ptr<EventHandler> handler,
     eventHandlers.push_back(handler);
 
     for (auto &typeindex : requiredEvent) {
-      auto &list = eventHandlersQuickFind[typeindex];
+      auto &list = (*quickMap)[typeindex];
       list.push_back(handler);
-      
+
       //从优先级高到优先级低
       sort(list.begin(), list.end(),
            [this, typeindex](const weak_ptr<EventHandler> &wa,
@@ -113,7 +124,20 @@ void EventBus::fireEventAsync(shared_ptr<BaseEvent> baseEvent) {
   if (baseEvent == nullptr) {
     return;
   }
-  logger->debug("fireEventAsync {}", typeid(*baseEvent).name());
+
+  {
+    type_index index = typeid(*baseEvent);
+    lock_guard<mutex> lock(lock2_);
+    auto handlers = urgentEventHandlersQuickFind.find(index);
+    if (handlers != urgentEventHandlersQuickFind.end()) {
+      for (auto &handler : handlers->second) {
+        auto eventHandler = handler.lock();
+        if (eventHandler) eventHandler->onEvent(baseEvent);
+      }
+    }
+  }
+
+  logger->trace("fireEventAsync {}", typeid(*baseEvent).name());
   baseEvents.enqueue(baseEvent);
 }
 
@@ -132,7 +156,6 @@ void EventBus::callHandler(shared_ptr<BaseEvent> baseEvent) {
     }
   }
 #endif
-  type_index index = typeid(*baseEvent);
   {
     /**
      * @brief
@@ -140,10 +163,15 @@ void EventBus::callHandler(shared_ptr<BaseEvent> baseEvent) {
      *
      * @return lock_guard<mutex>
      */
+    logger->trace("callHandler {}", typeid(*baseEvent).name());
+    type_index index = typeid(*baseEvent);
     lock_guard<mutex> lock(lock_);
-    for (auto &handler : eventHandlersQuickFind[index]) {
-      auto eventHandler = handler.lock();
-      if (eventHandler) eventHandler->onEvent(baseEvent);
+    auto handlers = eventHandlersQuickFind.find(index);
+    if (handlers != eventHandlersQuickFind.end()) {
+      for (auto &handler : handlers->second) {
+        auto eventHandler = handler.lock();
+        if (eventHandler) eventHandler->onEvent(baseEvent);
+      }
     }
   }
 }

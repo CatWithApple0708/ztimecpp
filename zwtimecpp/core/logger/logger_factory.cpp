@@ -299,6 +299,10 @@ static logger_t createRootLogger() {
  * @param var_logger
  */
 static void myRegLogger(logger_t var_logger) {
+  if (var_logger->name() == kRootLogerName) {
+    spdlog::set_default_logger(var_logger);
+  }
+
   if (!get(var_logger->name())) {
     register_logger(var_logger);
   }
@@ -306,6 +310,7 @@ static void myRegLogger(logger_t var_logger) {
     spdlog::critical("reg root logger fail {}");
     exit(-1);
   }
+
 }
 
 static void __parseSphLogConfig(json var) {

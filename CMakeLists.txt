@@ -109,7 +109,7 @@ set(CORE_RES
 	#process
     zwtimecpp/core/utils/process/process.cpp
     zwtimecpp/core/utils/process/process.hpp
-    zwtimecpp/core/utils/process/process_unix.cpp)
+    zwtimecpp/core/utils/process/process_unix.cpp zwtimecpp/core/utils/vector_utils.hpp)
 
 add_library(zwtimecpp ${CORE_RES})
 target_link_libraries(zwtimecpp pthread)

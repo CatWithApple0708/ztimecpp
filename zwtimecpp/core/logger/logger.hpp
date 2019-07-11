@@ -17,160 +17,35 @@
 
 #include "spdlog/fmt/ostr.h"
 namespace zwsd {}  // namespace zwsd
-template <typename OStream>
-static inline OStream &operator<<(OStream &os,
-                                  const std::vector<std::string> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os,
-                                  const std::vector<bool> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<uint8_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<uint16_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<uint32_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<uint64_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<int8_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<int16_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<int32_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::vector<int64_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-//--------------------------------------------------------------------------------------
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<bool> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os,
-                                  const std::list<std::string> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<uint8_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<uint16_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<uint32_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<uint64_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<int8_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<int16_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<int32_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::list<int64_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-//--------------------------------------------------------------------------------------
 
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<bool> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os,
-                                  const std::set<std::string> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<uint8_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<uint16_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<uint32_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<uint64_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<int8_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<int16_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<int32_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
-template <typename OStream>
-static inline OStream &operator<<(OStream &os, const std::set<int64_t> &c) {
-  nlohmann::json j = c;
-  return os << j.dump();
-}
+#define ENABLE_BASIC_TYPE_LOGGER(type)                                                    \
+  template <typename OStream>                                                  \
+  static inline OStream &operator<<(OStream &os, const std::list<type> &c) {   \
+    nlohmann::json j = c;                                                      \
+    return os << j.dump();                                                     \
+  }                                                                            \
+  template <typename OStream>                                                  \
+  static inline OStream &operator<<(OStream &os, const std::vector<type> &c) { \
+    nlohmann::json j = c;                                                      \
+    return os << j.dump();                                                     \
+  }                                                                            \
+  template <typename OStream>                                                  \
+  static inline OStream &operator<<(OStream &os, const std::set<type> &c) {    \
+    nlohmann::json j = c;                                                      \
+    return os << j.dump();                                                     \
+  }
+
+ENABLE_BASIC_TYPE_LOGGER(std::string)
+ENABLE_BASIC_TYPE_LOGGER(bool)
+ENABLE_BASIC_TYPE_LOGGER(uint8_t)
+ENABLE_BASIC_TYPE_LOGGER(uint16_t)
+ENABLE_BASIC_TYPE_LOGGER(uint32_t)
+ENABLE_BASIC_TYPE_LOGGER(uint64_t)
+ENABLE_BASIC_TYPE_LOGGER(int8_t)
+ENABLE_BASIC_TYPE_LOGGER(int16_t)
+ENABLE_BASIC_TYPE_LOGGER(int32_t)
+ENABLE_BASIC_TYPE_LOGGER(int64_t)
+ENABLE_BASIC_TYPE_LOGGER(float)
+ENABLE_BASIC_TYPE_LOGGER(double)
+
+#undef ENABLE_BASIC_TYPE_LOGGER

@@ -38,7 +38,19 @@ const static char* kSpdDefaultConfigPaths[] = {"spd_logger_cfg.json"};
 
 // 1. 没设置type,统统被当做logger处理
 // 2. 所有的logger,sink loggerAndSink,name都不能重复
-// 3.  
+// 3.
+
+/**
+ * @brief
+ *loggerSupportList:
+ *
+ *-->: daily_logger_mt
+ *-->: basic_logger_mt
+ *-->: logger
+ *-->: daily_file_sink_mt
+ *-->: stderr_color_sink_mt
+ *
+ */
 
 #define ASSININ_VALUE(value) \
   if (config_item.key() == #value) item.at(#value).get_to(config.value);
@@ -375,7 +387,6 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
 
     //组装logger and sink
     for (auto& las : s_loggerAndSinks) {
-      spdlog::info("sssss");
       logger_t logger = s_loggers[las->loggerName];
       if (logger == nullptr) {
         spdlog::critical("can't find  logger", las->loggerName);

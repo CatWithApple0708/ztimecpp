@@ -52,6 +52,7 @@ const static char* kDefaultPattern = "[%C-%m-%d %H:%M:%S.%e] [%-20n] [%^%L%$] %v
  *-->: logger
  *-->: daily_file_sink_mt
  *-->: stderr_color_sink_mt
+ *-->: stdout_color_sink_mt
  *
  */
 
@@ -296,12 +297,31 @@ static bool c_stderr_color_sink_mt(json j) {
   }
 };
 
+static bool c_stdout_color_sink_mt(json j) {
+  try {
+    string type = j.at("type").get<string>();
+    if (type == "stdout_color_sink_mt") {
+      GET(string, name);
+      auto sink = make_shared<sinks::stdout_color_sink_mt>();
+      sink_common_config(sink, j);
+      insertSink(name, sink);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (const std::exception& e) {
+    spdlog::critical("c stdout_color_sink_mt fail {}  reason {}", j.dump(1),
+                     e.what());
+    exit(-1);
+  }
+};
+
 /**
  * default_root_logger-----------------------------------------------------------------------------------------------------
  */
 static logger_t createRootLogger() {
   if (!get(kRootLogerName)) {
-    auto rootLogger = spdlog::stderr_color_mt(kRootLogerName);
+    auto rootLogger = spdlog::stdout_color_mt(kRootLogerName);
     if (!string(kDefaultPattern).empty()) {
       rootLogger->set_pattern(kDefaultPattern);
     }
@@ -348,6 +368,7 @@ static void __parseSphLogConfig(json var) {
   } else if (c_daily_file_sink_mt(var)) {
   } else if (c_logger(var)) {
   } else if (c_stderr_color_sink_mt(var)) {
+  } else if (c_stdout_color_sink_mt(var)) {
   } else {
     spdlog::critical("no such type {}", var.dump());
     exit(-1);

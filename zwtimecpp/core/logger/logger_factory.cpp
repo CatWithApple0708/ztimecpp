@@ -20,9 +20,9 @@ using namespace core;
 using namespace nlohmann;
 using namespace spdlog;
 
-const static string kRootLogerName = "root";
+const static char* kRootLogerName = "root";
 const static char* kSpdDefaultConfigPaths[] = {"spd_logger_cfg.json"};
-const static string kDefaultPattern = "[%C-%m-%d %H:%M:%S.%e] [%-20n] [%^%L%$] %v";
+const static char* kDefaultPattern = "[%C-%m-%d %H:%M:%S.%e] [%-20n] [%^%L%$] %v";
 // const static string kDefaultPattern = "";
 
 // const string WEAK spdLoggerConfig() { return ""; }
@@ -61,6 +61,9 @@ const static string kDefaultPattern = "[%C-%m-%d %H:%M:%S.%e] [%-20n] [%^%L%$] %
 template <class type>
 type tryGet(json j, string value_name, type defaultValue) {
   try {
+    if (j.find(value_name) == j.end()) {
+      return defaultValue;
+    }
     type value = j.at(value_name).get<type>();
     return value;
   } catch (const std::exception& e) {
@@ -152,7 +155,6 @@ static void logger_common_config(logger_t var_logger, json j) {
   TRY_GET(set<string>, sinks, {});
 
   var_logger->set_level(to_level(level));
-  if (!pattern.empty()) var_logger->set_pattern(pattern);
   if (!sinks.empty()) {
     shared_ptr<LoggerAndSinks> las(new LoggerAndSinks());
     las->loggerName = var_logger->name();
@@ -300,7 +302,7 @@ static bool c_stderr_color_sink_mt(json j) {
 static logger_t createRootLogger() {
   if (!get(kRootLogerName)) {
     auto rootLogger = spdlog::stderr_color_mt(kRootLogerName);
-    if (!kDefaultPattern.empty()) {
+    if (!string(kDefaultPattern).empty()) {
       rootLogger->set_pattern(kDefaultPattern);
     }
     return rootLogger;
@@ -507,7 +509,7 @@ shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
   // TODO:当使用gtest进行单元测试的时候，logger似乎会被清空，原因未知
   if (!get(kRootLogerName)) {
     initializeLogger = false;
-    if (!kDefaultPattern.empty()) {
+    if (!string(kDefaultPattern).empty()) {
       spdlog::set_pattern(kDefaultPattern);
     }
   }

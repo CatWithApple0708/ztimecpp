@@ -41,7 +41,7 @@ class Core : public Object {
     if (instance() == nullptr) {
       throw NullException(
           "Core instance hasn't been initialized "
-          "ZigbeeGatewayService::instance == nullptr");
+          "Core::instance == nullptr");
     }
     return instance();
   }

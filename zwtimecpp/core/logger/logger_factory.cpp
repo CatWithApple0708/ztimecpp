@@ -9,10 +9,11 @@
 #include "zwtimecpp/core/utils/nlohmann/json.hpp"
 
 #include <mutex>
+#include "default_logger_config.hpp"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/sinks/stdout_sinks.h"
 #include "zwtimecpp/core/utils/compliler.h"
-#include "default_logger_config.hpp"
 using namespace std;
 using namespace zwsd;
 using namespace core;
@@ -21,6 +22,8 @@ using namespace spdlog;
 
 const static string kRootLogerName = "root";
 const static char* kSpdDefaultConfigPaths[] = {"spd_logger_cfg.json"};
+const static string kDefaultPattern = "[%C-%m-%d %H:%M:%S.%e] [%-20n] [%^%L%$] %v";
+// const static string kDefaultPattern = "";
 
 // const string WEAK spdLoggerConfig() { return ""; }
 
@@ -145,7 +148,7 @@ static level::level_enum to_level(int value) {
 
 static void logger_common_config(logger_t var_logger, json j) {
   TRY_GET(int, level, 2);
-  TRY_GET(string, pattern, "");
+  TRY_GET(string, pattern, kDefaultPattern);
   TRY_GET(set<string>, sinks, {});
 
   var_logger->set_level(to_level(level));
@@ -160,7 +163,7 @@ static void logger_common_config(logger_t var_logger, json j) {
 
 static void sink_common_config(sink_ptr sink, json j) {
   TRY_GET(int, level, 0);
-  TRY_GET(string, pattern, "");
+  TRY_GET(string, pattern, kDefaultPattern);
   TRY_GET(set<string>, sinks, {});
   sink->set_level(to_level(level));
   if (!pattern.empty()) sink->set_pattern(pattern);
@@ -295,12 +298,24 @@ static bool c_stderr_color_sink_mt(json j) {
  * default_root_logger-----------------------------------------------------------------------------------------------------
  */
 static logger_t createRootLogger() {
-  auto stdoutsink = make_shared<sinks::stderr_color_sink_mt>();
-  stdoutsink->set_level(level::debug);
-  auto rootLogger =
-      make_shared<logger>(kRootLogerName, sinks_init_list{stdoutsink});
-  rootLogger->set_level(level::info);
-  return rootLogger;
+  if (!get(kRootLogerName)) {
+    auto rootLogger = spdlog::stderr_color_mt(kRootLogerName);
+    if (!kDefaultPattern.empty()) {
+      rootLogger->set_pattern(kDefaultPattern);
+    }
+    return rootLogger;
+  }
+
+  // auto stdoutsink = make_shared<sinks::stderr_color_sink_mt>();
+  // stdoutsink->set_level(level::debug);
+  // if (!kDefaultPattern.empty()) {
+  //   stdoutsink->set_pattern(kDefaultPattern);
+  // }
+  // auto rootLogger =
+  //     make_shared<logger>(kRootLogerName, sinks_init_list{stdoutsink});
+  // rootLogger->set_level(level::info);
+  // rootLogger->set_pattern(kDefaultPattern);
+  return get(kRootLogerName);
 }
 /**
  * @brief
@@ -340,7 +355,7 @@ static void __parseSphLogConfig(json var) {
 static logger_t createLoggerWithoutType(json j){
   TRY_GET(int, level, 2);
   GET(string, name);
-  TRY_GET(string, pattern, "");
+  TRY_GET(string, pattern, kDefaultPattern);
   auto rootLogger = get(kRootLogerName);
   if (!rootLogger) {
     spdlog::critical("func: createLoggerWithoutType,can't find rootLogger");
@@ -413,7 +428,7 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
         if (name == kRootLogerName) {
           if (type.empty()) {
             TRY_GET(int, level, 2);
-            TRY_GET(string, pattern, "");
+            TRY_GET(string, pattern, kDefaultPattern);
             auto rootLogger = createRootLogger();
             rootLogger->set_level(to_level(level));
             if (!pattern.empty()) rootLogger->set_pattern(pattern);
@@ -483,14 +498,18 @@ void SpdLoggerFactory::startMonitoringConfigFile() {
   }
 }
 
+static std::mutex createLogger_lock;
+static atomic_bool initializeLogger = {false};
 shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
-  static std::mutex lock;
-  static atomic_bool initializeLogger = {false};
-  lock_guard<mutex> lock_gu(lock);
+
+  lock_guard<mutex> lock_gu(createLogger_lock);
 
   // TODO:当使用gtest进行单元测试的时候，logger似乎会被清空，原因未知
   if (!get(kRootLogerName)) {
     initializeLogger = false;
+    if (!kDefaultPattern.empty()) {
+      spdlog::set_pattern(kDefaultPattern);
+    }
   }
 
   if (!initializeLogger) {

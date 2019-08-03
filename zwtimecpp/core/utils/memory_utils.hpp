@@ -56,7 +56,7 @@
  * }
  *
  */
-#define dc dynamic_cast
+#define zwdc dynamic_cast
 
 namespace zwsd {
 template <typename T, typename Base>

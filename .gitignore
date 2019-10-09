@@ -2,3 +2,8 @@ cmake-build-*/
 .idea/*
 .vscode/
 build.sh
+.ccls-cache
+build
+third/pc
+googletest-release-1.8.0
+compile_commands.json

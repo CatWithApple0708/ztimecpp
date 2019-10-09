@@ -111,33 +111,37 @@ int32_t __infinite_arrary_get_useful_end_offset(__infinite_arrary_t *arrary);
  * @return data
  * type infinite_arrary_get_xxxx(__infinite_arrary_t *arrary,int32_t offset)
  */
-#define INFINITE_ARRARY_ENABLE_SUPPORT(name, type)                        \
-  typedef struct { __infinite_arrary_t handler; } infinite_arrary_##name; \
-  static inline void infinite_arrary_init_##name(                         \
-      infinite_arrary_##name *arrary, type *buf, size_t capacity) {       \
-    __infinite_arrary_init_xxxx(&(arrary->handler), (uint8_t *)buf,       \
-                                capacity * sizeof(type), sizeof(type));   \
-  }                                                                       \
-  static inline void infinite_arrary_push_##name(                         \
-      infinite_arrary_##name *arrary, const type data) {                  \
-    __infinite_arrary_push_xxxx(&arrary->handler, (void *)&data);         \
-  }                                                                       \
-  static inline type infinite_arrary_get_##name(                          \
-      infinite_arrary_##name *arrary, int32_t offset) {                   \
-    type ret;                                                             \
-    if (!__infinite_arrary_get_xxxx(&arrary->handler, offset, &ret)) {    \
-      memset(&ret, 0, sizeof(ret));                                       \
-    }                                                                     \
-    return ret;                                                           \
-  }                                                                       \
-  static inline int32_t infinite_arrary_get_useful_start_offset_##name(   \
-      infinite_arrary_##name *arrary) {                                   \
-    return __infinite_arrary_get_useful_start_offset(&arrary->handler);   \
-  }                                                                       \
-                                                                          \
-  static inline int32_t infinite_arrary_get_useful_end_offset_##name(     \
-      infinite_arrary_##name *arrary) {                                   \
-    return __infinite_arrary_get_useful_end_offset(&arrary->handler);     \
+#define INFINITE_ARRARY_ENABLE_SUPPORT(name, type)                            \
+  typedef struct { __infinite_arrary_t handler; } infinite_arrary_##name##_t; \
+  static inline void infinite_arrary_init_##name(                             \
+      infinite_arrary_##name##_t *arrary, type *buf, size_t capacity) {       \
+    __infinite_arrary_init_xxxx(&(arrary->handler), (uint8_t *)buf,           \
+                                capacity * sizeof(type), sizeof(type));       \
+  }                                                                           \
+  static inline void infinite_arrary_push_##name(                             \
+      infinite_arrary_##name##_t *arrary, const type data) {                  \
+    __infinite_arrary_push_xxxx(&arrary->handler, (void *)&data);             \
+  }                                                                           \
+  static inline void infinite_arrary_push_##name##p(                          \
+      infinite_arrary_##name##_t *arrary, const type *data) {                 \
+    __infinite_arrary_push_xxxx(&arrary->handler, (void *)data);              \
+  }                                                                           \
+  static inline type infinite_arrary_get_##name(                              \
+      infinite_arrary_##name##_t *arrary, int32_t offset) {                   \
+    type ret;                                                                 \
+    if (!__infinite_arrary_get_xxxx(&arrary->handler, offset, &ret)) {        \
+      memset(&ret, 0, sizeof(ret));                                           \
+    }                                                                         \
+    return ret;                                                               \
+  }                                                                           \
+  static inline int32_t infinite_arrary_get_useful_start_offset_##name(       \
+      infinite_arrary_##name##_t *arrary) {                                   \
+    return __infinite_arrary_get_useful_start_offset(&arrary->handler);       \
+  }                                                                           \
+                                                                              \
+  static inline int32_t infinite_arrary_get_useful_end_offset_##name(         \
+      infinite_arrary_##name##_t *arrary) {                                   \
+    return __infinite_arrary_get_useful_end_offset(&arrary->handler);         \
   }
 
 INFINITE_ARRARY_ENABLE_SUPPORT(u8, uint8_t);

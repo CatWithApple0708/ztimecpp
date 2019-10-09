@@ -9,7 +9,7 @@ extern "C" {
 
 TEST(TestLoopQueue, test_u8) {
   {
-    loop_queue_u8 loop_queue;
+    loop_queue_u8_t loop_queue;
     uint8_t buf[16] = {0};
 
     loop_queue_init_u8(&loop_queue, buf, ARRARY_SIZE(buf));
@@ -28,7 +28,7 @@ TEST(TestLoopQueue, test_u8) {
   }
 
   {
-    loop_queue_u8 loop_queue;
+    loop_queue_u8_t loop_queue;
     uint8_t buf[16] = {0};
 
     loop_queue_init_u8(&loop_queue, buf, ARRARY_SIZE(buf));
@@ -54,7 +54,7 @@ TEST(TestLoopQueue, test_u8) {
 
 TEST(TestLoopQueue, test_u32) {
   {
-    loop_queue_u32 loop_queue;
+    loop_queue_u32_t loop_queue;
     uint32_t buf[16] = {0};
 
     loop_queue_init_u32(&loop_queue, buf, ARRARY_SIZE(buf));
@@ -73,7 +73,7 @@ TEST(TestLoopQueue, test_u32) {
   }
 
   {
-    loop_queue_u32 loop_queue;
+    loop_queue_u32_t loop_queue;
     uint32_t buf[16] = {0};
 
     loop_queue_init_u32(&loop_queue, buf, ARRARY_SIZE(buf));
@@ -95,11 +95,4 @@ TEST(TestLoopQueue, test_u32) {
       ASSERT_TRUE(loop_queue_is_empty_u32(&loop_queue));
     }
   }
-
-  loop_queue_u32 loop_queue;
-  uint32_t buf[16] = {0};
-
-  loop_queue_init_u32(&loop_queue, buf, ARRARY_SIZE(buf));
-  loop_queue_push_one_u32()
-
 }

@@ -9,7 +9,7 @@ extern "C" {
 
 TEST(TestLoopBuffer, test_u8) {
   {
-    infinite_arrary_u8 loopbuff;
+    infinite_arrary_u8_t loopbuff;
     uint8_t buffer[20] = {0};
     infinite_arrary_init_u8(&loopbuff, buffer, ARRARY_SIZE(buffer));
 
@@ -27,7 +27,7 @@ TEST(TestLoopBuffer, test_u8) {
   }
 
   {
-    infinite_arrary_u8 loopbuff;
+    infinite_arrary_u8_t loopbuff;
     uint8_t buffer[20] = {0};
     infinite_arrary_init_u8(&loopbuff, buffer, ARRARY_SIZE(buffer));
 
@@ -63,7 +63,7 @@ TEST(TestLoopBuffer, test_u8) {
 
 TEST(TestLoopBuffer, test_u32) {
   {
-    infinite_arrary_u32 loopbuff;
+    infinite_arrary_u32_t loopbuff;
     uint32_t buffer[20] = {0};
     infinite_arrary_init_u32(&loopbuff, buffer, ARRARY_SIZE(buffer));
 
@@ -81,7 +81,7 @@ TEST(TestLoopBuffer, test_u32) {
   }
 
   {
-    infinite_arrary_u32 loopbuff;
+    infinite_arrary_u32_t loopbuff;
     uint32_t buffer[20] = {0};
     infinite_arrary_init_u32(&loopbuff, buffer, ARRARY_SIZE(buffer));
 

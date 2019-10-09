@@ -67,6 +67,10 @@ bool __vector_is_full(__vector_t* vector);
                                           type data) {                       \
     return __vector_push(&vector->vector, (uint8_t*)&data);                  \
   }                                                                          \
+  static inline bool vector_##name##_pushp(vector_##name##_t* vector,        \
+                                           type* data) {                     \
+    return __vector_push(&vector->vector, (uint8_t*)data);                   \
+  }                                                                          \
   /**                                                                        \
    * @brief 压入一个数据      \                                        \
    *                                                                         \

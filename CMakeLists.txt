@@ -1,9 +1,7 @@
 include_directories(. ./zwtimecpp/core/logger)
 option(zwtimecpp_build_on_parent "This is a option for address" OFF)
 
-if(zwtimecpp_build_on_parent)
-  message("set zwtimecpp_build_on_parent on")
-else()
+if(NOT zwtimecpp_build_on_parent)
   cmake_minimum_required(VERSION 3.13)
   project(ztimecpp)
   set(CMAKE_CXX_STANDARD 14)
@@ -112,47 +110,40 @@ add_library(zwtimecpp
             zwtimecpp/core/base/result.cpp
             zwtimecpp/core/base/result.hpp
             zwtimecpp/core/utils/cli_help.cpp
-            zwtimecpp/core/utils/cli_help.hpp)
+            zwtimecpp/core/utils/cli_help.hpp
+            #cutils
+            zwtimecpp/core/utils/cutils/arrary.c
+            zwtimecpp/core/utils/cutils/arrary.h
+            zwtimecpp/core/utils/cutils/infinite_arrary.c
+            zwtimecpp/core/utils/cutils/infinite_arrary.h
+            zwtimecpp/core/utils/cutils/loop_queue.c
+            zwtimecpp/core/utils/cutils/loop_queue.h)
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)
-if(zwtimecpp_build_on_parent)
-  #在其他工程中编译
-  #####################################################################
-  #core_gtest_main
-  #
-  add_executable(core_gtest_main zwtimecpp/core/test/gtest_main.cpp)
-  target_link_libraries(core_gtest_main
-                        zwtimecpp
-                        zwtimecpptest
-                        gtest
-                        gmock)
-  add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
-  #####################################################################
-  #core_runner_main
-  #
-  add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp)
-  target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
-  add_dependencies(core_runner_main zwtimecpp zwtimecpptest)
-else()
+
+set(GTESTERS zwtimecpp/core/test/gtester/gtest_arrary.cc
+             zwtimecpp/core/test/gtester/gtest_infinite_arrary.cc
+             zwtimecpp/core/test/gtester/gtest_loop_queue.cc)
+
+if(NOT zwtimecpp_build_on_parent)
   #单独编译
   include_directories(./third/pc/include)
   link_directories(./third/pc/lib)
-
-  #####################################################################
-  #core_gtest_main
-  #
-  add_executable(core_gtest_main zwtimecpp/core/test/gtest_main.cpp)
-  target_link_libraries(core_gtest_main
-                        zwtimecpp
-                        zwtimecpptest
-                        gtest
-                        gmock)
-  add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
-  #####################################################################
-  #core_runner_main
-  #
-  add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp)
-  target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
-  add_dependencies(core_runner_main zwtimecpp zwtimecpptest)
 endif()
+#####################################################################
+#core_gtest_main
+#
+add_executable(core_gtest_main zwtimecpp/core/test/gtest_main.cpp ${GTESTERS})
+target_link_libraries(core_gtest_main
+                      zwtimecpp
+                      zwtimecpptest
+                      gtest
+                      gmock)
+add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
+#####################################################################
+#core_runner_main
+#
+add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp)
+target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
+add_dependencies(core_runner_main zwtimecpp zwtimecpptest)

@@ -1,14 +1,38 @@
 #include "loop_queue.h"
 #include <string.h>
 
+/**
+ *
+ * @满空状态定义
+ * 
+ * 满 write_off + 1 *each_element_size == read_off
+ * _________|________|______________
+ *       write_off read_off
+ *
+ * 空 write_off == read_off
+ * _________|_______________________
+ *       write_off(read_off)
+ *
+ * 
+ **************************************************************************/
+
 static size_t get_next_offset2(__loop_queue_t *queue, uint32_t cur_off) {
+  /**
+   * @brief 
+   * 
+   * 0______1______2
+   * start_off = 0
+   * size = 2
+   * 有的的off 0,1
+   * 
+   */
   if (cur_off + queue->each_element_size * 2 <= queue->capacity)
     return cur_off + queue->each_element_size;
   return 0;
 }
 
 void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
-                                uint8_t *data, size_t size) {
+                            uint8_t *data, size_t size) {
   queue->buf = data;
   queue->capacity = size;
   queue->read_offset = 0;
@@ -23,6 +47,55 @@ bool __loop_queue_pop_one_xxxx(__loop_queue_t *queue, void *data) {
   queue->read_offset = get_next_offset2(queue, queue->read_offset);
   return true;
 }
+
+#if 0
+int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num) {
+  if (__loop_queue_is_empty(queue)) return 0;
+
+  size_t q_size = __loop_queue_get_size(queue);
+  size_t cpy_size = q_size < num ? q_size : num;
+
+  /**
+   * @brief
+   * @情况1,read_off > write_off,
+   * ____1_____|______2_______|________3__
+   *          write_off     read_off
+   * 拷贝3&&1
+   *
+   * @情况2,read_off < write_off,
+   * ____1_____|______2_______|________3__
+   *          read_off     write_off
+   *拷贝2
+   *
+   */
+  if (queue->read_offset > queue->write_offset) {
+    size_t d3cpy_size =
+        (queue->capacity - queue->read_offset) % queue->each_element_size;
+    if (d3cpy_size > cpy_size) {
+      memcpy(data, queue->buf + queue->read_offset,
+             d3cpy_size * queue->each_element_size);
+      queue->read_offset =
+          queue->read_offset + cpy_size * queue->each_element_size;
+    } else {
+      memcpy(data, queue->buf + queue->read_offset,
+             d3cpy_size * queue->each_element_size);
+      if (cpy_size - d3cpy_size != 0) {
+        memcpy((uint8_t *)data + d3cpy_size * queue->each_element_size,
+               queue->buf, (cpy_size - d3cpy_size) * queue->each_element_size);
+      }
+      queue->read_offset = (cpy_size - d3cpy_size) * queue->each_element_size;
+    }
+  } else if (queue->read_offset < queue->write_offset) {
+    memcpy(data, queue->buf + queue->read_offset,
+           cpy_size * queue->each_element_size);
+    queue->read_offset =
+        queue->read_offset + cpy_size * queue->each_element_size;
+  }
+  return cpy_size;
+}
+#endif
+
+
 
 bool __loop_queue_push_one_xxxx(__loop_queue_t *queue, const void *data) {
   //当前queue中数据已经满了

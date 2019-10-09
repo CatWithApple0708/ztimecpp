@@ -62,6 +62,18 @@ void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
  * @return false
  */
 bool __loop_queue_pop_one_xxxx(__loop_queue_t *queue, void *data);
+#if 0
+
+/**
+ * @brief pop一个元素
+ *
+ * @param queue
+ * @param data
+ * @return true
+ * @return false
+ */
+int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num);
+#endif
 /**
  * @brief push一个元素
  *

@@ -95,4 +95,11 @@ TEST(TestLoopQueue, test_u32) {
       ASSERT_TRUE(loop_queue_is_empty_u32(&loop_queue));
     }
   }
+
+  loop_queue_u32 loop_queue;
+  uint32_t buf[16] = {0};
+
+  loop_queue_init_u32(&loop_queue, buf, ARRARY_SIZE(buf));
+  loop_queue_push_one_u32()
+
 }

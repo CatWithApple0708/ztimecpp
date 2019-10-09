@@ -122,7 +122,7 @@ size_t __loop_queue_get_size(__loop_queue_t *queue);
                                                 type data) {                   \
     return __loop_queue_push_one_xxxx(&queue->handler, &data);                 \
   }                                                                            \
-  static inline bool loop_queue_push_one_##name##p(                            \
+  static inline bool loop_queue_push_one_##name##_p(                            \
       loop_queue_##name##_t *queue, type *data) {                              \
     return __loop_queue_push_one_xxxx(&queue->handler, data);                  \
   }                                                                            \

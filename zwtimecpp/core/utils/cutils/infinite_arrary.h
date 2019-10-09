@@ -122,7 +122,7 @@ int32_t __infinite_arrary_get_useful_end_offset(__infinite_arrary_t *arrary);
       infinite_arrary_##name##_t *arrary, const type data) {                  \
     __infinite_arrary_push_xxxx(&arrary->handler, (void *)&data);             \
   }                                                                           \
-  static inline void infinite_arrary_push_##name##p(                          \
+  static inline void infinite_arrary_push_##name##_p(                         \
       infinite_arrary_##name##_t *arrary, const type *data) {                 \
     __infinite_arrary_push_xxxx(&arrary->handler, (void *)data);              \
   }                                                                           \

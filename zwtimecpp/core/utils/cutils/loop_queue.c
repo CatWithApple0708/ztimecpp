@@ -31,6 +31,11 @@ static size_t get_next_offset2(__loop_queue_t *queue, uint32_t cur_off) {
   return 0;
 }
 
+size_t __loop_queue_get_element_capacity(__loop_queue_t *queue) {
+  //循环buffer的大小是buffer真正大小的size -1
+  return queue->capacity / queue->each_element_size - 1;
+}
+
 void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
                             uint8_t *data, size_t size) {
   queue->buf = data;
@@ -48,7 +53,6 @@ bool __loop_queue_pop_one_xxxx(__loop_queue_t *queue, void *data) {
   return true;
 }
 
-#if 0
 int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num) {
   if (__loop_queue_is_empty(queue)) return 0;
 
@@ -70,7 +74,7 @@ int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num) {
    */
   if (queue->read_offset > queue->write_offset) {
     size_t d3cpy_size =
-        (queue->capacity - queue->read_offset) % queue->each_element_size;
+        (queue->capacity - queue->read_offset) / queue->each_element_size;
     if (d3cpy_size > cpy_size) {
       memcpy(data, queue->buf + queue->read_offset,
              d3cpy_size * queue->each_element_size);
@@ -93,9 +97,52 @@ int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num) {
   }
   return cpy_size;
 }
-#endif
 
+bool __loop_queue_push_some_xxxx(__loop_queue_t *queue, const void *data,
+                                 int num) {
+  size_t q_size = __loop_queue_get_element_capacity(queue);
+  if (num > q_size) {
+    return false;
+  }
 
+  /**
+   * @brief
+   * @情况1,read_off > write_off,
+   * ____1_____|______2_______|________3__
+   *          write_off     read_off
+   * 拷贝数据到区间2
+   *
+   * @情况2,read_off < write_off,
+   * ____1_____|______2_______|________3__
+   *          read_off     write_off
+   *拷贝数据到3&1
+   *
+   */
+  if (queue->read_offset > queue->write_offset) {
+    memcpy(queue->buf + queue->write_offset, data,
+           num * queue->each_element_size);
+    queue->write_offset = queue->write_offset + num * queue->each_element_size;
+  } else if (queue->read_offset <= queue->write_offset) {
+    size_t d3cpy_size =
+        (queue->capacity - queue->read_offset) / queue->each_element_size;
+    if (num <= d3cpy_size) {
+      memcpy(queue->buf + queue->write_offset, data,
+             num * queue->each_element_size);
+      queue->write_offset =
+          queue->write_offset + num * queue->each_element_size;
+    } else {
+      memcpy(queue->buf + queue->write_offset, data,
+             d3cpy_size * queue->each_element_size);
+      if (num - d3cpy_size > 0) {
+        memcpy(queue->buf,
+               (uint8_t *)data + d3cpy_size * queue->each_element_size,
+               (num - d3cpy_size) * queue->each_element_size);
+      }
+      queue->write_offset = 0 + (num - d3cpy_size) * queue->each_element_size;
+    }
+  }
+  return true;
+}
 
 bool __loop_queue_push_one_xxxx(__loop_queue_t *queue, const void *data) {
   //当前queue中数据已经满了
@@ -135,4 +182,9 @@ size_t __loop_queue_get_size(__loop_queue_t *queue) {
   } else {
     return 0;
   }
+}
+
+size_t __loop_queue_get_remain_size(__loop_queue_t *queue) {
+  return __loop_queue_get_element_capacity(queue) -
+         __loop_queue_get_size(queue);
 }

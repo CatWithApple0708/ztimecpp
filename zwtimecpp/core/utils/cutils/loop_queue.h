@@ -62,18 +62,26 @@ void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
  * @return false
  */
 bool __loop_queue_pop_one_xxxx(__loop_queue_t *queue, void *data);
-#if 0
 
 /**
- * @brief pop一个元素
+ * @brief
  *
  * @param queue
  * @param data
+ * @param num 数据的数量，非uint8_t的数量,而是element的数量
+ * @return int
+ */
+int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num);
+/**
+ * @brief __loop_queue_push_some_xxxx
+ *
+ * @param queue
+ * @param data
+ * @param num　推入数据的数量，非uint8_t的数量,而是element的数量
  * @return true
  * @return false
  */
-int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num);
-#endif
+bool __loop_queue_push_some_xxxx(__loop_queue_t *queue, const void *data, int num);
 /**
  * @brief push一个元素
  *
@@ -107,6 +115,14 @@ bool __loop_queue_is_full(__loop_queue_t *queue);
  */
 size_t __loop_queue_get_size(__loop_queue_t *queue);
 
+/**
+ * @brief 获得队列的容量
+ *
+ * @param queue
+ * @return size_t
+ */
+size_t __loop_queue_get_element_capacity(__loop_queue_t *queue);
+
 #define LOOP_QUEUE_ENABLE_SUPPORT(name, type)                                  \
   typedef struct { __loop_queue_t handler; } loop_queue_##name##_t;            \
   static inline void loop_queue_init_##name(loop_queue_##name##_t *queue,      \
@@ -122,8 +138,8 @@ size_t __loop_queue_get_size(__loop_queue_t *queue);
                                                 type data) {                   \
     return __loop_queue_push_one_xxxx(&queue->handler, &data);                 \
   }                                                                            \
-  static inline bool loop_queue_push_one_##name##_p(                            \
-      loop_queue_##name##_t *queue, type *data) {                              \
+  static inline bool loop_queue_push_one_##name##_p(                           \
+      loop_queue_##name##_t *queue, const type *data) {                        \
     return __loop_queue_push_one_xxxx(&queue->handler, data);                  \
   }                                                                            \
   static inline bool loop_queue_is_empty_##name(                               \
@@ -136,6 +152,18 @@ size_t __loop_queue_get_size(__loop_queue_t *queue);
   static inline size_t loop_queue_get_size_##name(                             \
       loop_queue_##name##_t *queue) {                                          \
     return __loop_queue_get_size(&queue->handler);                             \
+  }                                                                            \
+  static inline int loop_queue_pop_some_##name(loop_queue_##name##_t *queue,   \
+                                               type *data, int num) {          \
+    return __loop_queue_pop_some_xxxx(&queue->handler, (void *)data, num);     \
+  }                                                                            \
+  static inline bool loop_queue_push_some_##name(loop_queue_##name##_t *queue, \
+                                                 type *data, int num) {        \
+    return __loop_queue_push_some_xxxx(&queue->handler, (void *)data, num);    \
+  }                                                                            \
+  static inline int loop_queue_get_capatity_##name(                            \
+      loop_queue_##name##_t *queue) {                                          \
+    return __loop_queue_get_element_capacity(&queue->handler);                 \
   }
 
 /**

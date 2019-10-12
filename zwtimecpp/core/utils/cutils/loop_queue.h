@@ -114,6 +114,13 @@ bool __loop_queue_is_full(__loop_queue_t *queue);
  * @return size_t
  */
 size_t __loop_queue_get_size(__loop_queue_t *queue);
+/**
+ * @brief 获得队列当前size
+ *
+ * @param queue
+ * @return size_t
+ */
+void __loop_queue_clear(__loop_queue_t *queue);
 
 /**
  * @brief 获得队列的容量
@@ -158,12 +165,15 @@ size_t __loop_queue_get_element_capacity(__loop_queue_t *queue);
     return __loop_queue_pop_some_xxxx(&queue->handler, (void *)data, num);     \
   }                                                                            \
   static inline bool loop_queue_push_some_##name(loop_queue_##name##_t *queue, \
-                                                 type *data, int num) {        \
+                                                 const type *data, int num) {  \
     return __loop_queue_push_some_xxxx(&queue->handler, (void *)data, num);    \
   }                                                                            \
   static inline int loop_queue_get_capatity_##name(                            \
       loop_queue_##name##_t *queue) {                                          \
     return __loop_queue_get_element_capacity(&queue->handler);                 \
+  }                                                                            \
+  static inline void loop_queue_clear_##name(loop_queue_##name##_t *queue) {    \
+    return __loop_queue_clear(&queue->handler);                                \
   }
 
 /**

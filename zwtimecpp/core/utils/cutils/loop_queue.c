@@ -36,6 +36,11 @@ size_t __loop_queue_get_element_capacity(__loop_queue_t *queue) {
   return queue->capacity / queue->each_element_size - 1;
 }
 
+void __loop_queue_clear_xxxx(__loop_queue_t *queue) {
+  queue->read_offset = 0;
+  queue->write_offset = 0;
+}
+
 void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
                             uint8_t *data, size_t size) {
   queue->buf = data;

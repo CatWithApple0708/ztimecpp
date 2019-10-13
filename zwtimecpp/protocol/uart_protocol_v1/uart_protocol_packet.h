@@ -5,6 +5,10 @@
 #pragma once
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h"
+/**
+ * @WARNING:
+ * 
+ */
 
 typedef struct {
   uint8_t parameters[MAX_SUPPORT_PACKET_PARAMETER_SIZE];
@@ -94,28 +98,216 @@ bool UPParametersContainer_push_buf(UP_parameters_container_t* container,
  * UP_buf_t packet = UP_construct_packet(basic_packt,packet_config);
  *
  */
+/**
+ * 构造基础包
+ */
 UPPacketConfig_basic_packet_t UPBasicPacketConfig_construct(uint16_t serial_num,
                                                             PacketType_t type);
-UPPacketConfig_shakehand_packet_t UPShakeHandPacket_construct_config();
-UPPacketConfig_ping_packet_t UPPingPacket_construct_config();
 
+/**
+* @brief 构造packet
+*
+* @param basic_packt
+* @param packet_config
+* @return UP_buf_t
+* @WARNING:此方法不可重入，如需可重入调用UP_construct_packet2
+*/
+UP_buf_t UP_construct_packet(UPPacketConfig_basic_packet_t basic_packt,
+                             UPPacketConfig_t packet_config);
+
+UP_buf_t UP_construct_packet2(UPPacketConfig_basic_packet_t basic_packt,
+                              UPPacketConfig_t packet_config, uint8_t* data,
+                              size_t length);
+
+/**
+ * @brief 构造握手包
+ *
+ */
+UPPacketConfig_shakehand_packet_t UPShakeHandPacket_construct_config();
+/**
+ * @brief 构建握手包
+ * 
+ * @param serial_num 
+ * @return UP_buf_t 
+ */
+static inline UP_buf_t UPShakeHandPacket_construct(uint16_t serial_num
+                                                   ) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kShakeHandPacket);
+  UPPacketConfig_t pc;
+  pc.shakehand_packet = UPShakeHandPacket_construct_config();
+  return UP_construct_packet(bpc, pc);
+};
+static inline UP_buf_t UPShakeHandPacket_construct2(uint16_t serial_num,
+                                                    
+                                                    uint8_t* data,
+                                                    size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kShakeHandPacket);
+  UPPacketConfig_t pc;
+  pc.shakehand_packet = UPShakeHandPacket_construct_config();
+  return UP_construct_packet2(bpc, pc, data, length);
+};
+/**
+ * @brief 构造ping包
+ *
+ * @return UPPacketConfig_ping_packet_t
+ */
+UPPacketConfig_ping_packet_t UPPingPacket_construct_config();
+/**
+ * @brief 构建ping包
+ *
+ * @param serial_num
+ * @return UP_buf_t
+ */
+static inline UP_buf_t UPPingPacket_construct(uint16_t serial_num
+                                              ) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kPingPacket);
+  UPPacketConfig_t pc;
+  pc.ping_packet = UPPingPacket_construct_config();
+  return UP_construct_packet(bpc, pc);
+};
+static inline UP_buf_t UPPingPacket_construct2(uint16_t serial_num,
+                                               uint8_t* data,
+                                               size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kPingPacket);
+  UPPacketConfig_t pc;
+  pc.ping_packet = UPPingPacket_construct_config();
+  return UP_construct_packet2(bpc, pc, data, length);
+};
+
+/**
+ * @brief 构造硬件操作包
+ *
+ * @param moduleType
+ * @param moduleNum
+ * @param operate_code
+ * @param dataPoint
+ * @param parameter_container
+ * @return UPPacketConfig_hardware_operate_packet_t
+ */
 UPPacketConfig_hardware_operate_packet_t
 UPHardwareOperatePacket_construct_config(
     UP_module_type_code_t moduleType, uint8_t moduleNum,
     UP_operate_code_t operate_code, uint16_t dataPoint,
     UP_parameters_container_t* parameter_container);
+/**
+ * @brief 打包硬件操作包
+ * 
+ * @param serial_num 
+ * @param moduleType 
+ * @param moduleNum 
+ * @param operate_code 
+ * @param dataPoint 
+ * @param parameter_container 
+ * @return UP_buf_t 
+ */
+static inline UP_buf_t UPHardwareOperatePacket_construct(
+    uint16_t serial_num,  UP_module_type_code_t moduleType,
+    uint8_t moduleNum, UP_operate_code_t operate_code, uint16_t dataPoint,
+    UP_parameters_container_t* parameter_container) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kHardwareOperatePacket);
+  UPPacketConfig_t pc;
+  pc.hardware_operate_packet = UPHardwareOperatePacket_construct_config(
+      moduleType, moduleNum, operate_code, dataPoint, parameter_container);
+  return UP_construct_packet(bpc, pc);
+};
+static inline UP_buf_t UPHardwareOperatePacket_construct2(
+    uint16_t serial_num,  UP_module_type_code_t moduleType,
+    uint8_t moduleNum, UP_operate_code_t operate_code, uint16_t dataPoint,
+    UP_parameters_container_t* parameter_container, uint8_t* data,
+    size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kHardwareOperatePacket);
+  UPPacketConfig_t pc;
+  pc.hardware_operate_packet = UPHardwareOperatePacket_construct_config(
+      moduleType, moduleNum, operate_code, dataPoint, parameter_container);
+  return UP_construct_packet2(bpc, pc, data, length);
+};
 
+/**
+ * @brief 构造系统事件上报包
+ *
+ * @param event
+ * @param parameter_container
+ * @return UPPacketConfig_genernal_system_report_packet_t
+ */
 UPPacketConfig_genernal_system_report_packet_t
 UPGenernalSystemReportPacket_construct_config(
     UP_GenernalSystemEvent_t event,
     UP_parameters_container_t* parameter_container);
+/**
+ * @brief 打包系统上报包
+ * 
+ * @param serial_num 
+ * @param event 
+ * @param parameter_container 
+ * @return UP_buf_t 
+ */
+static inline UP_buf_t UPGenernalSystemReportPacket_construct(
+    uint16_t serial_num,  UP_GenernalSystemEvent_t event,
+    UP_parameters_container_t* parameter_container) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kSystemEventReportPacket);
+  UPPacketConfig_t pc;
+  pc.genernal_system_report_packet =
+      UPGenernalSystemReportPacket_construct_config(event, parameter_container);
+  return UP_construct_packet(bpc, pc);
+};
+static inline UP_buf_t UPGenernalSystemReportPacket_construct2(
+    uint16_t serial_num,  UP_GenernalSystemEvent_t event,
+    UP_parameters_container_t* parameter_container, uint8_t* data,
+    size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kSystemEventReportPacket);
+  UPPacketConfig_t pc;
+  pc.genernal_system_report_packet =
+      UPGenernalSystemReportPacket_construct_config(event, parameter_container);
+  return UP_construct_packet2(bpc, pc, data, length);
+};
 
+/**
+ * @brief 构建通用回执包
+ *
+ * @param serial_num
+ * @param error_code
+ * @param parameter_container
+ * @return UPPacketConfig_general_receipt_packet_t
+ */
 UPPacketConfig_general_receipt_packet_t UPGeneralReceiptPacket_construct_config(
-    uint8_t serial_num, UP_error_code_t error_code,
+    uint8_t order_serial_num, UP_error_code_t error_code,
     UP_parameters_container_t* parameter_container);
-
-UP_buf_t UP_construct_packet(UPPacketConfig_basic_packet_t basic_packt,
-                             UPPacketConfig_t packet_config);
-
-UP_buf_t UP_construct_packet2(UPPacketConfig_basic_packet_t basic_packt,
-                             UPPacketConfig_t packet_config,uint8_t* data,size_t length);
+/**
+ * @brief 构造通用回执包
+ *
+ * @param serial_num
+ * @param order_serial_num
+ * @param error_code
+ * @param parameter_container
+ * @return UP_buf_t
+ */
+static inline UP_buf_t UPGGeneralReceiptPacket_construct(
+    uint16_t serial_num,  uint8_t order_serial_num,
+    UP_error_code_t error_code,
+    UP_parameters_container_t* parameter_container) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kReceiptPacket);
+  UPPacketConfig_t pc;
+  pc.general_receipt_packet = UPGeneralReceiptPacket_construct_config(
+      order_serial_num, error_code, parameter_container);
+  return UP_construct_packet(bpc, pc);
+};
+static inline UP_buf_t UPGGeneralReceiptPacket_construct2(
+    uint16_t serial_num,  uint8_t order_serial_num,
+    UP_error_code_t error_code, UP_parameters_container_t* parameter_container,
+    uint8_t* data, size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct(serial_num, kReceiptPacket);
+  UPPacketConfig_t pc;
+  pc.general_receipt_packet = UPGeneralReceiptPacket_construct_config(
+      order_serial_num, error_code, parameter_container);
+  return UP_construct_packet2(bpc, pc, data, length);
+};

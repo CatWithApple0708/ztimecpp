@@ -33,12 +33,87 @@ UPProcessPushRawDataRet_t UP_process_push_raw_data(
   }
   return ret;
 }
-/**
- * @brief UP_process_raw_data
- *
- * @param handler
- * @param on_container
- */
+static void sUP_process_raw_data_internal(uart_protocol_handler_t* handler,
+                                  UP_packet_container_cb_t on_container) {
+  int beginProcessOff = 0;
+  while (true) {
+    //找到包头
+    UPAnalysis_basic_packet_header_t* packet_header = NULL;
+    bool findHeader = false;
+    if (handler->usefullSize - beginProcessOff <
+        sizeof(UPAnalysis_basic_packet_header_t)) {
+      break;
+    }
+
+    for (size_t i = beginProcessOff;
+         i + sizeof(UPAnalysis_basic_packet_header_t) < handler->usefullSize;
+         i++) {
+      packet_header =
+          (UPAnalysis_basic_packet_header_t*)&handler->processbuf[i];
+      if (packet_header->header[0] == HEADER_FIRST &&
+          packet_header->header[1] == HEADER_SECOND) {
+        beginProcessOff = i;
+        findHeader = true;
+        break;
+      }
+      beginProcessOff = i;
+    }
+    if (!findHeader) {
+      break;
+    }
+
+    int remainUsefulDataSize = handler->usefullSize - beginProcessOff;
+    if (remainUsefulDataSize >= sizeof(UPAnalysis_basic_packet_header_t)) {
+      size_t internalPacketLength =
+          UPIBasicPacketHeader_get_packet_length(packet_header);
+      size_t totalLength = sizeof(UPAnalysis_basic_packet_header_t) +
+                           internalPacketLength + 1 /*tail*/;
+      size_t tailOff = beginProcessOff +
+                       sizeof(UPAnalysis_basic_packet_header_t) +
+                       internalPacketLength;
+
+      //情况一，完整的包
+      if (remainUsefulDataSize >= totalLength &&
+          handler->processbuf[tailOff] == TAIL) {
+        UP_packet_process_ret_t process_ret = UPPacketContainer_construct(
+            &handler->container, (uint8_t*)packet_header, totalLength);
+        if (process_ret.error_code == kErrorCode_Success) {
+          on_container(handler, process_ret, &handler->container);
+          beginProcessOff += totalLength;
+        } else {
+          on_container(handler, process_ret, NULL);
+          beginProcessOff += 1;
+        }
+      }
+      //情况二，包的长度过长
+      else if (totalLength > UPPacketContainer_get_packet_max_size()) {
+        UP_packet_process_ret_t process_ret = {
+            .receive_packet_serial_num = 0xff,
+            .error_code = kErrorCode_packetIsTooLong};
+        on_container(handler, process_ret, NULL);
+        beginProcessOff += 1;
+      }
+      //情况三，没有找到包尾部
+      else if (remainUsefulDataSize >= totalLength &&
+               handler->processbuf[tailOff] != TAIL) {
+        beginProcessOff += 1;
+      }
+      else {
+        //情况四，缓冲区数据不够
+        break;
+      }
+    }
+  }
+  //移除处理过的数据
+  memmove(handler->processbuf, handler->processbuf + beginProcessOff,
+          handler->usefullSize - beginProcessOff);
+  handler->usefullSize = handler->usefullSize - beginProcessOff;
+
+  //逻辑不应该运行到此处,此处仅是为了保证逻辑的正确性
+  if (handler->usefullSize >= ARRARY_SIZE(handler->processbuf)) {
+    handler->usefullSize = 0;
+  }
+}
 void UP_process_raw_data(uart_protocol_handler_t* handler,
                          UP_packet_container_cb_t on_container) {
   /*TODO: */
@@ -53,7 +128,6 @@ void UP_process_raw_data(uart_protocol_handler_t* handler,
     return;
   }
 
-  bool remain_size = 0;
   while (true) {
     //从缓冲buffer中取出适量的数据
     int pop_size = ARRARY_SIZE(handler->processbuf) - handler->usefullSize;
@@ -67,81 +141,8 @@ void UP_process_raw_data(uart_protocol_handler_t* handler,
     if (real_pop_size == 0) {
       break;
     }
-
-    int beginProcessOff = 0;
-    while (true) {
-      //找到包头
-      UPAnalysis_basic_packet_header_t* packet_header = NULL;
-      bool findHeader = false;
-      for (size_t i = beginProcessOff;
-           i + sizeof(UPAnalysis_basic_packet_header_t) < handler->usefullSize;
-           i++) {
-        packet_header =
-            (UPAnalysis_basic_packet_header_t*)&handler->processbuf[i];
-        if (packet_header->header[0] == HEADER_FIRST &&
-            packet_header->header[1] == HEADER_SECOND) {
-          beginProcessOff = i;
-          findHeader = true;
-          break;
-        }
-      }
-
-      if (findHeader) {
-        int remainUsefulDataSize = handler->usefullSize - beginProcessOff;
-        if (remainUsefulDataSize >= sizeof(UPAnalysis_basic_packet_header_t)) {
-          size_t internalPacketLength =
-              UPIBasicPacketHeader_get_packet_length(packet_header);
-          size_t totalLength = sizeof(UPAnalysis_basic_packet_header_t) +
-                               internalPacketLength + 1 /*tail*/;
-          size_t tailOff = beginProcessOff +
-                           sizeof(UPAnalysis_basic_packet_header_t) +
-                           internalPacketLength;
-
-          //情况一，完整的包
-          if (remainUsefulDataSize >= totalLength &&
-              handler->processbuf[tailOff] == TAIL) {
-            UP_packet_process_ret_t process_ret = UPPacketContainer_construct(
-                &handler->container, (uint8_t*)packet_header, totalLength);
-            if (process_ret.error_code == kErrorCode_Success) {
-              on_container(handler, process_ret, &handler->container);
-            } else {
-              on_container(handler, process_ret, NULL);
-              beginProcessOff += 1;
-            }
-          }
-          //情况二，包的长度过长
-          else if (totalLength > UPPacketContainer_get_packet_max_size()) {
-            UP_packet_process_ret_t process_ret = {
-                .receive_packet_serial_num = 0xff,
-                .error_code = kErrorCode_packetIsTooLong};
-            on_container(handler, process_ret, NULL);
-            beginProcessOff += 1;
-          }
-          //情况三，没有找到包尾部
-          else if (remainUsefulDataSize >= totalLength &&
-                   handler->processbuf[tailOff] != TAIL) {
-            beginProcessOff += 1;
-          }
-          //情况四，缓冲区数据不够
-          else {
-            //什么也不做等待收集到足够的数据
-            break;
-          }
-        } else {
-          break;
-        }
-      }
-
-      //移除处理过的数据
-      memmove(handler->processbuf, handler->processbuf + beginProcessOff,
-              handler->usefullSize - beginProcessOff);
-      handler->usefullSize = handler->usefullSize - beginProcessOff;
-
-      //逻辑不应该运行到此处,此处仅是为了保证逻辑的正确性
-      if (handler->usefullSize >= ARRARY_SIZE(handler->processbuf)) {
-        handler->usefullSize = 0;
-      }
-    }
+    handler->usefullSize += real_pop_size;
+    sUP_process_raw_data_internal(handler, on_container);
   }
   return;
 }
@@ -162,12 +163,14 @@ static int sUPPacketContainerConstruct_parse_parameter(
     if (cur_para_off + sizeof(uint16_t) > length - 1) {
       break;
     }
-
+    if (i >= paramter_table_size) {
+      break;
+    }
     uint8_t* cur_parameter_begin = &paramter[cur_para_off];
-    uint16_t parameter_size =
-        BIG_ENGINE_UINT8S_TO_UINT16(paramter[0], paramter[1]);
+    uint16_t parameter_size = BIG_ENGINE_UINT8S_TO_UINT16(
+        cur_parameter_begin[0], cur_parameter_begin[1]);
     uint8_t* parameter_data = &cur_parameter_begin[2];
-    paramter_table[i].buf = cur_parameter_begin;
+    paramter_table[i].buf = &cur_parameter_begin[2];
     paramter_table[i].length = parameter_size;
     parameter_num += 1;
     cur_para_off += sizeof(uint16_t) + parameter_size;
@@ -310,6 +313,8 @@ UP_packet_process_ret_t UPPacketContainer_construct(
           analysis_packet->data_point[0], analysis_packet->data_point[1]);
       hardware_operat_packet->operate_code =
           (UP_operate_code_t)analysis_packet->operate_code;
+      hardware_operat_packet->module_type = BIG_ENGINE_UINT8S_TO_UINT16(
+          analysis_packet->module_type[0], analysis_packet->module_type[1]);
       //解析参数
       int parameter_length =
           basic_packet->packet_length -
@@ -420,7 +425,7 @@ int32_t UPParameter_get_int32(UP_parameter_packet_t packet) {
   }
 
   bool positive = true;
-  if ((packet.buf[0] & (0x01 << 8)) > 0) {
+  if ((packet.buf[0] & (0x01 << 7)) > 0) {
     positive = false;
   } else {
     positive = true;
@@ -428,20 +433,20 @@ int32_t UPParameter_get_int32(UP_parameter_packet_t packet) {
 
   int32_t value = 0;
   if (packet.length == 1) {
-    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, 0, packet.buf[0] & (~0x01 << 8));
+    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, 0, packet.buf[0] & (~0x01 << 7));
   } else if (packet.length == 2) {
-    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, packet.buf[0] & (~0x01 << 8),
+    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, packet.buf[0] & (~0x01 << 7),
                                         packet.buf[1]);
   } else if (packet.length == 3) {
-    value = BIG_ENGINE_UINT8S_TO_UINT32(0, packet.buf[0] & (~0x01 << 8),
+    value = BIG_ENGINE_UINT8S_TO_UINT32(0, packet.buf[0] & (~0x01 << 7),
                                         packet.buf[1], packet.buf[2]);
   } else {
-    value = BIG_ENGINE_UINT8S_TO_UINT32((packet.buf[0] & (~0x01 << 8)),
+    value = BIG_ENGINE_UINT8S_TO_UINT32((packet.buf[0] & (~0x01 << 7)),
                                         packet.buf[1], packet.buf[2],
                                         packet.buf[3]);
   }
   if (!positive) {
-    value = !value;
+    value = -value;
   }
   return value;
 }

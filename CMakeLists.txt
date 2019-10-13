@@ -133,7 +133,9 @@ add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
 
 set(GTESTERS zwtimecpp/core/test/gtester/gtest_arrary.cc
              zwtimecpp/core/test/gtester/gtest_infinite_arrary.cc
-             zwtimecpp/core/test/gtester/gtest_loop_queue.cc)
+             zwtimecpp/core/test/gtester/gtest_loop_queue.cc
+             zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cc
+             )
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译
@@ -153,6 +155,8 @@ add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
 #####################################################################
 #core_runner_main
 #
-add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp)
+add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp
+zwtimecpp/core/test/runner/show_uart_v1_info.cc
+)
 target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
 add_dependencies(core_runner_main zwtimecpp zwtimecpptest)

@@ -34,7 +34,7 @@ bool UPParametersContainer_push_int32(UP_parameters_container_t* container,
 
   //设置符号位
   if (value < 0) {
-    begin[2] = begin[2] | (0x01 << 8);
+    begin[2] = (begin[2] | (0x01 << 7));
   }
   container->useful_size =
       container->useful_size + sizeof(int32_t) + UP_EACH_PARAMETR_MIN_SIZE;
@@ -53,7 +53,11 @@ bool UPParametersContainer_push_bool(UP_parameters_container_t* container,
   begin[1] = (1 >> 0) & 0xff;
 
   //设置数据数值
-  begin[2] = 1;
+  if (value) 
+    begin[2] = 1;
+  else
+    begin[2] = 0;
+
   container->useful_size =
       container->useful_size + 1 + UP_EACH_PARAMETR_MIN_SIZE;
 
@@ -295,15 +299,18 @@ UP_buf_t UP_construct_packet2(UPPacketConfig_basic_packet_t basic_packt,
   }
   /**
    * @brief kSystemEventReportPacket
-   *
    */
   else {
     return buf;
   }
 
+  header->length[0] = (packetLength >> 8) & 0xff;
+  header->length[1] = (packetLength >> 0) & 0xff;
+
   buf.buf = packet_buf;
   buf.len = packetLength + sizeof(UPAnalysis_basic_packet_header_t) +
             sizeof(UPAnalysis_basic_packet_tail_t);
+  packet_buf[buf.len - 1] = TAIL;
 
   return buf;
 }

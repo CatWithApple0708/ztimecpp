@@ -120,7 +120,7 @@ size_t __loop_queue_get_size(__loop_queue_t *queue);
  * @param queue
  * @return size_t
  */
-void __loop_queue_clear(__loop_queue_t *queue);
+void __loop_queue_clear_xxxx(__loop_queue_t *queue);
 
 /**
  * @brief 获得队列的容量
@@ -172,8 +172,8 @@ size_t __loop_queue_get_element_capacity(__loop_queue_t *queue);
       loop_queue_##name##_t *queue) {                                          \
     return __loop_queue_get_element_capacity(&queue->handler);                 \
   }                                                                            \
-  static inline void loop_queue_clear_##name(loop_queue_##name##_t *queue) {    \
-    return __loop_queue_clear(&queue->handler);                                \
+  static inline void loop_queue_clear_##name(loop_queue_##name##_t *queue) {   \
+    return __loop_queue_clear_xxxx(&queue->handler);                           \
   }
 
 /**

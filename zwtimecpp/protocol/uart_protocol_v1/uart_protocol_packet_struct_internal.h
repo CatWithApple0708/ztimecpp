@@ -22,23 +22,18 @@ typedef struct {
  *
  */
 #pragma pack(1)
-typedef struct UPAnalysis_basic_packet_tail_s UPAnalysis_basic_packet_tail_t;
-struct UPAnalysis_basic_packet_tail_s {
-  uint8_t tail;
-};
+typedef struct { uint8_t tail; } UPAnalysis_basic_packet_tail_t;
 #pragma pack()
 /**
  * @brief 通用回执包
  * 0x00
  */
 #pragma pack(1)
-typedef struct UPAnalysis_genernal_receipt_packet_header_s
-    UPAnalysis_genernal_receipt_packet_header_t;
-struct UPAnalysis_genernal_receipt_packet_header_s {
+typedef struct UPAnalysis_genernal_receipt_packet_header_s {
   uint8_t serial_num;
   uint8_t error_code;
   uint8_t parameter[];
-};
+} UPAnalysis_genernal_receipt_packet_header_t;
 #pragma pack()
 
 /**
@@ -46,11 +41,7 @@ struct UPAnalysis_genernal_receipt_packet_header_s {
  * 0x01
  */
 #pragma pack(1)
-typedef struct UPAnalysis_shake_hand_packet_header_s
-    UPAnalysis_shake_hand_packet_header_t;
-struct UPAnalysis_shake_hand_packet_header_s {
-  uint8_t pad;
-};
+typedef struct { uint8_t pad; } UPAnalysis_shake_hand_packet_header_t;
 #pragma pack()
 
 /**
@@ -58,10 +49,7 @@ struct UPAnalysis_shake_hand_packet_header_s {
  * 0x02
  */
 #pragma pack(1)
-typedef struct UPAnalysis_ping_packet_header_s UPAnalysis_ping_packet_header_t;
-struct UPAnalysis_ping_packet_header_s {
-  uint8_t pad;
-};
+typedef struct { uint8_t pad; } UPAnalysis_ping_packet_header_t;
 #pragma pack()
 
 /**
@@ -69,15 +57,13 @@ struct UPAnalysis_ping_packet_header_s {
  * 0x03
  */
 #pragma pack(1)
-typedef struct UPAnalysis_hardware_operate_packet_header_s
-    UPAnalysis_hardware_operate_packet_header_t;
-struct UPAnalysis_hardware_operate_packet_header_s {
+typedef struct {
   uint8_t module_type[2];
   uint8_t module_num;
   uint8_t data_point[2];
   uint8_t operate_code;
   uint8_t parameter[];
-};
+} UPAnalysis_hardware_operate_packet_header_t;
 #pragma pack()
 
 /**
@@ -85,12 +71,10 @@ struct UPAnalysis_hardware_operate_packet_header_s {
  * 0x03
  */
 #pragma pack(1)
-typedef struct UPAnalysis_system_event_report_packet_s
-    UPAnalysis_system_event_report_packet_t;
-struct UPAnalysis_system_event_report_packet_s {
+typedef struct {
   uint8_t system_event_type[2];
   uint8_t parameter[];
-};
+} UPAnalysis_system_event_report_packet_t;
 #pragma pack()
 
 #define BIG_ENGINE_UINT8S_TO_UINT16(byte0, byte1) \
@@ -105,5 +89,5 @@ struct UPAnalysis_system_event_report_packet_s {
 
 inline uint16_t UPIBasicPacketHeader_get_packet_length(
     UPAnalysis_basic_packet_header_t* header) {
-  return BIG_ENGINE_UINT8S_TO_UINT16(header->header[0], header->header[1]);
+  return BIG_ENGINE_UINT8S_TO_UINT16(header->length[0], header->length[1]);
 }

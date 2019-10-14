@@ -136,6 +136,7 @@ size_t __loop_queue_get_element_capacity(__loop_queue_t *queue);
                                             type *data, size_t size) {         \
     __loop_queue_init_xxxx(&queue->handler, sizeof(type), (uint8_t *)data,     \
                            size * sizeof(type));                               \
+    return;                                                                    \
   }                                                                            \
   static inline bool loop_queue_pop_one_##name(loop_queue_##name##_t *queue,   \
                                                type *data) {                   \
@@ -173,7 +174,8 @@ size_t __loop_queue_get_element_capacity(__loop_queue_t *queue);
     return __loop_queue_get_element_capacity(&queue->handler);                 \
   }                                                                            \
   static inline void loop_queue_clear_##name(loop_queue_##name##_t *queue) {   \
-    return __loop_queue_clear_xxxx(&queue->handler);                           \
+    __loop_queue_clear_xxxx(&queue->handler);                                  \
+    return;                                                                    \
   }
 
 /**

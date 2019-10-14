@@ -39,6 +39,7 @@ size_t __loop_queue_get_element_capacity(__loop_queue_t *queue) {
 void __loop_queue_clear_xxxx(__loop_queue_t *queue) {
   queue->read_offset = 0;
   queue->write_offset = 0;
+  return;
 }
 void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
                             uint8_t *data, size_t size) {
@@ -47,6 +48,7 @@ void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
   queue->read_offset = 0;
   queue->write_offset = 0;
   queue->each_element_size = each_element_size;
+  return;
 }
 
 bool __loop_queue_pop_one_xxxx(__loop_queue_t *queue, void *data) {

@@ -16,7 +16,7 @@ if(NOT zwtimecpp_build_on_parent)
     "-O1 -g3 -Werror=return-type -Werror=parentheses -Wfatal-errors  -Wall -Wno-deprecated-declarations -Wno-unused-variable -fexceptions  -ffunction-sections  -rdynamic -funwind-tables -fasynchronous-unwind-tables"
     )
   set(CMAKE_CXX_FLAGS_COMMON "-std=c++14 -pthread -Wno-reorder")
-  set(CMAKE_C_FLAGS_COMMON "")
+  set(CMAKE_C_FLAGS_COMMON "-std=c99")
 
   # 设置PC私有的宏定义 xxxx_PC_PRI
   set(C_AND_CXX_FLAGS_PC_PRI "")

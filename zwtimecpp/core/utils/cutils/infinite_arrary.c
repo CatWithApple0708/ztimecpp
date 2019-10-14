@@ -29,6 +29,7 @@ void __infinite_arrary_push_xxxx(__infinite_arrary_t *buffer, const void *data) 
       buffer->capacity / buffer->each_element_size) {
     buffer->useful_start_offset += 1;
   }
+  return;
 }
 bool __infinite_arrary_get_xxxx(__infinite_arrary_t *buffer, int32_t offset, void *data) {
   if (offset < buffer->useful_start_offset) {

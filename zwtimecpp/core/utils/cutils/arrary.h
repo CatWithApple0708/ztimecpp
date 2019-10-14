@@ -30,8 +30,9 @@ bool __vector_is_full(__vector_t* vector);
    */                                                                        \
   static INLINE void vector_##name##_init(vector_##name##_t* vector,         \
                                           type* data, size_t capacity) {     \
-    return __vector_init(&vector->vector, sizeof(type), (uint8_t*)data,      \
-                         capacity * sizeof(type));                           \
+    __vector_init(&vector->vector, sizeof(type), (uint8_t*)data,             \
+                  capacity * sizeof(type));                                  \
+    return;                                                                  \
   }                                                                          \
   /**                                                                        \
    * @brief 获得数组的开始地址                                      \
@@ -59,7 +60,8 @@ bool __vector_is_full(__vector_t* vector);
    *                                                                         \
    */                                                                        \
   static INLINE void vector_##name##_clear(vector_##name##_t* vector) {      \
-    return __vector_clear(&vector->vector);                                  \
+    __vector_clear(&vector->vector);                                         \
+    return;                                                                  \
   }                                                                          \
   /**                                                                        \
     * @brief 压入一个数据                                              \

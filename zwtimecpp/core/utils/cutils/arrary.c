@@ -6,11 +6,15 @@ void __vector_init(__vector_t* vector, size_t each_size, uint8_t* data,
   vector->data = data;
   vector->each_size = each_size;
   vector->size = 0;
+  return;
 }
 uint8_t* __vector_begin(__vector_t* vector) { return vector->data; }
 size_t __vector_size(__vector_t* vector) { return vector->size; }
 size_t __vector_capacity(__vector_t* vector) { return vector->capacity; }
-void __vector_clear(__vector_t* vector) { vector->size = 0; }
+void __vector_clear(__vector_t* vector) {
+  vector->size = 0;
+  return;
+}
 bool __vector_push(__vector_t* vector, uint8_t* data) {
   if (vector->size >= vector->capacity) return false;
   memcpy(&vector->data[vector->size * vector->each_size], data,

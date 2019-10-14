@@ -3,8 +3,10 @@
 //
 // 此文件中的方法均不支持重入
 #pragma once
+#include "zwtimecpp/core/utils/cutils/compiler_config.h"
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h"
+
 /**
  * @WARNING:
  * 
@@ -130,7 +132,7 @@ UPPacketConfig_shakehand_packet_t UPShakeHandPacket_construct_config();
  * @param serial_num 
  * @return UP_buf_t 
  */
-static inline UP_buf_t UPShakeHandPacket_construct(uint16_t serial_num
+static INLINE UP_buf_t UPShakeHandPacket_construct(uint16_t serial_num
                                                    ) {
   UPPacketConfig_basic_packet_t bpc =
       UPBasicPacketConfig_construct(serial_num, kShakeHandPacket);
@@ -138,7 +140,7 @@ static inline UP_buf_t UPShakeHandPacket_construct(uint16_t serial_num
   pc.shakehand_packet = UPShakeHandPacket_construct_config();
   return UP_construct_packet(bpc, pc);
 };
-static inline UP_buf_t UPShakeHandPacket_construct2(uint16_t serial_num,
+static INLINE UP_buf_t UPShakeHandPacket_construct2(uint16_t serial_num,
                                                     
                                                     uint8_t* data,
                                                     size_t length) {
@@ -160,7 +162,7 @@ UPPacketConfig_ping_packet_t UPPingPacket_construct_config();
  * @param serial_num
  * @return UP_buf_t
  */
-static inline UP_buf_t UPPingPacket_construct(uint16_t serial_num
+static INLINE UP_buf_t UPPingPacket_construct(uint16_t serial_num
                                               ) {
   UPPacketConfig_basic_packet_t bpc =
       UPBasicPacketConfig_construct(serial_num, kPingPacket);
@@ -168,7 +170,7 @@ static inline UP_buf_t UPPingPacket_construct(uint16_t serial_num
   pc.ping_packet = UPPingPacket_construct_config();
   return UP_construct_packet(bpc, pc);
 };
-static inline UP_buf_t UPPingPacket_construct2(uint16_t serial_num,
+static INLINE UP_buf_t UPPingPacket_construct2(uint16_t serial_num,
                                                uint8_t* data,
                                                size_t length) {
   UPPacketConfig_basic_packet_t bpc =
@@ -204,7 +206,7 @@ UPHardwareOperatePacket_construct_config(
  * @param parameter_container 
  * @return UP_buf_t 
  */
-static inline UP_buf_t UPHardwareOperatePacket_construct(
+static INLINE UP_buf_t UPHardwareOperatePacket_construct(
     uint16_t serial_num,  UP_module_type_code_t moduleType,
     uint8_t moduleNum, UP_operate_code_t operate_code, uint16_t dataPoint,
     UP_parameters_container_t* parameter_container) {
@@ -215,7 +217,7 @@ static inline UP_buf_t UPHardwareOperatePacket_construct(
       moduleType, moduleNum, operate_code, dataPoint, parameter_container);
   return UP_construct_packet(bpc, pc);
 };
-static inline UP_buf_t UPHardwareOperatePacket_construct2(
+static INLINE UP_buf_t UPHardwareOperatePacket_construct2(
     uint16_t serial_num,  UP_module_type_code_t moduleType,
     uint8_t moduleNum, UP_operate_code_t operate_code, uint16_t dataPoint,
     UP_parameters_container_t* parameter_container, uint8_t* data,
@@ -247,7 +249,7 @@ UPGenernalSystemReportPacket_construct_config(
  * @param parameter_container 
  * @return UP_buf_t 
  */
-static inline UP_buf_t UPGenernalSystemReportPacket_construct(
+static INLINE UP_buf_t UPGenernalSystemReportPacket_construct(
     uint16_t serial_num,  UP_GenernalSystemEvent_t event,
     UP_parameters_container_t* parameter_container) {
   UPPacketConfig_basic_packet_t bpc =
@@ -257,7 +259,7 @@ static inline UP_buf_t UPGenernalSystemReportPacket_construct(
       UPGenernalSystemReportPacket_construct_config(event, parameter_container);
   return UP_construct_packet(bpc, pc);
 };
-static inline UP_buf_t UPGenernalSystemReportPacket_construct2(
+static INLINE UP_buf_t UPGenernalSystemReportPacket_construct2(
     uint16_t serial_num,  UP_GenernalSystemEvent_t event,
     UP_parameters_container_t* parameter_container, uint8_t* data,
     size_t length) {
@@ -289,7 +291,7 @@ UPPacketConfig_general_receipt_packet_t UPGeneralReceiptPacket_construct_config(
  * @param parameter_container
  * @return UP_buf_t
  */
-static inline UP_buf_t UPGGeneralReceiptPacket_construct(
+static INLINE UP_buf_t UPGGeneralReceiptPacket_construct(
     uint16_t serial_num,  uint8_t order_serial_num,
     UP_error_code_t error_code,
     UP_parameters_container_t* parameter_container) {
@@ -300,7 +302,7 @@ static inline UP_buf_t UPGGeneralReceiptPacket_construct(
       order_serial_num, error_code, parameter_container);
   return UP_construct_packet(bpc, pc);
 };
-static inline UP_buf_t UPGGeneralReceiptPacket_construct2(
+static INLINE UP_buf_t UPGGeneralReceiptPacket_construct2(
     uint16_t serial_num,  uint8_t order_serial_num,
     UP_error_code_t error_code, UP_parameters_container_t* parameter_container,
     uint8_t* data, size_t length) {

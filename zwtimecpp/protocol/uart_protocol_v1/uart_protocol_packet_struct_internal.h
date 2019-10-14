@@ -1,5 +1,7 @@
 #pragma once
 #include "stdint.h"
+#include "zwtimecpp/core/utils/cutils/compiler_config.h"
+
 #define HEADER_FIRST (0x24)
 #define HEADER_SECOND (0xdb)
 #define TAIL (0x5e)
@@ -87,7 +89,7 @@ typedef struct {
 #define HIGH_UINT16(value) ((value >> 8) & 0xff)
 #define LOW_UINT16(value) ((value >> 0) & 0xff)
 
-inline uint16_t UPIBasicPacketHeader_get_packet_length(
+INLINE uint16_t UPIBasicPacketHeader_get_packet_length(
     UPAnalysis_basic_packet_header_t* header) {
   return BIG_ENGINE_UINT8S_TO_UINT16(header->length[0], header->length[1]);
 }

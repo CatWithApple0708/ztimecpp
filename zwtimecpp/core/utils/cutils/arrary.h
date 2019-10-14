@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "zwtimecpp/core/utils/cutils/compiler_config.h"
+
 typedef struct __vector_s __vector_t;
 struct __vector_s {
   size_t size;
@@ -26,7 +28,7 @@ bool __vector_is_full(__vector_t* vector);
    * @data,存储数据的空间                                             \
    * @capacity,空间大小                                                  \
    */                                                                        \
-  static inline void vector_##name##_init(vector_##name##_t* vector,         \
+  static INLINE void vector_##name##_init(vector_##name##_t* vector,         \
                                           type* data, size_t capacity) {     \
     return __vector_init(&vector->vector, sizeof(type), (uint8_t*)data,      \
                          capacity * sizeof(type));                           \
@@ -35,39 +37,39 @@ bool __vector_is_full(__vector_t* vector);
    * @brief 获得数组的开始地址                                      \
    *                                                                         \
    */                                                                        \
-  static inline type* vector_##name##_begin(vector_##name##_t* vector) {     \
+  static INLINE type* vector_##name##_begin(vector_##name##_t* vector) {     \
     return (type*)__vector_begin(&vector->vector);                           \
   }                                                                          \
   /**                                                                        \
    * @brief 当前数组中数量量                                         \
    *                                                                         \
    */                                                                        \
-  static inline size_t vector_##name##_size(vector_##name##_t* vector) {     \
+  static INLINE size_t vector_##name##_size(vector_##name##_t* vector) {     \
     return __vector_size(&vector->vector);                                   \
   }                                                                          \
   /**                                                                        \
    * @brief 获得数组的容积                                            \
    *                                                                         \
    */                                                                        \
-  static inline size_t vector_##name##_capacity(vector_##name##_t* vector) { \
+  static INLINE size_t vector_##name##_capacity(vector_##name##_t* vector) { \
     return __vector_capacity(&vector->vector);                               \
   }                                                                          \
   /**                                                                        \
    * @brief 清理数组                                                     \
    *                                                                         \
    */                                                                        \
-  static inline void vector_##name##_clear(vector_##name##_t* vector) {      \
+  static INLINE void vector_##name##_clear(vector_##name##_t* vector) {      \
     return __vector_clear(&vector->vector);                                  \
   }                                                                          \
   /**                                                                        \
     * @brief 压入一个数据                                              \
     *                                                                        \
     */                                                                       \
-  static inline bool vector_##name##_push(vector_##name##_t* vector,         \
+  static INLINE bool vector_##name##_push(vector_##name##_t* vector,         \
                                           type data) {                       \
     return __vector_push(&vector->vector, (uint8_t*)&data);                  \
   }                                                                          \
-  static inline bool vector_##name##_push_p(vector_##name##_t* vector,       \
+  static INLINE bool vector_##name##_push_p(vector_##name##_t* vector,       \
                                             const type* data) {              \
     return __vector_push(&vector->vector, (uint8_t*)data);                   \
   }                                                                          \
@@ -75,11 +77,11 @@ bool __vector_is_full(__vector_t* vector);
    * @brief 压入一个数据      \                                        \
    *                                                                         \
    */                                                                        \
-  static inline bool vector_##name##_push1(vector_##name##_t* vector,        \
+  static INLINE bool vector_##name##_push1(vector_##name##_t* vector,        \
                                            type* data) {                     \
     return __vector_push(&vector->vector, (uint8_t*)data);                   \
   }                                                                          \
-  static inline bool vector_##name##_is_full(vector_##name##_t* vector) {    \
+  static INLINE bool vector_##name##_is_full(vector_##name##_t* vector) {    \
     return __vector_is_full(&vector->vector);                                \
   }
 

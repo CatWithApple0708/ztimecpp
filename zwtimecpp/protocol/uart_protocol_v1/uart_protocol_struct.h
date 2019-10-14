@@ -2,7 +2,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "zwtimecpp/core/utils/cutils/compiler_config.h"
 #include "zwtimecpp/core/utils/cutils/loop_queue.h"
+
 #ifndef MAX_SUPPORT_PACKET_LENGTH
 #define MAX_SUPPORT_PACKET_LENGTH (2048)
 #endif

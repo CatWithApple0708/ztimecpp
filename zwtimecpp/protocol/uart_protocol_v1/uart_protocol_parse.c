@@ -169,7 +169,6 @@ static int sUPPacketContainerConstruct_parse_parameter(
     uint8_t* cur_parameter_begin = &paramter[cur_para_off];
     uint16_t parameter_size = BIG_ENGINE_UINT8S_TO_UINT16(
         cur_parameter_begin[0], cur_parameter_begin[1]);
-    uint8_t* parameter_data = &cur_parameter_begin[2];
     paramter_table[i].buf = &cur_parameter_begin[2];
     paramter_table[i].length = parameter_size;
     parameter_num += 1;
@@ -224,9 +223,8 @@ UP_packet_process_ret_t UPPacketContainer_construct(
     sUPPacketContainerConstruct_assign_basic_packet(basic_packet, header);
 
     //为general_receipt赋值
-    if (basic_packet->packet_length -
-            sizeof(UPAnalysis_genernal_receipt_packet_header_t) <
-        0) {
+    if (basic_packet->packet_length <
+        sizeof(UPAnalysis_genernal_receipt_packet_header_t)) {
       ret.error_code = kErrorCode_packetFormatError;
       ret.receive_packet_serial_num = header->serial_num;
       return ret;
@@ -299,9 +297,8 @@ UP_packet_process_ret_t UPPacketContainer_construct(
     //为basic_packet赋值
     sUPPacketContainerConstruct_assign_basic_packet(basic_packet, header);
     //为shake_hand_packet赋值
-    if (basic_packet->packet_length -
-            sizeof(UPAnalysis_hardware_operate_packet_header_t) <
-        0) {
+    if (basic_packet->packet_length  <
+        sizeof(UPAnalysis_hardware_operate_packet_header_t)) {
       ret.error_code = kErrorCode_packetFormatError;
       ret.receive_packet_serial_num = header->serial_num;
       return ret;
@@ -320,13 +317,14 @@ UP_packet_process_ret_t UPPacketContainer_construct(
       int parameter_length =
           basic_packet->packet_length -
           sizeof(UPAnalysis_hardware_operate_packet_header_t);
-
+      int parameterNum = 0;
+      if (parameter_length > 0) {
+        parameterNum = sUPPacketContainerConstruct_parse_parameter(
+            analysis_packet->parameter, parameter_length,
+            hardware_operat_packet->parameters,
+            ARRARY_SIZE(hardware_operat_packet->parameters));
+      }
       //为参数赋值
-      int parameterNum = sUPPacketContainerConstruct_parse_parameter(
-          analysis_packet->parameter, parameter_length,
-          hardware_operat_packet->parameters,
-          ARRARY_SIZE(hardware_operat_packet->parameters));
-
       hardware_operat_packet->parameterNum = parameterNum;
       ret.error_code = kErrorCode_Success;
       ret.receive_packet_serial_num = basic_packet->serial_num;
@@ -355,8 +353,9 @@ UP_packet_process_ret_t UPPacketContainer_construct(
           (UPAnalysis_system_event_report_packet_t*)basic_packet->packet;
 
       system_event_report_packet->event =
-          BIG_ENGINE_UINT8S_TO_UINT16(analysis_packet->system_event_type[0],
-                                      analysis_packet->system_event_type[1]);
+          (UP_GenernalSystemEvent_t)BIG_ENGINE_UINT8S_TO_UINT16(
+              analysis_packet->system_event_type[0],
+              analysis_packet->system_event_type[1]);
 
       //解析参数
       int parameter_length = basic_packet->packet_length -

@@ -311,8 +311,9 @@ UP_packet_process_ret_t UPPacketContainer_construct(
           analysis_packet->data_point[0], analysis_packet->data_point[1]);
       hardware_operat_packet->operate_code =
           (UP_operate_code_t)analysis_packet->operate_code;
-      hardware_operat_packet->module_type = BIG_ENGINE_UINT8S_TO_UINT16(
-          analysis_packet->module_type[0], analysis_packet->module_type[1]);
+      hardware_operat_packet->module_type =
+          (UP_module_type_code_t)BIG_ENGINE_UINT8S_TO_UINT16(
+              analysis_packet->module_type[0], analysis_packet->module_type[1]);
       //解析参数
       int parameter_length =
           basic_packet->packet_length -
@@ -342,9 +343,8 @@ UP_packet_process_ret_t UPPacketContainer_construct(
     //为basic_packet赋值
     sUPPacketContainerConstruct_assign_basic_packet(basic_packet, header);
     //为shake_hand_packet赋值
-    if (basic_packet->packet_length -
-            sizeof(UPAnalysis_system_event_report_packet_t) <
-        0) {
+    if (basic_packet->packet_length <
+        sizeof(UPAnalysis_system_event_report_packet_t)) {
       ret.error_code = kErrorCode_packetFormatError;
       ret.receive_packet_serial_num = header->serial_num;
       return ret;

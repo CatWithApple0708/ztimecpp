@@ -60,7 +60,7 @@ typedef enum {
   kErrorCode_parsePacketFail = 7,
   kErrorCode_packetFormatError = 8,
   kErrorCode_moduleNumNotSupport = 9,
-  kErrorCode_moduleIsInActive = 10,
+  kErrorCode_powerIsInActive = 10,
 } UP_error_code_t;
 /**
  * @brief 操作码

@@ -59,6 +59,8 @@ typedef enum {
   kErrorCode_NotSupportPacketType = 6,
   kErrorCode_parsePacketFail = 7,
   kErrorCode_packetFormatError = 8,
+  kErrorCode_moduleNumNotSupport = 9,
+  kErrorCode_moduleIsInActive = 10,
 } UP_error_code_t;
 /**
  * @brief 操作码
@@ -67,9 +69,10 @@ typedef enum {
   kOperateCode_read = 0,
   kOperateCode_write = 1,
   kOperateCode_report = 2,
-  kOperateCode_openReport = 3,
-  kOperateCode_setReportPeriod = 4,
-  kOperateCode_reportRequest = 5,
+  kOperateCode_openInitiativeReport = 3,
+  kOperateCode_openPeriodReport = 4,
+  kOperateCode_setReportPeriod = 5,
+  kOperateCode_reportRequest = 6,
 } UP_operate_code_t;
 /**
  * @brief 模块编号

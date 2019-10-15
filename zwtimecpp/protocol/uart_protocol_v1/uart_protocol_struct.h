@@ -69,7 +69,7 @@ typedef enum {
   kOperateCode_report = 2,
   kOperateCode_openReport = 3,
   kOperateCode_setReportPeriod = 4,
-  kOperateCode_
+  kOperateCode_reportRequest = 5,
 } UP_operate_code_t;
 /**
  * @brief 模块编号

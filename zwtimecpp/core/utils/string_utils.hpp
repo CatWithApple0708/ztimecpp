@@ -77,7 +77,15 @@ class StringUtils {
     }
     return false;
   }
-
+  /**
+   * @brief 16进制转换成byte数组
+   * 
+   * @param in 
+   * @param delims 分隔符，如果没有可写 "",
+   * @param byteTable 输出byte数组
+   * @return true 成功转换
+   * @return false 出错
+   */
   static bool hexStringToBytes(string in, string delims,
                                vector<uint8_t>& byteTable) {
     string hexTable;

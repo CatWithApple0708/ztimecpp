@@ -127,7 +127,7 @@ typedef enum {
 } UPDPGps_t;
 typedef enum {
   UPDPCardReader_rfid = 0x0100,
-  UPDPCardReader_2dcode = 0x0100,
+  UPDPCardReader_2dcode = 0x0101,
 } UPDPCardReader_t;
 typedef enum {
   UPDPHandProtection_value = 0x0100,

@@ -3,6 +3,7 @@
 //
 // 此文件中的方法均不支持重入
 #pragma once
+#include <string.h>
 #include "zwtimecpp/core/utils/cutils/compiler_config.h"
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h"
@@ -63,6 +64,13 @@ typedef union {
   (ARRARY_SIZE(((UP_parameters_container_t*)(0))->parameters))
 
 UP_parameters_container_t* UPParametersContainer_get();
+static INLINE UP_parameters_container_t* UPParametersContainer_initialize(
+    UP_parameters_container_t* paramer_c) {
+  if (paramer_c != NULL) {
+    memset(paramer_c, 0, sizeof(*paramer_c));
+  }
+  return paramer_c;
+};
 
 /**
  * @brief

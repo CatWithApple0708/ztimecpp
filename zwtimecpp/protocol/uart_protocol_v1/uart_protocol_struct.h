@@ -19,6 +19,8 @@
 
 #define MAX_UART_RECEIVE_BUF_NUM (2)
 
+#define UNMATCHED_SERIAL_NUM (0xff)
+
 /**
  * @brief
  * 协议基本约定
@@ -90,9 +92,26 @@ typedef enum {
   MTC_CardReader = 0x0008,
   MTC_HandProtection = 0x0009,
   MTC_OverflowDetector = 0x000a,
+  MTC_GarbageDumpingWindowsMotor = 0x000b,
+  MTC_GarbageDoorMotor = 0x000c,
+  MTC_Weighing = 0x000d,
+  MTC_Uart = 0x000e,
 } UP_module_type_code_t;
 /**
  * @brief 数据点定义
+ */
+#define DEFINE_DATA_POINT(name,destribe) typedef enum
+
+#define DEFINE_DATA_POINT_ENTRY(modue_name, data_point_name, value) \
+  UPDP##modue_name##_##data_point_name = 0x0100,
+
+#define DEFINE_DATA_END(name) UPDP##name##_t;
+
+/**
+ * @brief TODO:将下面的枚举修改成使用宏'定义的形式
+ * DEFINE_DATA_POINT
+ * DEFINE_DATA_POINT_ENTRY
+ * DEFINE_DATA_END
  */
 typedef enum {
   UPDPCommon_power = 0x0000,
@@ -132,9 +151,35 @@ typedef enum {
 typedef enum {
   UPDPHandProtection_value = 0x0100,
 } UPDPHandProtection_t;
-typedef enum {
-  UPDPOverflow_value = 0x0100,
-} UPDPOverflow_t;
+
+DEFINE_DATA_POINT(Overflow, "满溢检测数据点") {
+  DEFINE_DATA_POINT_ENTRY(Overflow, value, 0x0100)
+}
+DEFINE_DATA_END(Overflow)
+
+DEFINE_DATA_POINT(GarbageDumpingWindowsMoto, "垃圾箱倾倒倒口电机") {
+  DEFINE_DATA_POINT_ENTRY(GarbageDumpingWindowsMoto, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(GarbageDumpingWindowsMoto, status, 0x0101)
+}
+DEFINE_DATA_END(GarbageDumpingWindowsMoto)
+
+DEFINE_DATA_POINT(GarbageDoorMoto, "垃圾箱门电机") {
+  DEFINE_DATA_POINT_ENTRY(GarbageDoorMoto, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(GarbageDoorMoto, status, 0x0101)
+}
+DEFINE_DATA_END(GarbageDoorMoto)
+
+DEFINE_DATA_POINT(Weighting, "称重") {
+  DEFINE_DATA_POINT_ENTRY(Weighting, wight, 0x0100)
+}
+DEFINE_DATA_END(Weighting)
+
+DEFINE_DATA_POINT(Uart, "串口透传") {
+  DEFINE_DATA_POINT_ENTRY(Uart, write, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(Uart, report, 0x0101)
+  DEFINE_DATA_POINT_ENTRY(Uart, baudrate, 0x0102)
+}
+DEFINE_DATA_END(Uart)
 
 typedef struct {
   uint8_t *buf;

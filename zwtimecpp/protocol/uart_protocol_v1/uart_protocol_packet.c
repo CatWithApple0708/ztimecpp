@@ -159,7 +159,6 @@ UP_buf_t UP_construct_packet2(UPPacketConfig_basic_packet_t basic_packt,
                           sizeof(UPAnalysis_basic_packet_tail_t);
   /**
    * @brief kReceiptPacket
-   *
    */
   if (basic_packt.type == kReceiptPacket) {
     UPAnalysis_genernal_receipt_packet_header_t* sub_packet_header =

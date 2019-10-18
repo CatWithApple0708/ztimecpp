@@ -135,6 +135,7 @@ set(GTESTERS zwtimecpp/core/test/gtester/gtest_arrary.cc
              zwtimecpp/core/test/gtester/gtest_infinite_arrary.cc
              zwtimecpp/core/test/gtester/gtest_loop_queue.cc
              zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cc
+             zwtimecpp/core/test/gtester/gtest_string_utils.cpp
              )
 
 if(NOT zwtimecpp_build_on_parent)

@@ -141,6 +141,27 @@ class StringUtils {
     }
     return true;
   }
+
+  static char byteToChar(uint8_t byte) {
+    if (byte < 10) {
+      return '0' + byte;
+    } else {
+      return 'A' + (byte - 10);
+    }
+    throw std::out_of_range("byteToChar out of range");
+    return 'x';
+  }
+
+  static string bytesToString(vector<uint8_t>& byteTable) {
+    string ret;
+    for (auto& var : byteTable) {
+      uint8_t hight4 = var >> 4 & 0x0f;
+      uint8_t low4 = var >> 0 & 0x0f;
+      ret += byteToChar(hight4);
+      ret += byteToChar(low4);
+    }
+    return ret;
+  }
 };
 
 }  // namespace core

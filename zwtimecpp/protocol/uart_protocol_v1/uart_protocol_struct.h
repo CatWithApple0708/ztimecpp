@@ -97,6 +97,14 @@ typedef enum {
   MTC_Weighing = 0x000d,
   MTC_Uart = 0x000e,
 } UP_module_type_code_t;
+
+typedef enum {
+  UPDPMotorState_close,
+  UPDPMotorState_closing,
+  UPDPMotorState_open,
+  UPDPMotorState_opening
+} UPDPMotorState_t;
+
 /**
  * @brief 数据点定义
  */

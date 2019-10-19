@@ -55,6 +55,20 @@ class EventHandler : public Object {
   virtual void onEvent(shared_ptr<BaseEvent>) = 0;
 };
 
+class EventHandlerImpl : public enable_shared_from_this<EventHandlerImpl>,
+                         public EventHandler {
+  function<void(shared_ptr<BaseEvent> ptr)> onEventF;
+
+ public:
+  EventHandlerImpl(function<void(shared_ptr<BaseEvent> ptr)> onEventF)
+      : onEventF(onEventF){};
+  virtual void onEvent(shared_ptr<BaseEvent> ptr) override {
+    if (onEventF) {
+      onEventF(ptr);
+    }
+  };
+};
+
 class EventBus {
   ENABLE_LOGGER(EventBus);
   typedef map<type_index, vector<weak_ptr<EventHandler>>> quickFindMap_t;

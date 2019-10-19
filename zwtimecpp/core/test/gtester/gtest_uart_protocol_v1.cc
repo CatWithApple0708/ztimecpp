@@ -84,7 +84,7 @@ class TestGeneralReceiptPacket {
 
     UPPacketConfig_t packet_config;
     packet_config.general_receipt_packet =
-        UPGeneralReceiptPacket_construct_config(kErrorCode_parsePacketFail, para_container);
+        UPGeneralReceiptPacket_construct_config(error_code, para_container);
 
     UP_buf_t packet = UP_construct_packet(basic_packt, packet_config);
     uart_protocol_handler_t uart_protocol_handler;
@@ -119,10 +119,10 @@ class TestGeneralReceiptPacket {
 
           //通用回执包验证
           EXPECT_EQ(container->packet.general_receipt.error_code,
-                    kErrorCode_parsePacketFail);
+                    error_code);
 
           EXPECT_EQ(container->packet.general_receipt.error_code,
-                    kErrorCode_parsePacketFail);
+                    error_code);
 
           //测试构造参数
           EXPECT_EQ(container->packet.general_receipt.parameterNum,

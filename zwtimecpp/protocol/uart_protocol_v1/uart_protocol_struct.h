@@ -108,10 +108,10 @@ typedef enum {
 /**
  * @brief 数据点定义
  */
-#define DEFINE_DATA_POINT(name, destribe) typedef enum
+#define DEFINE_DATA_POINT(name) typedef enum
 
 #define DEFINE_DATA_POINT_ENTRY(modue_name, data_point_name, value) \
-  UPDP##modue_name##_##data_point_name = 0x0100,
+  UPDP##modue_name##_##data_point_name = value,
 
 #define DEFINE_DATA_END(name) UPDP##name##_t;
 
@@ -121,27 +121,27 @@ typedef enum {
  * DEFINE_DATA_POINT_ENTRY
  * DEFINE_DATA_END
  */
-DEFINE_DATA_POINT(Common, "Common") {
+DEFINE_DATA_POINT(Common) {
   DEFINE_DATA_POINT_ENTRY(Common, power, 0x0000)
 }
 DEFINE_DATA_END(Common);
 
-DEFINE_DATA_POINT(HumanSensor, "HumanSensor") {
+DEFINE_DATA_POINT(HumanSensor) {
   DEFINE_DATA_POINT_ENTRY(HumanSensor, HummanEvent, 0x0100)
 }
 DEFINE_DATA_END(HumanSensor);
 
-DEFINE_DATA_POINT(IndicatorLight, "IndicatorLight") {
+DEFINE_DATA_POINT(IndicatorLight) {
   DEFINE_DATA_POINT_ENTRY(IndicatorLight, invalid, 0x0100)
 }
 DEFINE_DATA_END(IndicatorLight);
 
-DEFINE_DATA_POINT(Light, "Light") {
+DEFINE_DATA_POINT(Light) {
   DEFINE_DATA_POINT_ENTRY(Light, invalid, 0x0100)
 }
 DEFINE_DATA_END(Light);
 
-DEFINE_DATA_POINT(Key, "按键上报") {
+DEFINE_DATA_POINT(Key) {
   DEFINE_DATA_POINT_ENTRY(Key, State, 0x0100)
   DEFINE_DATA_POINT_ENTRY(Key, PressDownEvent, 0x0101)
   DEFINE_DATA_POINT_ENTRY(Key, PressUpEvent, 0x0102)
@@ -149,55 +149,55 @@ DEFINE_DATA_POINT(Key, "按键上报") {
 }
 DEFINE_DATA_END(Key)
 
-DEFINE_DATA_POINT(UltrasonicSensor, "UltrasonicSensor") {
+DEFINE_DATA_POINT(UltrasonicSensor) {
   DEFINE_DATA_POINT_ENTRY(UltrasonicSensor, distance, 0x0100)
 }
 DEFINE_DATA_END(UltrasonicSensor);
 
-DEFINE_DATA_POINT(LightSensor, "LightSensor") {
+DEFINE_DATA_POINT(LightSensor) {
   DEFINE_DATA_POINT_ENTRY(LightSensor, intensity, 0x0100)
   DEFINE_DATA_POINT_ENTRY(LightSensor, boolintensity, 0x0101)
 }
 DEFINE_DATA_END(LightSensor);
-DEFINE_DATA_POINT(Gps, "Gps数据点") {
+DEFINE_DATA_POINT(Gps) {
   DEFINE_DATA_POINT_ENTRY(Gps, location, 0x0100)
 }
 
 DEFINE_DATA_END(Gps);
-DEFINE_DATA_POINT(CardReader, "CardReader") {
+DEFINE_DATA_POINT(CardReader) {
   DEFINE_DATA_POINT_ENTRY(CardReader, rfid, 0x0100)
   DEFINE_DATA_POINT_ENTRY(CardReader, 2dcode, 0x0101)
 }
 
 DEFINE_DATA_END(CardReader);
-DEFINE_DATA_POINT(HandProtection, "HandProtection") {
+DEFINE_DATA_POINT(HandProtection) {
   DEFINE_DATA_POINT_ENTRY(HandProtection, value, 0x0100)
 }
 DEFINE_DATA_END(HandProtection);
 
-DEFINE_DATA_POINT(OverflowDetector, "满溢检测数据点") {
+DEFINE_DATA_POINT(OverflowDetector) {
   DEFINE_DATA_POINT_ENTRY(OverflowDetector, value, 0x0100)
 }
 DEFINE_DATA_END(OverflowDetector)
 
-DEFINE_DATA_POINT(GarbageDumpingWindowsMotor, "垃圾箱倾倒倒口电机") {
+DEFINE_DATA_POINT(GarbageDumpingWindowsMotor) {
   DEFINE_DATA_POINT_ENTRY(GarbageDumpingWindowsMotor, action, 0x0100)
   DEFINE_DATA_POINT_ENTRY(GarbageDumpingWindowsMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GarbageDumpingWindowsMotor)
 
-DEFINE_DATA_POINT(GarbageDoorMotor, "垃圾箱门电机") {
+DEFINE_DATA_POINT(GarbageDoorMotor) {
   DEFINE_DATA_POINT_ENTRY(GarbageDoorMotor, action, 0x0100)
   DEFINE_DATA_POINT_ENTRY(GarbageDoorMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GarbageDoorMotor)
 
-DEFINE_DATA_POINT(Weighting, "称重") {
+DEFINE_DATA_POINT(Weighting) {
   DEFINE_DATA_POINT_ENTRY(Weighting, wight, 0x0100)
 }
 DEFINE_DATA_END(Weighting)
 
-DEFINE_DATA_POINT(Uart, "串口透传") {
+DEFINE_DATA_POINT(Uart) {
   DEFINE_DATA_POINT_ENTRY(Uart, write, 0x0100)
   DEFINE_DATA_POINT_ENTRY(Uart, report, 0x0101)
   DEFINE_DATA_POINT_ENTRY(Uart, baudrate, 0x0102)

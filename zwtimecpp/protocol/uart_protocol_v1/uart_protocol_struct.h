@@ -111,7 +111,7 @@ typedef enum {
 #define DEFINE_DATA_POINT(name, destribe) typedef enum
 
 #define DEFINE_DATA_POINT_ENTRY(modue_name, data_point_name, value) \
-  UPDP##modue_name##_##data_point_name = 0x0100,
+  UPDP##modue_name##_##data_point_name = value,
 
 #define DEFINE_DATA_END(name) UPDP##name##_t;
 

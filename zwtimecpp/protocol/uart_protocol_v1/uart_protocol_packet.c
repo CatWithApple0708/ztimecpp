@@ -126,14 +126,15 @@ UPGenernalSystemReportPacket_construct_config(
 }
 
 UPPacketConfig_general_receipt_packet_t UPGeneralReceiptPacket_construct_config(
-    uint8_t serial_num, UP_error_code_t error_code,
+    UP_error_code_t error_code,
     UP_parameters_container_t* parameter_container) {
   UPPacketConfig_general_receipt_packet_t packet = {0};
-  packet.serial_num = serial_num;
+  packet.serial_num = 0x00;//丢弃
   packet.error_code = error_code;
   packet.parameter_container = parameter_container;
   return packet;
 }
+
 UP_buf_t UP_construct_packet2(UPPacketConfig_basic_packet_t basic_packt,
                               UPPacketConfig_t packet_config,
                               uint8_t* packet_buf, size_t length) {

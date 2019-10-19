@@ -69,8 +69,7 @@ static void parameterCheck(UP_parameter_packet_t* packet,
 
 class TestGeneralReceiptPacket {
  public:
-  void TestGeneralReceiptPacketConstructAndParse(
-      uint8_t orderPacketSerialNum, UP_error_code_t error_code,
+  void TestGeneralReceiptPacketConstructAndParse(UP_error_code_t error_code,
       vector<int32_t> int32_value_table, vector<bool> bool_value_table) {
     uint8_t packetSerialNum = 0x01;
 
@@ -86,8 +85,7 @@ class TestGeneralReceiptPacket {
 
     UPPacketConfig_t packet_config;
     packet_config.general_receipt_packet =
-        UPGeneralReceiptPacket_construct_config(
-            orderPacketSerialNum, kErrorCode_parsePacketFail, para_container);
+        UPGeneralReceiptPacket_construct_config(kErrorCode_parsePacketFail, para_container);
 
     UP_buf_t packet = UP_construct_packet(basic_packt, packet_config);
     uart_protocol_handler_t uart_protocol_handler;
@@ -124,8 +122,6 @@ class TestGeneralReceiptPacket {
           EXPECT_EQ(container->packet.general_receipt.error_code,
                     kErrorCode_parsePacketFail);
 
-          EXPECT_EQ(container->packet.general_receipt.serial_num,
-                    orderPacketSerialNum);
           EXPECT_EQ(container->packet.general_receipt.error_code,
                     kErrorCode_parsePacketFail);
 
@@ -376,21 +372,19 @@ TEST(TestUartPortocolV1, testUPparameterContainerPushxxx) {
 TEST(TestUartPortocolV1, testParameterContainer) {
   TestGeneralReceiptPacket tester;
   tester.TestGeneralReceiptPacketConstructAndParse(
-      0x01, kErrorCode_Success, {1, 2, 3, -1, -3, -5}, {true, false});
+      kErrorCode_Success, {1, 2, 3, -1, -3, -5}, {true, false});
 
   tester.TestGeneralReceiptPacketConstructAndParse(
-      0x02, kErrorCode_packetIsTooLong, {1, 3, 6, 3, 4, -5}, {true, false});
+      kErrorCode_packetIsTooLong, {1, 3, 6, 3, 4, -5}, {true, false});
 
   tester.TestGeneralReceiptPacketConstructAndParse(
-      0x03, kErrorCode_receivePacketOverflow, {1, 1, 3, 9, 6, -5},
-      {true, false});
+      kErrorCode_receivePacketOverflow, {1, 1, 3, 9, 6, -5}, {true, false});
 
   tester.TestGeneralReceiptPacketConstructAndParse(
-      0x04, kErrorCode_moduleNotSupport, {1, 10, 3, -1, -3, -5}, {true, false});
+      kErrorCode_moduleNotSupport, {1, 10, 3, -1, -3, -5}, {true, false});
 
   tester.TestGeneralReceiptPacketConstructAndParse(
-      0x05, kErrorCode_DataPointNotSupport, {1, -2, 3, 1, -3, -5},
-      {true, false});
+      kErrorCode_DataPointNotSupport, {1, -2, 3, 1, -3, -5}, {true, false});
 }
 
 TEST(TestUartPortocolV1, test1) {
@@ -399,7 +393,7 @@ TEST(TestUartPortocolV1, test1) {
    */
   TestGeneralReceiptPacket tester;
   tester.TestGeneralReceiptPacketConstructAndParse(
-      0x01, kErrorCode_packetIsTooLong, {1, 2, 3, -1, -3, -5}, {true, false});
+      kErrorCode_packetIsTooLong, {1, 2, 3, -1, -3, -5}, {true, false});
 
   /**
    * @brief 测试ping包

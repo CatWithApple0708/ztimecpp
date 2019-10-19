@@ -288,8 +288,7 @@ static INLINE UP_buf_t UPGenernalSystemReportPacket_construct2(
  * @return UPPacketConfig_general_receipt_packet_t
  */
 UPPacketConfig_general_receipt_packet_t UPGeneralReceiptPacket_construct_config(
-    uint8_t order_serial_num, UP_error_code_t error_code,
-    UP_parameters_container_t* parameter_container);
+    UP_error_code_t error_code, UP_parameters_container_t* parameter_container);
 /**
  * @brief 构造通用回执包
  *
@@ -300,24 +299,23 @@ UPPacketConfig_general_receipt_packet_t UPGeneralReceiptPacket_construct_config(
  * @return UP_buf_t
  */
 static INLINE UP_buf_t UPGGeneralReceiptPacket_construct(
-    uint16_t serial_num,  uint8_t order_serial_num,
-    UP_error_code_t error_code,
+    uint16_t serial_num, UP_error_code_t error_code,
     UP_parameters_container_t* parameter_container) {
   UPPacketConfig_basic_packet_t bpc =
       UPBasicPacketConfig_construct(serial_num, kReceiptPacket);
   UPPacketConfig_t pc;
-  pc.general_receipt_packet = UPGeneralReceiptPacket_construct_config(
-      order_serial_num, error_code, parameter_container);
+  pc.general_receipt_packet =
+      UPGeneralReceiptPacket_construct_config(error_code, parameter_container);
   return UP_construct_packet(bpc, pc);
 };
 static INLINE UP_buf_t UPGGeneralReceiptPacket_construct2(
-    uint16_t serial_num,  uint8_t order_serial_num,
-    UP_error_code_t error_code, UP_parameters_container_t* parameter_container,
-    uint8_t* data, size_t length) {
+    uint16_t serial_num, UP_error_code_t error_code,
+    UP_parameters_container_t* parameter_container, uint8_t* data,
+    size_t length) {
   UPPacketConfig_basic_packet_t bpc =
       UPBasicPacketConfig_construct(serial_num, kReceiptPacket);
   UPPacketConfig_t pc;
-  pc.general_receipt_packet = UPGeneralReceiptPacket_construct_config(
-      order_serial_num, error_code, parameter_container);
+  pc.general_receipt_packet =
+      UPGeneralReceiptPacket_construct_config(error_code, parameter_container);
   return UP_construct_packet2(bpc, pc, data, length);
 };

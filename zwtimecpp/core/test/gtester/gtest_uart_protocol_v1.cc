@@ -69,9 +69,8 @@ static void parameterCheck(UP_parameter_packet_t* packet,
 
 class TestGeneralReceiptPacket {
  public:
-  void TestGeneralReceiptPacketConstructAndParse(UP_error_code_t error_code,
+  void TestGeneralReceiptPacketConstructAndParse(uint8_t packetSerialNum,UP_error_code_t error_code,
       vector<int32_t> int32_value_table, vector<bool> bool_value_table) {
-    uint8_t packetSerialNum = 0x01;
 
     /**
      * @brief 测试参数构造
@@ -116,7 +115,7 @@ class TestGeneralReceiptPacket {
 
           EXPECT_EQ(container->basic_packet.packet_type, kReceiptPacket);
 
-          EXPECT_EQ(container->basic_packet.serial_num, 0x01);
+          EXPECT_EQ(container->basic_packet.serial_num, packetSerialNum);
 
           //通用回执包验证
           EXPECT_EQ(container->packet.general_receipt.error_code,
@@ -261,7 +260,7 @@ class TestSystemEventReport {
 
           EXPECT_EQ(container->basic_packet.packet_type, kSystemEventReportPacket);
 
-          EXPECT_EQ(container->basic_packet.serial_num, 0x01);
+          EXPECT_EQ(container->basic_packet.serial_num, packetSerialNum);
           // subpacket验证
           EXPECT_EQ(container->packet.system_event_report_packet.event,
                     systemEvent);
@@ -315,7 +314,7 @@ class TestHardwareOperatePacket {
           EXPECT_EQ(container->basic_packet.packet_type,
                     kHardwareOperatePacket);
 
-          EXPECT_EQ(container->basic_packet.serial_num, 0x01);
+          EXPECT_EQ(container->basic_packet.serial_num, serial_num);
           // subpacket验证
 
           EXPECT_EQ(container->packet.hardware_opearte_packet.data_point,
@@ -367,23 +366,24 @@ TEST(TestUartPortocolV1, testUPparameterContainerPushxxx) {
     UPParametersContainer_push_bool(para_container, false);
     EXPECT_TRUE(memcmp(table, para_container->parameters, sizeof(table)) == 0);
   }
+  
 }
 
 TEST(TestUartPortocolV1, testParameterContainer) {
   TestGeneralReceiptPacket tester;
-  tester.TestGeneralReceiptPacketConstructAndParse(
+  tester.TestGeneralReceiptPacketConstructAndParse(1,
       kErrorCode_Success, {1, 2, 3, -1, -3, -5}, {true, false});
 
-  tester.TestGeneralReceiptPacketConstructAndParse(
+  tester.TestGeneralReceiptPacketConstructAndParse(2,
       kErrorCode_packetIsTooLong, {1, 3, 6, 3, 4, -5}, {true, false});
 
-  tester.TestGeneralReceiptPacketConstructAndParse(
+  tester.TestGeneralReceiptPacketConstructAndParse(3,
       kErrorCode_receivePacketOverflow, {1, 1, 3, 9, 6, -5}, {true, false});
 
-  tester.TestGeneralReceiptPacketConstructAndParse(
+  tester.TestGeneralReceiptPacketConstructAndParse(4,
       kErrorCode_moduleNotSupport, {1, 10, 3, -1, -3, -5}, {true, false});
 
-  tester.TestGeneralReceiptPacketConstructAndParse(
+  tester.TestGeneralReceiptPacketConstructAndParse(5,
       kErrorCode_DataPointNotSupport, {1, -2, 3, 1, -3, -5}, {true, false});
 }
 
@@ -392,7 +392,7 @@ TEST(TestUartPortocolV1, test1) {
    * @brief 测试硬件回执包
    */
   TestGeneralReceiptPacket tester;
-  tester.TestGeneralReceiptPacketConstructAndParse(
+  tester.TestGeneralReceiptPacketConstructAndParse(6,
       kErrorCode_packetIsTooLong, {1, 2, 3, -1, -3, -5}, {true, false});
 
   /**

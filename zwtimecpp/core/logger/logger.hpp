@@ -16,9 +16,14 @@
 #include "zwtimecpp/core/utils/nlohmann/json.hpp"
 
 #include "spdlog/fmt/ostr.h"
+extern "C" {
+#include <linux/input.h>
+#include "linux/input-event-codes.h"
+}
+
 namespace zwsd {}  // namespace zwsd
 
-#define ENABLE_BASIC_TYPE_LOGGER(type)                                                    \
+#define ENABLE_BASIC_TYPE_LOGGER(type)                                         \
   template <typename OStream>                                                  \
   static inline OStream &operator<<(OStream &os, const std::list<type> &c) {   \
     nlohmann::json j = c;                                                      \
@@ -49,3 +54,10 @@ ENABLE_BASIC_TYPE_LOGGER(float)
 ENABLE_BASIC_TYPE_LOGGER(double)
 
 #undef ENABLE_BASIC_TYPE_LOGGER
+
+// dump input event
+template <typename OStream>
+static inline OStream &operator<<(OStream &os, struct input_event &event) {
+  return os << fmt::format("input-event {} {} {}", event.type, event.code,
+                           event.value);
+}

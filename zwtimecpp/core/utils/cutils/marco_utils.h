@@ -5,13 +5,13 @@
  * API-List
  *
  * ARRARY_SIZE
- * 
+ *
  * BUILD_ASSERT
  * BUILD_ASSERT_OR_ZERO
- * 
+ *
  * min
  * max
- * clamp
+ * zclamp
  */
 
 #ifndef ARRARY_SIZE
@@ -54,63 +54,62 @@
  */
 #define BUILD_ASSERT_OR_ZERO(cond) (sizeof(char[1 - 2 * !(cond)]) - 1)
 
-
 #define EXTERN extern
 
 /**
  * @brief min and max
- * 
+ *
  */
-#define MINMAX_ASSERT_COMPATIBLE(a, b) \
+#define Z_MINMAX_ASSERT_COMPATIBLE(a, b) \
   BUILD_ASSERT(__builtin_types_compatible_p(a, b))
 
 /**
  * @brief 最小值
- * 
+ *
  */
-#define min(a, b)                                     \
-  ({                                                  \
-    typeof(a) _a = (a);                               \
-    typeof(b) _b = (b);                               \
-    MINMAX_ASSERT_COMPATIBLE(typeof(_a), typeof(_b)); \
-    _a < _b ? _a : _b;                                \
+#define zmin(a, b)                                      \
+  ({                                                    \
+    typeof(a) _a = (a);                                 \
+    typeof(b) _b = (b);                                 \
+    Z_MINMAX_ASSERT_COMPATIBLE(typeof(_a), typeof(_b)); \
+    _a < _b ? _a : _b;                                  \
   })
 
 /**
  * @brief 最大值
- * 
+ *
  */
-#define max(a, b)                                     \
-  ({                                                  \
-    typeof(a) _a = (a);                               \
-    typeof(b) _b = (b);                               \
-    MINMAX_ASSERT_COMPATIBLE(typeof(_a), typeof(_b)); \
-    _a > _b ? _a : _b;                                \
+#define zmax(a, b)                                      \
+  ({                                                    \
+    typeof(a) _a = (a);                                 \
+    typeof(b) _b = (b);                                 \
+    Z_MINMAX_ASSERT_COMPATIBLE(typeof(_a), typeof(_b)); \
+    _a > _b ? _a : _b;                                  \
   })
 
 /**
  * @brief 中间值
- * 
+ *
  */
-#define clamp(v, f, c) (max(min((v), (c)), (f)))
+#define zclamp(v, f, c) (zmax(zmin((v), (c)), (f)))
 
-#define min_t(t, a, b) \
-  ({                   \
-    t _ta = (a);       \
-    t _tb = (b);       \
-    min(_ta, _tb);     \
+#define zmin_t(t, a, b) \
+  ({                    \
+    t _ta = (a);        \
+    t _tb = (b);        \
+    zmin(_ta, _tb);     \
   })
-#define max_t(t, a, b) \
-  ({                   \
-    t _ta = (a);       \
-    t _tb = (b);       \
-    max(_ta, _tb);     \
+#define zmax_t(t, a, b) \
+  ({                    \
+    t _ta = (a);        \
+    t _tb = (b);        \
+    zmax(_ta, _tb);     \
   })
 
-#define clamp_t(t, v, f, c) \
-  ({                        \
-    t _tv = (v);            \
-    t _tf = (f);            \
-    t _tc = (c);            \
-    clamp(_tv, _tf, _tc);   \
+#define zclamp_t(t, v, f, c) \
+  ({                         \
+    t _tv = (v);             \
+    t _tf = (f);             \
+    t _tc = (c);             \
+    zclamp(_tv, _tf, _tc);   \
   })

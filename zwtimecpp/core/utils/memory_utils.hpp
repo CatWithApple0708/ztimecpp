@@ -3,7 +3,9 @@
 //
 
 #pragma once
+#include <string.h>
 #include <memory>
+#include <vector>
 
 /**
  * WARNING:
@@ -59,6 +61,7 @@
 #define zwdc dynamic_cast
 
 namespace zwsd {
+using namespace std;
 template <typename T, typename Base>
 static inline bool instanceof (const Base *ptr) {
   return dynamic_cast<const T *>(ptr) != nullptr;

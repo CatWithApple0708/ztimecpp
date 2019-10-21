@@ -13,4 +13,12 @@
   }                         \
   }
 
+#define zprocess_event(baseEvent)               \
+  shared_ptr<BaseEvent> pbaseEvent = baseEvent; \
+  if (false)
+#define zcase_event(eventType)            \
+  }                                       \
+  else if (instanceof <eventType>(ptr)) { \
+    shared_ptr<eventType> event = dpc<eventType>(pbaseEvent);
+
 /**/

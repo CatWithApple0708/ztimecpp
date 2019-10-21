@@ -46,7 +46,7 @@ typedef enum {
 
 typedef enum {
   kSystemSetup = 0x00, /*系统启动 */
-  KSystemWhoAmI,
+  KSystemWhoAmI = 0x01,
 } UP_GenernalSystemEvent_t;
 
 /**
@@ -168,6 +168,7 @@ DEFINE_DATA_END(Gps);
 DEFINE_DATA_POINT(CardReader) {
   DEFINE_DATA_POINT_ENTRY(CardReader, rfid, 0x0100)
   DEFINE_DATA_POINT_ENTRY(CardReader, 2dcode, 0x0101)
+  DEFINE_DATA_POINT_ENTRY(CardReader, 2dcodeOrRfid, 0x0102)
 }
 
 DEFINE_DATA_END(CardReader);

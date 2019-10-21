@@ -46,6 +46,7 @@ typedef enum {
 
 typedef enum {
   kSystemSetup = 0x00, /*系统启动 */
+  KSystemWhoAmI,
 } UP_GenernalSystemEvent_t;
 
 /**

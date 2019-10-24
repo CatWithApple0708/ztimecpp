@@ -99,8 +99,12 @@ public:
     {
         if (padinfo_.enabled())
         {
-            scoped_pad p(*msg.logger_name, padinfo_, dest);
-            fmt_helper::append_string_view(*msg.logger_name, dest);
+          std::string logname =(*msg.logger_name).substr(0,padinfo_.width_);
+          scoped_pad p(logname, padinfo_, dest);
+          fmt_helper::append_string_view(logname, dest);
+
+        //   scoped_pad p(*msg.logger_name, padinfo_, dest);
+        //   fmt_helper::append_string_view(*msg.logger_name, dest);
         }
         else
         {

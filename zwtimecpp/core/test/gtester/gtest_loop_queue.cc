@@ -146,6 +146,23 @@ TEST(TestLoopQueue, test_u8_push_large) {
   }
 }
 
+TEST(TestLoopQueue, test_u8_push_some_and_pop_some) {
+  loop_queue_u8_t loop_queue;
+  uint8_t buf[9] = {0};
+  loop_queue_init_u8(&loop_queue, buf, ARRARY_SIZE(buf));
+  
+  for(unsigned i = 0; i < 100; ++i) {
+    uint8_t pushbuf[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    uint8_t popbuf[ARRARY_SIZE(pushbuf)] = {0};
+    loop_queue_push_some_u8(&loop_queue, pushbuf, 6);
+    loop_queue_pop_some_u8(&loop_queue, popbuf, 3);
+    loop_queue_push_some_u8(&loop_queue, pushbuf + 6, 5);
+    loop_queue_pop_some_u8(&loop_queue, popbuf + 3, 8);
+
+    EXPECT_TRUE(memcmp(pushbuf, popbuf, ARRARY_SIZE(pushbuf)) == 0);
+  }
+}
+
 TEST(TestLoopQueue, test_u32) {
   {
     loop_queue_u32_t loop_queue;

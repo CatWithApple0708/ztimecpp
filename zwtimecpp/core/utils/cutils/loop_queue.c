@@ -51,6 +51,11 @@ void __loop_queue_init_xxxx(__loop_queue_t *queue, size_t each_element_size,
   return;
 }
 
+size_t __loop_queue_get_remain_size(__loop_queue_t *queue) {
+  return __loop_queue_get_element_capacity(queue) -
+         __loop_queue_get_size(queue);
+}
+
 bool __loop_queue_pop_one_xxxx(__loop_queue_t *queue, void *data) {
   //当前队列为空
   if (__loop_queue_is_empty(queue)) return false;
@@ -106,7 +111,7 @@ int __loop_queue_pop_some_xxxx(__loop_queue_t *queue, void *data, int num) {
 
 bool __loop_queue_push_some_xxxx(__loop_queue_t *queue, const void *data,
                                  int num) {
-  size_t q_size = __loop_queue_get_element_capacity(queue);
+  size_t q_size = __loop_queue_get_remain_size(queue);
   if (num > q_size) {
     return false;
   }
@@ -188,9 +193,4 @@ size_t __loop_queue_get_size(__loop_queue_t *queue) {
   } else {
     return 0;
   }
-}
-
-size_t __loop_queue_get_remain_size(__loop_queue_t *queue) {
-  return __loop_queue_get_element_capacity(queue) -
-         __loop_queue_get_size(queue);
 }

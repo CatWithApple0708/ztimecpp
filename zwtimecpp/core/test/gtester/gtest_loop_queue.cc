@@ -129,7 +129,21 @@ TEST(TestLoopQueue, test_u8_push_large) {
       }
     }
   }
-  std::cout << "end " << std::endl;
+
+  {
+    loop_queue_u8_t loop_queue;
+    uint8_t buf[16] = {0};
+    loop_queue_init_u8(&loop_queue, buf, ARRARY_SIZE(buf));
+    uint8_t pushbuf[] = {0, 1, 2, 3};
+    uint8_t popbuf[] = {0, 1, 2, 3};
+    for (unsigned i = 0; i < 100; ++i) {
+      bool value =
+          loop_queue_push_some_u8(&loop_queue, pushbuf, ARRARY_SIZE(pushbuf));
+      if (!value) {
+        loop_queue_pop_some_u8(&loop_queue, popbuf, 2);
+      }
+    }
+  }
 }
 
 TEST(TestLoopQueue, test_u32) {

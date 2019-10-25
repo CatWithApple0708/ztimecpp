@@ -135,7 +135,7 @@ bool __loop_queue_push_some_xxxx(__loop_queue_t *queue, const void *data,
     queue->write_offset = queue->write_offset + num * queue->each_element_size;
   } else if (queue->read_offset <= queue->write_offset) {
     size_t d3cpy_size =
-        (queue->capacity - queue->read_offset) / queue->each_element_size;
+        (queue->capacity - queue->write_offset) / queue->each_element_size;
     if (num <= d3cpy_size) {
       memcpy(queue->buf + queue->write_offset, data,
              num * queue->each_element_size);

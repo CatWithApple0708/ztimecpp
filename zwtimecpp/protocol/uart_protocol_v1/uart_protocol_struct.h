@@ -169,9 +169,9 @@ DEFINE_DATA_POINT(Gps) {
 DEFINE_DATA_END(Gps);
 
 DEFINE_DATA_POINT(CardReader) {
-  DEFINE_DATA_POINT_ENTRY(CardReader, rfid, 0x0100)
-  DEFINE_DATA_POINT_ENTRY(CardReader, 2dcode, 0x0101)
-  DEFINE_DATA_POINT_ENTRY(CardReader, 2dcodeOrRfid, 0x0102)
+  DEFINE_DATA_POINT_ENTRY(CardReader, write, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(CardReader, report, 0x0101)
+  DEFINE_DATA_POINT_ENTRY(CardReader, baudrate, 0x0102)
 }
 
 DEFINE_DATA_END(CardReader);

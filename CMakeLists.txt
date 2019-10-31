@@ -105,6 +105,8 @@ add_library(
   zwtimecpp/core/utils/type_name.hpp
   zwtimecpp/core/utils/instance.hpp
   zwtimecpp/core/utils/constant_utils.hpp
+  zwtimecpp/core/utils/unpacker/string_unpacker.cpp
+  zwtimecpp/core/utils/unpacker/string_unpacker.hpp
   #process
   zwtimecpp/core/utils/process/process.cpp
   zwtimecpp/core/utils/process/process.hpp
@@ -121,7 +123,6 @@ add_library(
   zwtimecpp/core/utils/cutils/infinite_arrary.h
   zwtimecpp/core/utils/cutils/loop_queue.c
   zwtimecpp/core/utils/cutils/loop_queue.h
-
   #protocol
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet_struct_internal.h
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet.c
@@ -133,12 +134,13 @@ add_library(
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)
 
-set(GTESTERS zwtimecpp/core/test/gtester/gtest_arrary.cc
-             zwtimecpp/core/test/gtester/gtest_infinite_arrary.cc
-             zwtimecpp/core/test/gtester/gtest_loop_queue.cc
-             zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cc
-             zwtimecpp/core/test/gtester/gtest_string_utils.cpp
-             )
+set(GTESTERS
+    zwtimecpp/core/test/gtester/gtest_arrary.cc
+    zwtimecpp/core/test/gtester/gtest_infinite_arrary.cc
+    zwtimecpp/core/test/gtester/gtest_loop_queue.cc
+    zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cc
+    zwtimecpp/core/test/gtester/gtest_string_utils.cpp
+    zwtimecpp/core/test/gtester/gtest_string_unpacker.cpp)
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译
@@ -159,7 +161,6 @@ add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
 #core_runner_main
 #
 add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp
-zwtimecpp/core/test/runner/show_uart_v1_info.cc
-)
+                                zwtimecpp/core/test/runner/show_uart_v1_info.cc)
 target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
 add_dependencies(core_runner_main zwtimecpp zwtimecpptest)

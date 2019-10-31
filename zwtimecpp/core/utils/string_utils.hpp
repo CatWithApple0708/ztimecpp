@@ -199,6 +199,21 @@ class StringUtils {
     }
     return ret;
   }
+
+  static void popback(string& in, int num) {
+    for (int i = 0; i < num; ++i) {
+      if (in.size() == 0) break;
+      in.pop_back();
+    }
+  }
+
+  static bool isEndWith(const string& in, string pattern) {
+    if (in.size() < pattern.size()) {
+      return false;
+    }
+    string end = in.substr(in.size() - pattern.size());
+    return (end == pattern);
+  }
 };
 
 }  // namespace core

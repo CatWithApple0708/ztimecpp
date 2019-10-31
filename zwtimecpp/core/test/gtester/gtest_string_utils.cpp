@@ -51,3 +51,33 @@ TEST(TestStringUtils, test_splitByString) {
     EXPECT_EQ(bytestr[3], "");
   }
 }
+
+TEST(TestStringUtils, test_isEndWith) {
+  string in = "hello.so";
+  string end = ".so";
+  string end1 = ".a";
+  string end2 = "hello.so";
+  string end3 = "1hello.so";
+  EXPECT_TRUE(StringUtils::isEndWith(in, end));
+  EXPECT_TRUE(!StringUtils::isEndWith(in, end1));
+  EXPECT_TRUE(StringUtils::isEndWith(in, end2));
+  EXPECT_TRUE(!StringUtils::isEndWith(in, end3));
+}
+
+TEST(TestStringUtils, test_popback) {
+  {
+    string in = "hello.so";
+    StringUtils::popback(in, 3);
+    EXPECT_EQ(in, "hello");
+  }
+  {
+    string in = "hello.so";
+    StringUtils::popback(in, 8);
+    EXPECT_EQ(in, "");
+  }
+  {
+    string in = "hello.so";
+    StringUtils::popback(in, 10);
+    EXPECT_EQ(in, "");
+  }
+}

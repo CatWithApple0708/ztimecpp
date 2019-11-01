@@ -1,4 +1,3 @@
-
 option(zwtimecpp_build_on_parent "zwtimecpp_build_on_parent" OFF)
 if(NOT zwtimecpp_build_on_parent)
   cmake_minimum_required(VERSION 3.13)
@@ -6,8 +5,8 @@ if(NOT zwtimecpp_build_on_parent)
   set(CMAKE_CXX_STANDARD 14)
   message(STATUS "Compile in default config")
   include_directories(. #
-                    ./zwtimecpp/core/logger
-                    ./zwtimecpp/core/utils/nmealib/include)
+                      ./zwtimecpp/core/logger
+                      ./zwtimecpp/core/utils/nmealib/include)
   ##############################################################################3
   #
   # 设置编译器相关配置
@@ -145,7 +144,9 @@ add_library(
   zwtimecpp/core/utils/nmealib/src/parser.c
   zwtimecpp/core/utils/nmealib/src/sentence.c
   zwtimecpp/core/utils/nmealib/src/time.c
-  zwtimecpp/core/utils/nmealib/src/tok.c)
+  zwtimecpp/core/utils/nmealib/src/tok.c
+  zwtimecpp/core/utils/nmea_wappter.cpp
+  zwtimecpp/core/utils/nmea_wappter.hpp)
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)
@@ -156,7 +157,8 @@ set(GTESTERS
     zwtimecpp/core/test/gtester/gtest_loop_queue.cc
     zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cc
     zwtimecpp/core/test/gtester/gtest_string_utils.cpp
-    zwtimecpp/core/test/gtester/gtest_string_unpacker.cpp)
+    zwtimecpp/core/test/gtester/gtest_string_unpacker.cpp
+    zwtimecpp/core/test/gtester/gtest_nmea_wappter.cpp)
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译

@@ -172,6 +172,9 @@ DEFINE_DATA_POINT(CardReader) {
   DEFINE_DATA_POINT_ENTRY(CardReader, write, 0x0100)
   DEFINE_DATA_POINT_ENTRY(CardReader, report, 0x0101)
   DEFINE_DATA_POINT_ENTRY(CardReader, baudrate, 0x0102)
+  DEFINE_DATA_POINT_ENTRY(CardReader, reportRfidOrQR, 0x0103)
+  DEFINE_DATA_POINT_ENTRY(CardReader, reportRfid, 0x0104)
+  DEFINE_DATA_POINT_ENTRY(CardReader, reportQR, 0x0105)
 }
 
 DEFINE_DATA_END(CardReader);

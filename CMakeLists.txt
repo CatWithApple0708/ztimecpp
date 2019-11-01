@@ -1,10 +1,13 @@
-include_directories(. ./zwtimecpp/core/logger)
+
 option(zwtimecpp_build_on_parent "zwtimecpp_build_on_parent" OFF)
 if(NOT zwtimecpp_build_on_parent)
   cmake_minimum_required(VERSION 3.13)
   project(ztimecpp)
   set(CMAKE_CXX_STANDARD 14)
   message(STATUS "Compile in default config")
+  include_directories(. #
+                    ./zwtimecpp/core/logger
+                    ./zwtimecpp/core/utils/nmealib/include)
   ##############################################################################3
   #
   # 设置编译器相关配置
@@ -39,6 +42,7 @@ if(NOT zwtimecpp_build_on_parent)
   link_directories(${PC_LINK_DIRS})
   link_libraries(${COMMON_LINK_LIBS} ${PC_LINK_LIBS})
   set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
+
 else()
   message(STATUS "Compile in parent config")
 endif()
@@ -129,7 +133,19 @@ add_library(
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet.h
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_parse.c
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_parse.h
-  zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h)
+  zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h
+  #nmea gps lib
+  zwtimecpp/core/utils/nmealib/src/context.c
+  zwtimecpp/core/utils/nmealib/src/generate.c
+  zwtimecpp/core/utils/nmealib/src/generator.c
+  zwtimecpp/core/utils/nmealib/src/gmath.c
+  zwtimecpp/core/utils/nmealib/src/info.c
+  zwtimecpp/core/utils/nmealib/src/nmea.vcproj
+  zwtimecpp/core/utils/nmealib/src/parse.c
+  zwtimecpp/core/utils/nmealib/src/parser.c
+  zwtimecpp/core/utils/nmealib/src/sentence.c
+  zwtimecpp/core/utils/nmealib/src/time.c
+  zwtimecpp/core/utils/nmealib/src/tok.c)
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)
@@ -145,6 +161,7 @@ set(GTESTERS
 if(NOT zwtimecpp_build_on_parent)
   #单独编译
   include_directories(./third/pc/include)
+
   link_directories(./third/pc/lib)
 endif()
 #####################################################################

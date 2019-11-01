@@ -12,8 +12,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "zwtimecpp/core/utils/container_utils.hpp"
 #include "zwtimecpp/core/logger/logger.hpp"
+#include "zwtimecpp/core/utils/container_utils.hpp"
 
 namespace {
 class Initializer {
@@ -27,6 +27,7 @@ using namespace core;
 class RunnerManager;
 class Runner {
   string name;
+  string describe;
   friend RunnerManager;
 
  public:
@@ -35,7 +36,7 @@ class Runner {
 
   virtual string introduction(logger_t logForHelp) = 0;
 
-  virtual string briefIntroduction() { return ""; };
+  virtual string briefIntroduction() { return describe; };
 };
 
 class RunnerManager {
@@ -53,10 +54,11 @@ class RunnerManager {
   };
 
   template <class T>
-  void pushRunner(string name) {
+  void pushRunner(string name, string describe) {
     shared_ptr<Runner> value(new T());
     RunnersMap[name] = value;
     value->name = name;
+    value->describe = describe;
   }
 
   void run(string module, int argc, char const *argv[]) {
@@ -66,7 +68,13 @@ class RunnerManager {
   }
 };
 }  // namespace zwsd
-#define ENABLE_TEST(className)                                         \
-  static Initializer className##Initializer([]() {                     \
-    zwsd::RunnerManager::Instance().pushRunner<className>(#className); \
+#define ENABLE_TEST(className)                                             \
+  static Initializer className##Initializer([]() {                         \
+    zwsd::RunnerManager::Instance().pushRunner<className>(#className, ""); \
+  });
+
+#define ENABLE_TEST2(className, describe)                             \
+  static Initializer className##Initializer([]() {                    \
+    zwsd::RunnerManager::Instance().pushRunner<className>(#className, \
+                                                          describe);  \
   });

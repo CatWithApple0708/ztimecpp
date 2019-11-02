@@ -37,8 +37,8 @@ class NmeaINFO {
   bool isContaninLocationInfo() {
     return (info.smask & GPGGA);
   }
-  double getLongitude() { return info.lon; }
-  double getLatitude() { return info.lat; }
+  double getLongitude() { return info.lon / 100; }
+  double getLatitude() { return info.lat / 100; }
   double getAltitude() { return info.elv; }
 };
 typedef function<void(NmeaINFO info)> onGpsInfo_t;

@@ -11,8 +11,11 @@ void StringUnpacker::feddata(const char* rawData, size_t len,
     int strBeginOff = 0;
     for (unsigned i = 0; i < len; ++i) {
       if (rawData[i] < '\0' || rawData[i] > 127 /*删除线*/) {
-        logger->error("{} feddata encounter error input {},delim is \\0", name,
-                      (uint8_t)rawData[i]);
+        vector<uint8_t> input(rawData, rawData + len);
+        logger->error(
+            "{} feddata encounter error input {} off {}, rawData{} ,delim is "
+            "{}",
+            name, (uint8_t)rawData[i], i, input, "\\0");
         buf.clear();
         return;
       }
@@ -33,8 +36,12 @@ void StringUnpacker::feddata(const char* rawData, size_t len,
     for (unsigned i = 0; i < len; ++i) {
       if (rawData[i] <= '\0' /*这里没有写错，是小于等于 */ ||
           rawData[i] > 127 /*删除线*/) {
-        logger->error("{} feddata encounter error input {} ,delim is {}", name,
-                      (uint8_t)rawData[i], delim);
+        vector<uint8_t> input(rawData, rawData + len);
+        logger->error(
+            "{} feddata encounter error input {} off {}, rawData{} ,delim is "
+            "{}",
+            name, (uint8_t)rawData[i], i, input, delim);
+
         buf.clear();
         return;
       }

@@ -366,7 +366,13 @@ TEST(TestUartPortocolV1, testUPparameterContainerPushxxx) {
     UPParametersContainer_push_bool(para_container, false);
     EXPECT_TRUE(memcmp(table, para_container->parameters, sizeof(table)) == 0);
   }
-  
+
+  {
+    uint8_t table[] = {0x00, 0x04, 0x01,0x02,0x03,0x04};
+    UP_parameters_container_t* para_container = UPParametersContainer_get();
+    UPParametersContainer_push_buf(para_container, &table[2], 4);
+    EXPECT_TRUE(memcmp(table, para_container->parameters, sizeof(table)) == 0);
+  }
 }
 
 TEST(TestUartPortocolV1, testParameterContainer) {

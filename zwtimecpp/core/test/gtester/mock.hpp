@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "zwtimecpp/core/utils/testable.hpp"
 #include "zwtimecpp/core/core.hpp"
 #include "zwtimecpp/core/logger/logger.hpp"
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
@@ -60,6 +61,11 @@ class GtestLogger {
 class MockEventListener : public EventHandler {
  public:
   MOCK_METHOD1(onEvent, void(shared_ptr<BaseEvent>));
+};
+
+class MockTestListener : public TestListener {
+ public:
+  MOCK_METHOD1(onCall, void(string mark));
 };
 
 class ISignalListener {

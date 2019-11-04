@@ -13,6 +13,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "zwtimecpp/core/utils/utc/utctime.hpp"
 
 namespace zwsd {
 namespace core {
@@ -83,25 +84,23 @@ class TimeUtils {
     return move(tp);
   }
 
-  
-
   /**
    * @brief 时间操作
    */
-  static inline time_point<system_clock> addh(
-      time_point<system_clock> point, int value) {
+  static inline time_point<system_clock> addh(time_point<system_clock> point,
+                                              int value) {
     return point + hours(value);
   }
-  static inline time_point<system_clock> adds(
-      time_point<system_clock> point, int value) {
+  static inline time_point<system_clock> adds(time_point<system_clock> point,
+                                              int value) {
     return point + seconds(value);
   }
-  static inline time_point<system_clock> addms(
-      time_point<system_clock> point, int value) {
+  static inline time_point<system_clock> addms(time_point<system_clock> point,
+                                               int value) {
     return point + milliseconds(value);
   }
-  static inline time_point<system_clock> addus(
-      time_point<system_clock> point, int value) {
+  static inline time_point<system_clock> addus(time_point<system_clock> point,
+                                               int value) {
     return point + microseconds(value);
   }
 
@@ -138,9 +137,7 @@ class TimeUtils {
     return dToUs(system_clock::now() - begin);
   }
 
-  static int64_t elapsedTimeS(int64_t ms) {
-    return (getms() - ms) / 1000;
-  }
+  static int64_t elapsedTimeS(int64_t ms) { return (getms() - ms) / 1000; }
   static int64_t inline elapsedTimeMs(int64_t ms) { return (getms() - ms); }
   static int64_t inline elapsedTimeMs(int64_t now, int64_t ms) {
     return (now - ms);
@@ -164,6 +161,21 @@ class TimeUtils {
   }
   static int64_t countdownTimeNs(time_point<system_clock> endtime) {
     return dToNs(endtime - system_clock::now());
+  }
+
+ public:
+  static UTCTime getBeijingTime() {
+    std::tm now = UTCTime().get_tm();
+    std::tm* beijingTime = utctime::tm_increment_hour(&now, 8);
+    return UTCTime(*beijingTime);
+  };
+  static UTCTime getUTCTime() { return UTCTime(); };
+  static UTCTime getLocalTime() {
+    time_t tt =
+        std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    struct tm cur;
+    struct tm* ptminfo = localtime_r(&tt, &cur);
+    return UTCTime(*ptminfo);
   }
 };
 };  // namespace core

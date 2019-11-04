@@ -146,7 +146,9 @@ add_library(
   zwtimecpp/core/utils/nmealib/src/time.c
   zwtimecpp/core/utils/nmealib/src/tok.c
   zwtimecpp/core/utils/nmea_wappter.cpp
-  zwtimecpp/core/utils/nmea_wappter.hpp)
+  zwtimecpp/core/utils/nmea_wappter.hpp
+  zwtimecpp/core/utils/utc/utctime.cpp
+  zwtimecpp/core/utils/utc/utctime.hpp)
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)

@@ -189,7 +189,7 @@ class StringUtils {
     return 'x';
   }
 
-  static string bytesToString(vector<uint8_t>& byteTable) {
+  static string bytesToString(const vector<uint8_t>& byteTable) {
     string ret;
     for (auto& var : byteTable) {
       uint8_t hight4 = var >> 4 & 0x0f;

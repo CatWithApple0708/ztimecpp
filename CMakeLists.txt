@@ -139,7 +139,6 @@ add_library(
   zwtimecpp/core/utils/nmealib/src/generator.c
   zwtimecpp/core/utils/nmealib/src/gmath.c
   zwtimecpp/core/utils/nmealib/src/info.c
-  zwtimecpp/core/utils/nmealib/src/nmea.vcproj
   zwtimecpp/core/utils/nmealib/src/parse.c
   zwtimecpp/core/utils/nmealib/src/parser.c
   zwtimecpp/core/utils/nmealib/src/sentence.c

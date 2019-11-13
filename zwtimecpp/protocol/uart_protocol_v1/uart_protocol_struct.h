@@ -100,6 +100,8 @@ typedef enum {
   MTC_GripMotor = 0x000f,
   MTC_GarbageSensor = 0x0010,
   MTC_PhotoLight = 0x0011,
+  MTC_DryGarbageUart = 0x0012,
+  MTC_WetGarbageUart = 0x0013,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -175,6 +177,20 @@ DEFINE_DATA_POINT(Gps) {
   DEFINE_DATA_POINT_ENTRY(Gps, baudrate, 0x0102)
 }
 DEFINE_DATA_END(Gps);
+
+DEFINE_DATA_POINT(DryGarbageUart) {
+  DEFINE_DATA_POINT_ENTRY(DryGarbageUart, write, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(DryGarbageUart, report, 0x0101)
+  DEFINE_DATA_POINT_ENTRY(DryGarbageUart, baudrate, 0x0102)
+}
+DEFINE_DATA_END(DryGarbageUart);
+
+DEFINE_DATA_POINT(WetGarbageUart) {
+  DEFINE_DATA_POINT_ENTRY(WetGarbageUart, write, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(WetGarbageUart, report, 0x0101)
+  DEFINE_DATA_POINT_ENTRY(WetGarbageUart, baudrate, 0x0102)
+}
+DEFINE_DATA_END(WetGarbageUart);
 
 DEFINE_DATA_POINT(CardReader) {
   DEFINE_DATA_POINT_ENTRY(CardReader, write, 0x0100)

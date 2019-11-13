@@ -97,6 +97,7 @@ typedef enum {
   MTC_GarbageDoorMotor = 0x000c,
   MTC_Weighting = 0x000d,
   MTC_Uart = 0x000e,
+  MTC_GripMotor = 0x000f,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -193,6 +194,12 @@ DEFINE_DATA_POINT(GarbageDumpingWindowsMotor) {
   DEFINE_DATA_POINT_ENTRY(GarbageDumpingWindowsMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GarbageDumpingWindowsMotor)
+
+DEFINE_DATA_POINT(GripMotor) {
+  DEFINE_DATA_POINT_ENTRY(GripMotor, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(GripMotor, status, 0x0101)
+}
+DEFINE_DATA_END(GripMotor)
 
 DEFINE_DATA_POINT(GarbageDoorMotor) {
   DEFINE_DATA_POINT_ENTRY(GarbageDoorMotor, action, 0x0100)

@@ -98,6 +98,8 @@ typedef enum {
   MTC_Weighting = 0x000d,
   MTC_Uart = 0x000e,
   MTC_GripMotor = 0x000f,
+  MTC_GarbageSensor = 0x0010,
+  MTC_PhotoLight = 0x0011,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -132,6 +134,11 @@ DEFINE_DATA_POINT(HumanSensor) {
   DEFINE_DATA_POINT_ENTRY(HumanSensor, HummanEvent, 0x0100)
 }
 DEFINE_DATA_END(HumanSensor);
+
+DEFINE_DATA_POINT(GarbageSensor) {
+  DEFINE_DATA_POINT_ENTRY(GarbageSensor, GarbageEvent, 0x0100)
+}
+DEFINE_DATA_END(GarbageSensor);
 
 DEFINE_DATA_POINT(IndicatorLight) {
   DEFINE_DATA_POINT_ENTRY(IndicatorLight, invalid, 0x0100)

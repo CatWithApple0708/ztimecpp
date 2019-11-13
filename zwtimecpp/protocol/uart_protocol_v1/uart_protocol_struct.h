@@ -136,7 +136,7 @@ DEFINE_DATA_POINT(HumanSensor) {
 DEFINE_DATA_END(HumanSensor);
 
 DEFINE_DATA_POINT(GarbageSensor) {
-  DEFINE_DATA_POINT_ENTRY(GarbageSensor, GarbageEvent, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(GarbageSensor, value, 0x0100)
 }
 DEFINE_DATA_END(GarbageSensor);
 

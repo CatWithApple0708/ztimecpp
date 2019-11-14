@@ -64,6 +64,7 @@ typedef enum {
   kErrorCode_packetFormatError = 8,
   kErrorCode_moduleNumNotSupport = 9,
   kErrorCode_powerIsInActive = 10,
+  kErrorCode_CmdNotSupport = 11,
 } UP_error_code_t;
 /**
  * @brief 操作码
@@ -102,6 +103,7 @@ typedef enum {
   MTC_PhotoLight = 0x0011,
   MTC_DryGarbageUart = 0x0012,
   MTC_WetGarbageUart = 0x0013,
+  MTC_GarbageConveyer = 0x0014,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -110,6 +112,15 @@ typedef enum {
   UPDPMotorState_open,
   UPDPMotorState_opening
 } UPDPMotorState_t;
+
+/**
+ * 传输带状态
+*/
+typedef enum {
+  UPDPConveyerState_stop,
+  UPDPConveyerState_forward_moving,//正向运动
+  UPDPConveyerState_reverse_moving //反向运动
+} UPDPConveyerState_t;
 
 /**
  * @brief 数据点定义
@@ -217,6 +228,12 @@ DEFINE_DATA_POINT(GarbageDumpingWindowsMotor) {
   DEFINE_DATA_POINT_ENTRY(GarbageDumpingWindowsMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GarbageDumpingWindowsMotor)
+
+DEFINE_DATA_POINT(GarbageConveyerMotor) {
+  DEFINE_DATA_POINT_ENTRY(GarbageConveyerMotor, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(GarbageConveyerMotor, status, 0x0101)
+}
+DEFINE_DATA_END(GarbageConveyerMotor)
 
 DEFINE_DATA_POINT(GripMotor) {
   DEFINE_DATA_POINT_ENTRY(GripMotor, action, 0x0100)

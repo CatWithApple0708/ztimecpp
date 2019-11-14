@@ -104,6 +104,7 @@ typedef enum {
   MTC_DryGarbageUart = 0x0012,
   MTC_WetGarbageUart = 0x0013,
   MTC_GarbageConveyer = 0x0014,
+  MTC_PhotoSensor = 0x0015,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -152,6 +153,11 @@ DEFINE_DATA_POINT(GarbageSensor) {
   DEFINE_DATA_POINT_ENTRY(GarbageSensor, value, 0x0100)
 }
 DEFINE_DATA_END(GarbageSensor);
+
+DEFINE_DATA_POINT(PhotoSensor) {
+  DEFINE_DATA_POINT_ENTRY(PhotoSensor, value, 0x0100)
+}
+DEFINE_DATA_END(PhotoSensor);
 
 DEFINE_DATA_POINT(IndicatorLight) {
   DEFINE_DATA_POINT_ENTRY(IndicatorLight, invalid, 0x0100)

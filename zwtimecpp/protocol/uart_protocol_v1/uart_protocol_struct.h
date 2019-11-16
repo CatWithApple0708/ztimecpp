@@ -109,9 +109,12 @@ typedef enum {
   MTC_RazorStepMotor = 0x0017,
   MTC_HotMelt = 0x0018,
   MTC_GarbageBeltSensor = 0x0019,
+  MTC_SealXMotor = 0x0020,
+  MTC_SealYMotor = 0x0021,
 } UP_module_type_code_t;
 
 typedef enum {
+  UPDPMotorState_unknow,
   UPDPMotorState_close,
   UPDPMotorState_closing,
   UPDPMotorState_open,
@@ -277,6 +280,18 @@ DEFINE_DATA_POINT(GripMotor) {
   DEFINE_DATA_POINT_ENTRY(GripMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GripMotor)
+
+DEFINE_DATA_POINT(SealXMotor) {
+  DEFINE_DATA_POINT_ENTRY(SealXMotor, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(SealXMotor, status, 0x0101)
+}
+DEFINE_DATA_END(SealXMotor)
+
+DEFINE_DATA_POINT(SealYMotor) {
+  DEFINE_DATA_POINT_ENTRY(SealYMotor, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(SealYMotor, status, 0x0101)
+}
+DEFINE_DATA_END(SealYMotor)
 
 DEFINE_DATA_POINT(GripStepMotor) {
   DEFINE_DATA_POINT_ENTRY(GripStepMotor, action, 0x0100)

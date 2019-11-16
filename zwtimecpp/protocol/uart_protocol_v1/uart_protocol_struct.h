@@ -103,7 +103,7 @@ typedef enum {
   MTC_PhotoLight = 0x0011,
   MTC_DryGarbageUart = 0x0012,
   MTC_WetGarbageUart = 0x0013,
-  MTC_GarbageConveyer = 0x0014,
+  MTC_GarbageConveyerMotor = 0x0014,
   MTC_PhotoSensor = 0x0015,
   MTC_GripStepMotor = 0x0016,
   MTC_RazorStepMotor = 0x0017,

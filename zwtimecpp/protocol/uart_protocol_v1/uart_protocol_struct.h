@@ -108,6 +108,7 @@ typedef enum {
   MTC_GripStepMotor = 0x0016,
   MTC_RazorStepMotor = 0x0017,
   MTC_HotMelt = 0x0018,
+  MTC_GarbageBeltSensor = 0x0019,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -178,6 +179,11 @@ DEFINE_DATA_POINT(GarbageSensor) {
   DEFINE_DATA_POINT_ENTRY(GarbageSensor, value, 0x0100)
 }
 DEFINE_DATA_END(GarbageSensor);
+
+DEFINE_DATA_POINT(GarbageBeltSensor) {
+  DEFINE_DATA_POINT_ENTRY(GarbageBeltSensor, value, 0x0100)
+}
+DEFINE_DATA_END(GarbageBeltSensor);
 
 DEFINE_DATA_POINT(PhotoSensor) {
   DEFINE_DATA_POINT_ENTRY(PhotoSensor, value, 0x0100)

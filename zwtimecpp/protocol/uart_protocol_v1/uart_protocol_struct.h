@@ -107,6 +107,7 @@ typedef enum {
   MTC_PhotoSensor = 0x0015,
   MTC_GripStepMotor = 0x0016,
   MTC_RazorStepMotor = 0x0017,
+  MTC_HotMelt = 0x0018,
 } UP_module_type_code_t;
 
 typedef enum {

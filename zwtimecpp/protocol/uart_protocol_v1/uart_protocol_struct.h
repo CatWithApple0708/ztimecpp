@@ -105,6 +105,8 @@ typedef enum {
   MTC_WetGarbageUart = 0x0013,
   MTC_GarbageConveyer = 0x0014,
   MTC_PhotoSensor = 0x0015,
+  MTC_GripStepMotor = 0x0016,
+  MTC_RazorStepMotor = 0x0017,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -113,6 +115,28 @@ typedef enum {
   UPDPMotorState_open,
   UPDPMotorState_opening
 } UPDPMotorState_t;
+
+/**
+ * 夹爪上下运动模组状态
+*/
+typedef enum {
+  UPDPGripUpAndDownMovingState_unknow,
+  UPDPGripUpAndDownMovingState_up,
+  UPDPGripUpAndDownMovingState_up_moving,
+  UPDPGripUpAndDownMovingState_down,
+  UPDPGripUpAndDownMovingState_down_moving,
+} UPDPGripUpAndDownMovingState_t;
+
+/**
+ * 刀片横向划开运动模组状态
+*/
+typedef enum {
+  UPDPRazorLeftAndRightMovingState_unknow,
+  UPDPRazorLeftAndRightMovingState_left,
+  UPDPRazorLeftAndRightMovingState_left_moving,
+  UPDPRazorLeftAndRightMovingState_right,
+  UPDPRazorLeftAndRightMovingState_right_moving,
+} UPDPRazorLeftAndRightMovingState_t;
 
 /**
  * 传输带状态
@@ -246,6 +270,18 @@ DEFINE_DATA_POINT(GripMotor) {
   DEFINE_DATA_POINT_ENTRY(GripMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GripMotor)
+
+DEFINE_DATA_POINT(GripStepMotor) {
+  DEFINE_DATA_POINT_ENTRY(GripStepMotor, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(GripStepMotor, status, 0x0101)
+}
+DEFINE_DATA_END(GripStepMotor)
+
+DEFINE_DATA_POINT(RazorStepMotor) {
+  DEFINE_DATA_POINT_ENTRY(RazorStepMotor, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(RazorStepMotor, status, 0x0101)
+}
+DEFINE_DATA_END(RazorStepMotor)
 
 DEFINE_DATA_POINT(GarbageDoorMotor) {
   DEFINE_DATA_POINT_ENTRY(GarbageDoorMotor, action, 0x0100)

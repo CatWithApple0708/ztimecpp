@@ -87,6 +87,16 @@ UPPacketConfig_basic_packet_t UPBasicPacketConfig_construct(uint16_t serial_num,
   UPPacketConfig_basic_packet_t packet = {0};
   packet.serial_num = serial_num;
   packet.type = type;
+  packet.route = 0; 
+  return packet;
+}
+
+UPPacketConfig_basic_packet_t UPBasicPacketConfig_construct_route(uint16_t serial_num,uint8_t route,
+                                                            PacketType_t type) {
+  UPPacketConfig_basic_packet_t packet = {0};
+  packet.serial_num = serial_num;
+  packet.type = type;
+  packet.route = route;
   return packet;
 }
 UPPacketConfig_shakehand_packet_t UPShakeHandPacket_construct_config() {
@@ -149,6 +159,7 @@ UP_buf_t UP_construct_packet2(UPPacketConfig_basic_packet_t basic_packt,
   header->header[1] = HEADER_SECOND;
   header->serial_num = basic_packt.serial_num;
   header->packet_type = (uint8_t)basic_packt.type;
+  header->route = basic_packt.route;
   //包的长度最后计算赋值
 
   uint16_t packetLength = 0;

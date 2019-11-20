@@ -47,8 +47,8 @@ TEST_F(GtestNmeaWappter, test) {
     nmeaWappter.parseValue(gpsraw, [&](NmeaINFO info) { cpyinfo = info; });
     EXPECT_EQ(cpyinfo.isContaninLocationInfo(), true);
     EXPECT_EQ(cpyinfo.getAltitude(), 10.2);
-    EXPECT_EQ(cpyinfo.getLatitude(), 5001.27);
-    EXPECT_EQ(cpyinfo.getLongitude(), 3613.06);
+    EXPECT_EQ(cpyinfo.getLatitude(), 50.0127);
+    EXPECT_EQ(cpyinfo.getLongitude(), 36.1306);
   }
   {
     string gpsraw =

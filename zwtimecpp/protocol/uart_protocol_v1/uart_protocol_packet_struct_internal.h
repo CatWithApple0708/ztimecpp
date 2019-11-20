@@ -14,6 +14,7 @@
 typedef struct {
   uint8_t header[2];
   uint8_t serial_num;
+  uint8_t route;
   uint8_t length[2];
   uint8_t packet_type;
   uint8_t packet[];

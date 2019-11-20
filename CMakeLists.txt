@@ -147,19 +147,22 @@ add_library(
   zwtimecpp/core/utils/nmea_wappter.cpp
   zwtimecpp/core/utils/nmea_wappter.hpp
   zwtimecpp/core/utils/utc/utctime.cpp
-  zwtimecpp/core/utils/utc/utctime.hpp)
+  zwtimecpp/core/utils/utc/utctime.hpp
+  zwtimecpp/protocol/uart_protocol_v1/cpp/logger_helper.cpp)
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)
 
 set(GTESTERS
-    zwtimecpp/core/test/gtester/gtest_arrary.cc
-    zwtimecpp/core/test/gtester/gtest_infinite_arrary.cc
-    zwtimecpp/core/test/gtester/gtest_loop_queue.cc
-    zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cc
+    zwtimecpp/core/test/gtester/gtest_arrary.cpp
+    zwtimecpp/core/test/gtester/gtest_infinite_arrary.cpp
+    zwtimecpp/core/test/gtester/gtest_loop_queue.cpp
+    zwtimecpp/core/test/gtester/gtest_uart_protocol_v1.cpp
     zwtimecpp/core/test/gtester/gtest_string_utils.cpp
     zwtimecpp/core/test/gtester/gtest_string_unpacker.cpp
-    zwtimecpp/core/test/gtester/gtest_nmea_wappter.cpp)
+    zwtimecpp/core/test/gtester/gtest_nmea_wappter.cpp
+    zwtimecpp/core/test/gtester/gtest_uart_protocol_v1_packet.cpp
+    )
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译
@@ -174,8 +177,9 @@ add_executable(core_gtest_main zwtimecpp/core/test/gtest_main.cpp ${GTESTERS})
 target_link_libraries(core_gtest_main
                       zwtimecpp
                       zwtimecpptest
+                      gmock
                       gtest
-                      gmock)
+                      pthread)
 add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
 #####################################################################
 #core_runner_main

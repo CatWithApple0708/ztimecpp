@@ -184,6 +184,7 @@ void sUPPacketContainerConstruct_assign_basic_packet(
   basic_packet->packet_length =
       BIG_ENGINE_UINT8S_TO_UINT16(header->length[0], header->length[1]);
   basic_packet->packet = header->packet;
+  basic_packet->route = header->route;
   return;
 }
 

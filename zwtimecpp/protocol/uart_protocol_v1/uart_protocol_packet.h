@@ -20,6 +20,9 @@ typedef struct {
 
 typedef struct {
   uint16_t serial_num;
+#ifndef UART_PROTOCOL_PACKET_DISABLE_ROUTE
+  uint8_t route;
+#endif
   PacketType_t type;
 } UPPacketConfig_basic_packet_t;
 typedef struct { uint8_t pad; } UPPacketConfig_shakehand_packet_t;
@@ -113,7 +116,8 @@ bool UPParametersContainer_push_buf(UP_parameters_container_t* container,
  */
 UPPacketConfig_basic_packet_t UPBasicPacketConfig_construct(uint16_t serial_num,
                                                             PacketType_t type);
-
+UPPacketConfig_basic_packet_t UPBasicPacketConfig_construct_route(
+    uint16_t serial_num, uint8_t route, PacketType_t type);
 /**
 * @brief 构造packet
 *
@@ -158,6 +162,17 @@ static INLINE UP_buf_t UPShakeHandPacket_construct2(uint16_t serial_num,
   pc.shakehand_packet = UPShakeHandPacket_construct_config();
   return UP_construct_packet2(bpc, pc, data, length);
 };
+static INLINE UP_buf_t UPShakeHandPacket_construct_route(uint16_t serial_num,
+                                                         uint8_t route,
+                                                         uint8_t* data,
+                                                         size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct_route(serial_num, route, kShakeHandPacket);
+  UPPacketConfig_t pc;
+  pc.shakehand_packet = UPShakeHandPacket_construct_config();
+  return UP_construct_packet2(bpc, pc, data, length);
+};
+
 /**
  * @brief 构造ping包
  *
@@ -183,6 +198,14 @@ static INLINE UP_buf_t UPPingPacket_construct2(uint16_t serial_num,
                                                size_t length) {
   UPPacketConfig_basic_packet_t bpc =
       UPBasicPacketConfig_construct(serial_num, kPingPacket);
+  UPPacketConfig_t pc;
+  pc.ping_packet = UPPingPacket_construct_config();
+  return UP_construct_packet2(bpc, pc, data, length);
+};
+static INLINE UP_buf_t UPPingPacket_construct_route(uint16_t serial_num,uint8_t route,
+                                               uint8_t* data, size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct_route(serial_num, route, kPingPacket);
   UPPacketConfig_t pc;
   pc.ping_packet = UPPingPacket_construct_config();
   return UP_construct_packet2(bpc, pc, data, length);
@@ -237,6 +260,18 @@ static INLINE UP_buf_t UPHardwareOperatePacket_construct2(
       moduleType, moduleNum, operate_code, dataPoint, parameter_container);
   return UP_construct_packet2(bpc, pc, data, length);
 };
+static INLINE UP_buf_t UPHardwareOperatePacket_construct_route(
+    uint16_t serial_num,uint8_t route, UP_module_type_code_t moduleType, uint8_t moduleNum,
+    UP_operate_code_t operate_code, uint16_t dataPoint,
+    UP_parameters_container_t* parameter_container, uint8_t* data,
+    size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct_route(serial_num, route, kHardwareOperatePacket);
+  UPPacketConfig_t pc;
+  pc.hardware_operate_packet = UPHardwareOperatePacket_construct_config(
+      moduleType, moduleNum, operate_code, dataPoint, parameter_container);
+  return UP_construct_packet2(bpc, pc, data, length);
+};
 
 /**
  * @brief 构造系统事件上报包
@@ -278,6 +313,17 @@ static INLINE UP_buf_t UPGenernalSystemReportPacket_construct2(
       UPGenernalSystemReportPacket_construct_config(event, parameter_container);
   return UP_construct_packet2(bpc, pc, data, length);
 };
+static INLINE UP_buf_t UPGenernalSystemReportPacket_construct_route(
+    uint16_t serial_num,uint8_t route, UP_GenernalSystemEvent_t event,
+    UP_parameters_container_t* parameter_container, uint8_t* data,
+    size_t length) {
+  UPPacketConfig_basic_packet_t bpc = UPBasicPacketConfig_construct_route(
+      serial_num, route, kSystemEventReportPacket);
+  UPPacketConfig_t pc;
+  pc.genernal_system_report_packet =
+      UPGenernalSystemReportPacket_construct_config(event, parameter_container);
+  return UP_construct_packet2(bpc, pc, data, length);
+};
 
 /**
  * @brief 构建通用回执包
@@ -314,6 +360,17 @@ static INLINE UP_buf_t UPGGeneralReceiptPacket_construct2(
     size_t length) {
   UPPacketConfig_basic_packet_t bpc =
       UPBasicPacketConfig_construct(serial_num, kReceiptPacket);
+  UPPacketConfig_t pc;
+  pc.general_receipt_packet =
+      UPGeneralReceiptPacket_construct_config(error_code, parameter_container);
+  return UP_construct_packet2(bpc, pc, data, length);
+};
+static INLINE UP_buf_t UPGGeneralReceiptPacket_construct_route(
+    uint16_t serial_num,uint8_t route, UP_error_code_t error_code,
+    UP_parameters_container_t* parameter_container, uint8_t* data,
+    size_t length) {
+  UPPacketConfig_basic_packet_t bpc =
+      UPBasicPacketConfig_construct_route(serial_num, route, kReceiptPacket);
   UPPacketConfig_t pc;
   pc.general_receipt_packet =
       UPGeneralReceiptPacket_construct_config(error_code, parameter_container);

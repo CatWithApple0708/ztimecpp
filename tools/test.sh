@@ -1,5 +1,5 @@
 #!/bin/bash
-gtest_list_test=$(./gtest_runner --gtest_list_tests)
+gtest_list_test=$(./core_gtest_main --gtest_list_tests)
 #所有的测试
 testTable=""
 #当前测试的模块名
@@ -17,5 +17,6 @@ done
 
 #执行所有的测试
 for test in ${testTable[@]}; do
-    ./gtest_runner --gtest_filter=$test
+    echo "./core_gtest_main --gtest_filter=$test"
+    ./core_gtest_main --gtest_filter=$test
 done

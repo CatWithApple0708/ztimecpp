@@ -375,6 +375,7 @@ typedef struct UP_basic_packet_s UP_basic_packet_t;
 struct UP_basic_packet_s {
   PacketType_t packet_type;
   uint8_t serial_num;
+  uint8_t route;
   uint16_t packet_length;
   uint8_t *packet;
 };

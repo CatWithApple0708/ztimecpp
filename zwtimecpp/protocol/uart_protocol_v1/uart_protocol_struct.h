@@ -98,19 +98,20 @@ typedef enum {
   MTC_GarbageDoorMotor = 0x000c,
   MTC_Weighting = 0x000d,
   MTC_Uart = 0x000e,
-  MTC_GripMotor = 0x000f,
-  MTC_GarbageSensor = 0x0010,
+  MTC_GripMotor = 0x000f,      //夹爪电机
+  MTC_GarbageSensor = 0x0010,  //检测垃圾是否投放进去
   MTC_PhotoLight = 0x0011,
   MTC_DryGarbageUart = 0x0012,
   MTC_WetGarbageUart = 0x0013,
-  MTC_GarbageConveyerMotor = 0x0014,
+  MTC_GarbageConveyerMotor = 0x0014,  //传送带
   MTC_PhotoSensor = 0x0015,
-  MTC_GripStepMotor = 0x0016,
-  MTC_RazorStepMotor = 0x0017,
+  MTC_GripStepMotor = 0x0016,   //夹爪上下运动模组步进电机
+  MTC_RazorStepMotor = 0x0017,  //刀片横向运动模组步进电机
   MTC_HotMelt = 0x0018,
-  MTC_GarbageBeltSensor = 0x0019,
+  MTC_GarbageBeltSensor = 0x0019,  //检测封袋子后，垃圾是否掉下去
   MTC_SealXMotor = 0x0020,
   MTC_SealYMotor = 0x0021,
+  MTC_TakePhoto = 0x0022,
 } UP_module_type_code_t;
 
 typedef enum {
@@ -151,6 +152,15 @@ typedef enum {
   UPDPConveyerState_forward_moving,//正向运动
   UPDPConveyerState_reverse_moving //反向运动
 } UPDPConveyerState_t;
+
+/**
+ * 拍照状态
+ */
+typedef enum {
+  UPDPTakePhotoState_stop = false,
+  UPDPTakePhotoState_start = !UPDPTakePhotoState_stop,
+  UPDPTakePhotoState_starting = 2,
+} UPDPTakePhotoState_t;
 
 /**
  * @brief 数据点定义
@@ -322,6 +332,12 @@ DEFINE_DATA_POINT(Uart) {
   DEFINE_DATA_POINT_ENTRY(Uart, baudrate, 0x0102)
 }
 DEFINE_DATA_END(Uart)
+
+DEFINE_DATA_POINT(TakePhoto) {
+  DEFINE_DATA_POINT_ENTRY(TakePhoto, action, 0x0100)
+  DEFINE_DATA_POINT_ENTRY(TakePhoto, status, 0x0101)
+}
+DEFINE_DATA_END(TakePhoto)
 
 typedef struct {
   uint8_t *buf;

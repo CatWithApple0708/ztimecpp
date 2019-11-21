@@ -15,7 +15,7 @@
  * @param container
  * @param route
  */
-void UPPacketContainer_set_route(UP_packet_container_t* container,
+static INLINE void UPPacketContainer_set_route(UP_packet_container_t* container,
                                  uint8_t route) {
   container->basic_packet.route = route;
   UP_basic_packet_t* rawData = (UP_basic_packet_t*)container->raw_data;
@@ -28,7 +28,7 @@ void UPPacketContainer_set_route(UP_packet_container_t* container,
  * @param container
  * @return uint8_t*
  */
-uint8_t* UPPacketContainer_get_raw_data(UP_packet_container_t* container) {
+static INLINE uint8_t* UPPacketContainer_get_raw_data(UP_packet_container_t* container) {
   return container->raw_data;
 }
 /**
@@ -37,6 +37,6 @@ uint8_t* UPPacketContainer_get_raw_data(UP_packet_container_t* container) {
  * @param container
  * @return size_t
  */
-size_t UPPacketContainer_get_raw_data_size(UP_packet_container_t* container) {
+static INLINE size_t UPPacketContainer_get_raw_data_size(UP_packet_container_t* container) {
   return container->useful_size;
 }

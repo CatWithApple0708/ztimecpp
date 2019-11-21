@@ -3,6 +3,7 @@
 //
 #pragma once
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
+#include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet_struct_internal.h"
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h"
 /**
  * @brief
@@ -15,9 +16,10 @@
  * @param route
  */
 static INLINE void UPPacketContainer_set_route(UP_packet_container_t* container,
-                                 uint8_t route) {
+                                               uint8_t route) {
   container->basic_packet.route = route;
-  UP_basic_packet_t* rawData = (UP_basic_packet_t*)container->raw_data;
+  UPAnalysis_basic_packet_header_t* rawData =
+      (UPAnalysis_basic_packet_header_t*)container->raw_data;
   rawData->route = route;
 };
 /**

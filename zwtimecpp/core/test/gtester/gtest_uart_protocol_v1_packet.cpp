@@ -66,6 +66,7 @@ class TestGeneralReceiptPacket {
     /**
      * @brief 测试参数构造
      */
+    route = route + 1;
     auto cpppacket = UartProtocolV1Packet::createReceipt(
         packetSerialNum, route, error_code, int32_value_table,
         bool_value_table);
@@ -105,7 +106,7 @@ class TestGeneralReceiptPacket {
 
           //通用回执包验证
           EXPECT_EQ(container->packet.general_receipt.error_code, error_code);
-          EXPECT_EQ(container->basic_packet.route,route);
+          EXPECT_EQ(container->basic_packet.route, route);
 
           //测试构造参数
           EXPECT_EQ(container->packet.general_receipt.parameterNum,

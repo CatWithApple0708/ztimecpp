@@ -8,7 +8,6 @@
  * @brief
  * 修改UpPacketContainer中的字段不仅要修改相应结构体中的字段，还要修改原始数据中相应的字段
  */
-#ifndef UART_PROTOCOL_PACKET_DISABLE_ROUTE
 /**
  * @brief
  *
@@ -21,7 +20,6 @@ static INLINE void UPPacketContainer_set_route(UP_packet_container_t* container,
   UP_basic_packet_t* rawData = (UP_basic_packet_t*)container->raw_data;
   rawData->route = route;
 };
-#endif
 /**
  * @brief UPPacketContainer_get_raw_data
  *

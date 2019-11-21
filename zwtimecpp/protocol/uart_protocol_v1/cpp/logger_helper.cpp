@@ -152,6 +152,7 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
     UPPacketConfig_general_receipt_packet_t* subPacket =
         &packet->config.general_receipt_packet;
     LOG_BASIC_PACKET_CONFIG(serial_num)
+    LOG_BASIC_PACKET_CONFIG(route)
     LOG_BASIC_PACKET_CONFIG(type)
     LOG_SUB_PACKET_CONFIG(serial_num);
     LOG_SUB_PACKET_CONFIG(error_code);
@@ -162,6 +163,7 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
         &packet->config.shakehand_packet;
 
     LOG_BASIC_PACKET_CONFIG(serial_num)
+    LOG_BASIC_PACKET_CONFIG(route)
     LOG_BASIC_PACKET_CONFIG(type)
 
   } else if (packet->basicPacket.type == kPingPacket) {
@@ -169,6 +171,7 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
     UPPacketConfig_ping_packet_t* subPacket = &packet->config.ping_packet;
 
     LOG_BASIC_PACKET_CONFIG(serial_num)
+    LOG_BASIC_PACKET_CONFIG(route)
     LOG_BASIC_PACKET_CONFIG(type)
 
   } else if (packet->basicPacket.type == kHardwareOperatePacket) {
@@ -177,6 +180,7 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
         &packet->config.hardware_operate_packet;
 
     LOG_BASIC_PACKET_CONFIG(serial_num)
+    LOG_BASIC_PACKET_CONFIG(route)
     LOG_BASIC_PACKET_CONFIG(type)
 
     LOG_SUB_PACKET_CONFIG(moduleType)
@@ -190,12 +194,14 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
     UPPacketConfig_genernal_system_report_packet_t* subPacket =
         &packet->config.genernal_system_report_packet;
     LOG_BASIC_PACKET_CONFIG(serial_num)
+    LOG_BASIC_PACKET_CONFIG(route)
     LOG_BASIC_PACKET_CONFIG(type)
     LOG_SUB_PACKET_CONFIG(event)
     LOG_SUB_PACKET_PARAMETER();
   } else {
     UPPacketConfig_basic_packet_t* basicPacket = &packet->basicPacket;
     LOG_BASIC_PACKET_CONFIG(serial_num)
+    LOG_BASIC_PACKET_CONFIG(route)
     LOG_BASIC_PACKET_CONFIG(type)
   }
   LOG_SUB_PACKET_BUF();

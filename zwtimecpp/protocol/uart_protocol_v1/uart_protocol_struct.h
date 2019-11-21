@@ -79,7 +79,7 @@ typedef enum {
   kOperateCode_reportRequest = 6,
 } UP_operate_code_t;
 /**
- * @brief 模块编号
+ * @brief 模块类型编号
  */
 typedef enum {
   // MTC module type code
@@ -285,7 +285,7 @@ DEFINE_DATA_POINT(GarbageConveyerMotor) {
 }
 DEFINE_DATA_END(GarbageConveyerMotor)
 
-DEFINE_DATA_POINT(GripMotor) {
+DEFINE_DATA_POINT(GripMotor) {//夹爪运动电机
   DEFINE_DATA_POINT_ENTRY(GripMotor, action, 0x0100)
   DEFINE_DATA_POINT_ENTRY(GripMotor, status, 0x0101)
 }
@@ -303,13 +303,13 @@ DEFINE_DATA_POINT(SealYMotor) {
 }
 DEFINE_DATA_END(SealYMotor)
 
-DEFINE_DATA_POINT(GripStepMotor) {
+DEFINE_DATA_POINT(GripStepMotor) {//上下运动电机
   DEFINE_DATA_POINT_ENTRY(GripStepMotor, action, 0x0100)
   DEFINE_DATA_POINT_ENTRY(GripStepMotor, status, 0x0101)
 }
 DEFINE_DATA_END(GripStepMotor)
 
-DEFINE_DATA_POINT(RazorStepMotor) {
+DEFINE_DATA_POINT(RazorStepMotor) {//刀片运动电机
   DEFINE_DATA_POINT_ENTRY(RazorStepMotor, action, 0x0100)
   DEFINE_DATA_POINT_ENTRY(RazorStepMotor, status, 0x0101)
 }

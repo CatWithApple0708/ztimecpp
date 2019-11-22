@@ -107,6 +107,20 @@ static inline OStream &operator<<(OStream &os,
     CASE_AND_RET(MTC_GarbageDoorMotor)
     CASE_AND_RET(MTC_Weighting)
     CASE_AND_RET(MTC_Uart)
+    CASE_AND_RET(MTC_GripMotor)
+    CASE_AND_RET(MTC_GarbageSensor)
+    CASE_AND_RET(MTC_PhotoLight)
+    CASE_AND_RET(MTC_DryGarbageUart)
+    CASE_AND_RET(MTC_WetGarbageUart)
+    CASE_AND_RET(MTC_GarbageConveyerMotor)
+    CASE_AND_RET(MTC_PhotoSensor)
+    CASE_AND_RET(MTC_GripStepMotor)
+    CASE_AND_RET(MTC_RazorStepMotor)
+    CASE_AND_RET(MTC_HotMelt)
+    CASE_AND_RET(MTC_GarbageBeltSensor)
+    CASE_AND_RET(MTC_SealXMotor)
+    CASE_AND_RET(MTC_SealYMotor)
+    CASE_AND_RET(MTC_TakePhoto)
     default:
       break;
   }

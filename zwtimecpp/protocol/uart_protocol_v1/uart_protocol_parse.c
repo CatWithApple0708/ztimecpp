@@ -234,7 +234,7 @@ UP_packet_process_ret_t UPPacketContainer_construct(
           (UPAnalysis_genernal_receipt_packet_header_t*)basic_packet->packet;
 
       general_receipt->serial_num = analysis_genernal_receipt->serial_num;
-      general_receipt->error_code = analysis_genernal_receipt->error_code;
+      general_receipt->error_code = (UP_error_code_t)analysis_genernal_receipt->error_code;
       //解析参数
       int parameter_length =
           basic_packet->packet_length -

@@ -37,10 +37,10 @@ char** up_packet_container_dump(UP_packet_container_t* container,
     parameterNum = subPacket->parameterNum;
 
   } else if (container->basic_packet.packet_type == kShakeHandPacket) {
-    UP_shake_hand_packet_t* subPacket = &container->packet.shake_hand_packet;
+    //UP_shake_hand_packet_t* subPacket = &container->packet.shake_hand_packet;
 
   } else if (container->basic_packet.packet_type == kPingPacket) {
-    UP_ping_packet_t* subPacket = &container->packet.ping_packet;
+    //UP_ping_packet_t* subPacket = &container->packet.ping_packet;
 
   } else if (container->basic_packet.packet_type == kHardwareOperatePacket) {
     UP_hardware_operat_packet_t* subPacket =
@@ -85,19 +85,19 @@ char* up_packet_container_dump_in_one_line(UP_packet_container_t* container) {
 
   UP_basic_packet_t* basicPacket = &container->basic_packet;
   if (container->basic_packet.packet_type == kReceiptPacket) {
-    UP_general_receipt_t* subPacket = &container->packet.general_receipt;
+    //UP_general_receipt_t* subPacket = &container->packet.general_receipt;
     snprintf(&buf[0], ARRARY_SIZE(buf) - 1, "%s|seq:%d,r:%d|",
              PacketType_to_str(basicPacket->packet_type),
              basicPacket->serial_num, basicPacket->route);
 
   } else if (container->basic_packet.packet_type == kShakeHandPacket) {
-    UP_shake_hand_packet_t* subPacket = &container->packet.shake_hand_packet;
+    //UP_shake_hand_packet_t* subPacket = &container->packet.shake_hand_packet;
     snprintf(&buf[0], ARRARY_SIZE(buf) - 1, "%s|seq:%d,r:%d|",
              PacketType_to_str(basicPacket->packet_type),
              basicPacket->serial_num, basicPacket->route);
 
   } else if (container->basic_packet.packet_type == kPingPacket) {
-    UP_ping_packet_t* subPacket = &container->packet.ping_packet;
+    //UP_ping_packet_t* subPacket = &container->packet.ping_packet;
     snprintf(&buf[0], ARRARY_SIZE(buf) - 1, "%s|seq:%d,r:%d|",
              PacketType_to_str(basicPacket->packet_type),
              basicPacket->serial_num, basicPacket->route);
@@ -132,8 +132,8 @@ char* up_packet_container_dump_in_one_line(UP_packet_container_t* container) {
     }
 
   } else if (container->basic_packet.packet_type == kSystemEventReportPacket) {
-    UP_system_event_report_packet_t* subPacket =
-        &container->packet.system_event_report_packet;
+    //UP_system_event_report_packet_t* subPacket =
+      //  &container->packet.system_event_report_packet;
     snprintf(&buf[0], ARRARY_SIZE(buf) - 1, "%s|seq:%d,r:%d|",
              PacketType_to_str(basicPacket->packet_type),
              basicPacket->serial_num, basicPacket->route);

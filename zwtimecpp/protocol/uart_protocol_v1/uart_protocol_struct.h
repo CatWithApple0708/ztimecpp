@@ -350,7 +350,7 @@ typedef struct {
 typedef struct UP_general_receipt_s UP_general_receipt_t;
 struct UP_general_receipt_s {
   uint8_t serial_num;
-  uint8_t error_code;
+  UP_error_code_t error_code;
   int parameterNum;  //参数的数量
   UP_parameter_packet_t parameters[MAX_SUPPORT_PARAMETER];
 };

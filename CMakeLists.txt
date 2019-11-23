@@ -133,6 +133,8 @@ add_library(
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_parse.c
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_parse.h
   zwtimecpp/protocol/uart_protocol_v1/uart_protocol_struct.h
+  zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet_container_dump.c
+  zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet_container_dump.h
   #nmea gps lib
   zwtimecpp/core/utils/nmealib/src/context.c
   zwtimecpp/core/utils/nmealib/src/generate.c
@@ -161,8 +163,7 @@ set(GTESTERS
     zwtimecpp/core/test/gtester/gtest_string_utils.cpp
     zwtimecpp/core/test/gtester/gtest_string_unpacker.cpp
     zwtimecpp/core/test/gtester/gtest_nmea_wappter.cpp
-    zwtimecpp/core/test/gtester/gtest_uart_protocol_v1_packet.cpp
-    )
+    zwtimecpp/core/test/gtester/gtest_uart_protocol_v1_packet.cpp)
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译
@@ -184,7 +185,9 @@ add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
 #####################################################################
 #core_runner_main
 #
-add_executable(core_runner_main zwtimecpp/core/test/runner_main.cpp
-                                zwtimecpp/core/test/runner/show_uart_v1_info.cc)
+add_executable(core_runner_main
+               zwtimecpp/core/test/runner_main.cpp
+               zwtimecpp/core/test/runner/show_uart_v1_info.cc
+               zwtimecpp/core/test/runner/test_up_packet_container_dump.cpp)
 target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
 add_dependencies(core_runner_main zwtimecpp zwtimecpptest)

@@ -120,7 +120,7 @@ char* up_packet_container_dump_in_one_line(UP_packet_container_t* container) {
     } else  {
       snprintf(&buf[0], ARRARY_SIZE(buf) - 1,
                "%s|seq:%d,r:%d|"
-               "mt:%s,mn:%d,dp:0x%x,pn:%d,p1:%d|",
+               "mt:%s,mn:%d,dp:0x%x,pn:%d,p1:i32-%d,b-%d|",
                PacketType_to_str(basicPacket->packet_type),  //
                basicPacket->serial_num,                      //
                basicPacket->route,                           //
@@ -128,7 +128,8 @@ char* up_packet_container_dump_in_one_line(UP_packet_container_t* container) {
                subPacket->module_num,                        //
                subPacket->data_point,                        //
                subPacket->parameterNum,                      //
-               UPParameter_get_int32(subPacket->parameters[0]));
+               UPParameter_get_int32(subPacket->parameters[0]),
+               UPParameter_get_bool(subPacket->parameters[0]));
     }
 
   } else if (container->basic_packet.packet_type == kSystemEventReportPacket) {

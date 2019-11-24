@@ -434,15 +434,16 @@ int32_t UPParameter_get_int32(UP_parameter_packet_t packet) {
 
   int32_t value = 0;
   if (packet.length == 1) {
-    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, 0, packet.buf[0] & (~0x01 << 7));
+    value =
+        BIG_ENGINE_UINT8S_TO_UINT32(0, 0, 0, packet.buf[0] & (~(0x01 << 7)));
   } else if (packet.length == 2) {
-    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, packet.buf[0] & (~0x01 << 7),
+    value = BIG_ENGINE_UINT8S_TO_UINT32(0, 0, packet.buf[0] & (~(0x01 << 7)),
                                         packet.buf[1]);
   } else if (packet.length == 3) {
-    value = BIG_ENGINE_UINT8S_TO_UINT32(0, packet.buf[0] & (~0x01 << 7),
+    value = BIG_ENGINE_UINT8S_TO_UINT32(0, packet.buf[0] & (~(0x01 << 7)),
                                         packet.buf[1], packet.buf[2]);
   } else {
-    value = BIG_ENGINE_UINT8S_TO_UINT32((packet.buf[0] & (~0x01 << 7)),
+    value = BIG_ENGINE_UINT8S_TO_UINT32((packet.buf[0] & (~(0x01 << 7))),
                                         packet.buf[1], packet.buf[2],
                                         packet.buf[3]);
   }

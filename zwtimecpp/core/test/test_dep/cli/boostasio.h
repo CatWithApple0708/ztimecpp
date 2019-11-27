@@ -37,7 +37,7 @@
     namespace cli {
     namespace detail {
         using BoostExecutor = oldboost::BoostExecutor;
-        auto& IpAddressFromString = oldboost::IpAddressFromString;
+        static auto& IpAddressFromString = oldboost::IpAddressFromString;
     }
     }
 #else
@@ -45,7 +45,7 @@
     namespace cli {
     namespace detail {
         using BoostExecutor = newboost::BoostExecutor;
-        auto& IpAddressFromString = newboost::IpAddressFromString;
+        static auto& IpAddressFromString = newboost::IpAddressFromString;
     }
     }
 #endif

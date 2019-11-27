@@ -49,7 +49,7 @@ private:
     boost::asio::executor executor;
 };
 
-inline boost::asio::ip::address IpAddressFromString(const std::string& address)
+static inline boost::asio::ip::address IpAddressFromString(const std::string& address)
 {
     return boost::asio::ip::make_address(address);
 }

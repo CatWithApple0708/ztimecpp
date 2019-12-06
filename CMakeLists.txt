@@ -148,7 +148,9 @@ add_library(
   zwtimecpp/core/utils/nmea_wappter.hpp
   zwtimecpp/core/utils/utc/utctime.cpp
   zwtimecpp/core/utils/utc/utctime.hpp
-  zwtimecpp/protocol/uart_protocol_v1/cpp/logger_helper.cpp)
+  zwtimecpp/protocol/uart_protocol_v1/cpp/logger_helper.cpp
+  zwtimecpp/core/utils/gps_info_parse.cpp
+  )
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)
@@ -162,6 +164,7 @@ set(GTESTERS
     zwtimecpp/core/test/gtester/gtest_string_unpacker.cpp
     zwtimecpp/core/test/gtester/gtest_nmea_wappter.cpp
     zwtimecpp/core/test/gtester/gtest_uart_protocol_v1_packet.cpp
+    zwtimecpp/core/test/gtester/gtest_gps_info_parse.cpp
     )
 
 if(NOT zwtimecpp_build_on_parent)

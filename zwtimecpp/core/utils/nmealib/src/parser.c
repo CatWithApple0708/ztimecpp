@@ -20,6 +20,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+//#include "bsp_usart2.h"
+
 typedef struct _nmeaParserNODE
 {
     int packType;
@@ -108,6 +110,35 @@ int nmea_parse(
         case GPVTG:
             nmea_GPVTG2info((nmeaGPVTG *)pack, info);
             break;
+				
+				
+        case GNGGA:
+            nmea_GNGGA2info((nmeaGNGGA *)pack, info);
+            break;
+        case GNRMC:
+            nmea_GNRMC2info((nmeaGNRMC *)pack, info);
+            break;            
+        case GNVTG:
+            nmea_GNVTG2info((nmeaGNVTG *)pack, info);
+            break;
+        case GNZDA:
+            nmea_GNZDA2info((nmeaGNZDA *)pack, info);
+            break;
+        case GNGLL:
+            nmea_GNGLL2info((nmeaGNGLL *)pack, info);
+            break;
+				
+				
+        case BDGSV:
+            nmea_BDGSV2info((nmeaBDGSV *)pack, info);
+            break; 
+        case BDGSA:
+            nmea_BDGSA2info((nmeaBDGSA *)pack, info);
+            break;  
+
+				case GPTXT:
+            nmea_GPTXT2info((nmeaGPTXT *)pack, info);
+						break;				
         };
 
         free(pack);
@@ -179,6 +210,14 @@ int nmea_parser_real_push(nmeaPARSER *parser, const char *buff, int buff_sz)
                     (const char *)parser->buffer + nparsed,
                     sen_sz, (nmeaGPGGA *)node->pack))
                 {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
                     free(node);
                     node = 0;
                 }
@@ -191,6 +230,14 @@ int nmea_parser_real_push(nmeaPARSER *parser, const char *buff, int buff_sz)
                     (const char *)parser->buffer + nparsed,
                     sen_sz, (nmeaGPGSA *)node->pack))
                 {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
                     free(node);
                     node = 0;
                 }
@@ -203,18 +250,38 @@ int nmea_parser_real_push(nmeaPARSER *parser, const char *buff, int buff_sz)
                     (const char *)parser->buffer + nparsed,
                     sen_sz, (nmeaGPGSV *)node->pack))
                 {
+
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
                     free(node);
                     node = 0;
+
                 }
                 break;
             case GPRMC:
                 if(0 == (node->pack = malloc(sizeof(nmeaGPRMC))))
-                    goto mem_fail;
+                  goto mem_fail;
+                  
                 node->packType = GPRMC;
                 if(!nmea_parse_GPRMC(
                     (const char *)parser->buffer + nparsed,
                     sen_sz, (nmeaGPRMC *)node->pack))
                 {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
                     free(node);
                     node = 0;
                 }
@@ -227,10 +294,190 @@ int nmea_parser_real_push(nmeaPARSER *parser, const char *buff, int buff_sz)
                     (const char *)parser->buffer + nparsed,
                     sen_sz, (nmeaGPVTG *)node->pack))
                 {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
                     free(node);
                     node = 0;
                 }
                 break;
+            case GNGGA:
+                if(0 == (node->pack = malloc(sizeof(nmeaGNGGA))))
+                    goto mem_fail;
+                node->packType = GNGGA;
+                if(!nmea_parse_GNGGA(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGNGGA *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    free(node);
+                    node = 0;
+                }
+                break;
+            case GNRMC:
+                if(0 == (node->pack = malloc(sizeof(nmeaGNRMC))))
+                  goto mem_fail;
+                  
+                node->packType = GNRMC;
+                if(!nmea_parse_GNRMC(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGNRMC *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
+                    free(node);
+                    node = 0;
+                }
+                break;
+
+            case GNVTG:
+                if(0 == (node->pack = malloc(sizeof(nmeaGNVTG))))
+                    goto mem_fail;
+                node->packType = GNVTG;
+                if(!nmea_parse_GNVTG(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGNVTG *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    free(node);
+                    node = 0;
+                }
+                break;
+            case GNZDA:
+                if(0 == (node->pack = malloc(sizeof(nmeaGNZDA))))
+                    goto mem_fail;
+                node->packType = GNZDA;
+                if(!nmea_parse_GNZDA(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGNZDA *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    free(node);
+                    node = 0;
+                }
+                break;
+            case GNGLL:
+                if(0 == (node->pack = malloc(sizeof(nmeaGNGLL))))
+                  goto mem_fail;
+                  
+                node->packType = GNGLL;
+                if(!nmea_parse_GNGLL(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGNGLL *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
+                    free(node);
+                    node = 0;
+                }
+                break; 
+            case BDGSV:
+                if(0 == (node->pack = malloc(sizeof(nmeaBDGSV))))
+                  goto mem_fail;
+                  
+                node->packType = BDGSV;
+                if(!nmea_parse_BDGSV(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaBDGSV *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
+                    free(node);
+                    node = 0;
+                }
+                break; 
+            case BDGSA:
+                if(0 == (node->pack = malloc(sizeof(nmeaBDGSA))))
+                  goto mem_fail;
+                  
+                node->packType = BDGSA;
+                if(!nmea_parse_BDGSA(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaBDGSA *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
+                    free(node);
+                    node = 0;
+                }
+                break; 
+
+            case GPTXT:
+                if(0 == (node->pack = malloc(sizeof(nmeaGPTXT))))
+                  goto mem_fail;
+                  
+                node->packType = GPTXT;
+                if(!nmea_parse_GPTXT(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGPTXT *)node->pack))
+                {
+                  
+                    /* modify by fire ,释放pack空间 */
+                    if (node->pack)
+                    {
+                      free(node->pack);
+                      node->pack = 0;
+                    }
+                    /* modify by fire ,释放pack空间 */
+                    
+                    free(node);
+                    node = 0;
+                }
+                break;                 
             default:
                 free(node);
                 node = 0;
@@ -256,7 +503,6 @@ int nmea_parser_real_push(nmeaPARSER *parser, const char *buff, int buff_sz)
 mem_fail:
     if(node)
         free(node);
-
     nmea_error("Insufficient memory!");
 
     return -1;

@@ -18,12 +18,12 @@
  * ptype = nmea_pack_type(
  *     (const char *)parser->buffer + nparsed + 1,
  *     parser->buff_use - nparsed - 1);
- * 
+ *
  * if(0 == (node = malloc(sizeof(nmeaParserNODE))))
  *     goto mem_fail;
- * 
+ *
  * node->pack = 0;
- * 
+ *
  * switch(ptype)
  * {
  * case GPGGA:
@@ -87,7 +87,7 @@ int _nmea_parse_time(const char *buff, int buff_sz, nmeaTIME *res)
         break;
     }
 
-    return (success?0:-1);        
+    return (success?0:-1);
 }
 
 /**
@@ -105,6 +105,17 @@ int nmea_pack_type(const char *buff, int buff_sz)
         "GPGSV",
         "GPRMC",
         "GPVTG",
+
+        "GPTXT",
+
+        "BDGSV",
+        "BDGSA",
+
+        "GNZDA",
+        "GNGLL",
+        "GNVTG",
+        "GNRMC",
+        "GNGGA",
     };
 
     NMEA_ASSERT(buff);
@@ -121,6 +132,24 @@ int nmea_pack_type(const char *buff, int buff_sz)
         return GPRMC;
     else if(0 == memcmp(buff, pheads[4], 5))
         return GPVTG;
+
+    else if(0 == memcmp(buff, pheads[5], 5))
+        return GPTXT;
+    else if(0 == memcmp(buff, pheads[6], 5))
+        return BDGSV;
+    else if(0 == memcmp(buff, pheads[7], 5))
+        return BDGSA;
+    else if(0 == memcmp(buff, pheads[8], 5))
+        return GNZDA;
+    else if(0 == memcmp(buff, pheads[9], 5))
+        return GNGLL;
+    else if(0 == memcmp(buff, pheads[10], 5))
+        return GNVTG;
+    else if(0 == memcmp(buff, pheads[11], 5))
+        return GNRMC;
+    else if(0 == memcmp(buff, pheads[12], 5))
+        return GNGGA;
+
 
     return GPNON;
 }
@@ -310,6 +339,7 @@ int nmea_parse_GPRMC(const char *buff, int buff_sz, nmeaGPRMC *pack)
         &(pack->utc.day), &(pack->utc.mon), &(pack->utc.year),
         &(pack->declination), &(pack->declin_ew), &(pack->mode));
 
+
     if(nsen != 13 && nsen != 14)
     {
         nmea_error("GPRMC parse error!");
@@ -322,9 +352,8 @@ int nmea_parse_GPRMC(const char *buff, int buff_sz, nmeaGPRMC *pack)
         return 0;
     }
 
-    if(pack->utc.year < 90)
+
         pack->utc.year += 100;
-    pack->utc.mon -= 1;
 
     return 1;
 }
@@ -368,6 +397,285 @@ int nmea_parse_GPVTG(const char *buff, int buff_sz, nmeaGPVTG *pack)
 }
 
 /**
+ * \brief Parse GGA packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GNGGA(const char *buff, int buff_sz, nmeaGNGGA *pack)
+{
+    char time_buff[NMEA_TIMEPARSE_BUF];
+
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaGNGGA));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    if(14 != nmea_scanf(buff, buff_sz,
+        "$GNGGA,%s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*",
+        &(time_buff[0]),
+        &(pack->Lat), &(pack->uLat), &(pack->Lon), &(pack->uLon),
+        &(pack->FS), &(pack->numSv), &(pack->HDOP), &(pack->Msl), &(pack->uMsl),
+        &(pack->Sep), &(pack->uSep), &(pack->DiffAge), &(pack->DiffSta)))
+    {
+        nmea_error("GNGGA parse error!");
+        return 0;
+    }
+
+    if(0 != _nmea_parse_time(&time_buff[0], (int)strlen(&time_buff[0]), &(pack->utc)))
+    {
+        nmea_error("GNGGA time parse error!");
+        return 0;
+    }
+
+    return 1;
+}
+
+/**
+ * \brief Parse RMC packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GNRMC(const char *buff, int buff_sz, nmeaGNRMC *pack)
+{
+    int nsen;
+    char time_buff[NMEA_TIMEPARSE_BUF];
+
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaGNRMC));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    nsen = nmea_scanf(buff, buff_sz,
+        "$GNRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C*",
+        &(time_buff[0]),
+        &(pack->status), &(pack->Lat), &(pack->uLat), &(pack->Lon), &(pack->uLon),
+        &(pack->Spd), &(pack->Cog),
+        &(pack->utc.day), &(pack->utc.mon), &(pack->utc.year),
+        &(pack->mv), &(pack->mvE), &(pack->mode));
+
+
+    if(nsen != 13 && nsen != 14)
+    {
+        nmea_error("GNRMC parse error!");
+        return 0;
+    }
+
+    if(0 != _nmea_parse_time(&time_buff[0], (int)strlen(&time_buff[0]), &(pack->utc)))
+    {
+        nmea_error("GNRMC time parse error!");
+        return 0;
+    }
+
+
+     pack->utc.year += 100;
+
+    return 1;
+}
+
+
+/**
+ * \brief Parse VTG packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GNVTG(const char *buff, int buff_sz, nmeaGNVTG *pack)
+{
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaGNVTG));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    if(9 != nmea_scanf(buff, buff_sz,
+        "$GNVTG,%f,%C,%f,%C,%f,%C,%f,%C,%C*",
+        &(pack->Cogt), &(pack->T),
+        &(pack->CogM), &(pack->M),
+        &(pack->Sog), &(pack->N),
+        &(pack->kph), &(pack->K),&(pack->mode)))
+    {
+        nmea_error("GNVTG parse error!");
+        return 0;
+    }
+
+    if( pack->T != 'T' ||
+        pack->M != 'M' ||
+        pack->N != 'N' ||
+        pack->K != 'K')
+    {
+        nmea_error("GNVTG parse error (format error)!");
+        return 0;
+    }
+
+    return 1;
+}
+
+/**
+ * \brief Parse RMC packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GNZDA(const char *buff, int buff_sz, nmeaGNZDA *pack)
+{
+    int nsen;
+    int year;
+    int temp1,temp2;
+    char time_buff[NMEA_TIMEPARSE_BUF];
+
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaGNZDA));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    nsen = nmea_scanf(buff, buff_sz,
+        "$GNZDA,%s,%2d,%2d,%4d,%2d,%2d*",
+        &(time_buff[0]),
+        &(pack->utc.day), &(pack->utc.mon), &year,&temp1,&temp2);
+
+    pack->utc.year = year -1900;
+
+    if(nsen != 6 )
+    {
+        nmea_error("GNZDA parse error!");
+        return 0;
+    }
+
+    if(0 != _nmea_parse_time(&time_buff[0], (int)strlen(&time_buff[0]), &(pack->utc)))
+    {
+        nmea_error("GNZDA time parse error!");
+        return 0;
+    }
+
+    return 1;
+}
+
+/**
+ * \brief Parse RMC packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GNGLL(const char *buff, int buff_sz, nmeaGNGLL *pack)
+{
+    int nsen;
+    char time_buff[NMEA_TIMEPARSE_BUF];
+
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaGNGLL));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    nsen = nmea_scanf(buff, buff_sz,
+        "$GNGLL,%f,%C,%f,%C,%s,%C,%C*",
+        &(pack->Lat), &(pack->uLat), &(pack->Lon), &(pack->uLon),
+        &(time_buff[0]),
+        &(pack->Value),&(pack->mode));
+
+
+    if(nsen != 7 )
+    {
+        nmea_error("GNGLL parse error!");
+        return 0;
+    }
+
+    if(0 != _nmea_parse_time(&time_buff[0], (int)strlen(&time_buff[0]), &(pack->utc)))
+    {
+        nmea_error("GNGLL time parse error!");
+        return 0;
+    }
+
+    return 1;
+}
+
+/**
+ * \brief Parse GSV packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_BDGSV(const char *buff, int buff_sz, nmeaBDGSV *pack)
+{
+    int nsen, nsat;
+
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaBDGSV));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    nsen = nmea_scanf(buff, buff_sz,
+        "$BDGSV,%d,%d,%d,"
+        "%d,%d,%d,%d,"
+        "%d,%d,%d,%d,"
+        "%d,%d,%d,%d,"
+        "%d,%d,%d,%d*",
+        &(pack->NumMsg), &(pack->MsgNo), &(pack->numSv),
+        &(pack->sat_data[0].id), &(pack->sat_data[0].elv), &(pack->sat_data[0].azimuth), &(pack->sat_data[0].sig),
+        &(pack->sat_data[1].id), &(pack->sat_data[1].elv), &(pack->sat_data[1].azimuth), &(pack->sat_data[1].sig),
+        &(pack->sat_data[2].id), &(pack->sat_data[2].elv), &(pack->sat_data[2].azimuth), &(pack->sat_data[2].sig),
+        &(pack->sat_data[3].id), &(pack->sat_data[3].elv), &(pack->sat_data[3].azimuth), &(pack->sat_data[3].sig));
+
+    nsat = (pack->MsgNo - 1) * NMEA_SATINPACK;
+    nsat = (nsat + NMEA_SATINPACK > pack->numSv)?pack->numSv - nsat:NMEA_SATINPACK;
+    nsat = nsat * 4 + 3 /* first three sentence`s */;
+
+    if(nsen < nsat || nsen > (NMEA_SATINPACK * 4 + 3))
+    {
+        nmea_error("BDGSV parse error!");
+        return 0;
+    }
+
+    return 1;
+}
+
+char txt_buff[NMEA_TXTPARSE_BUF];
+
+/**
+ * \brief Parse TXT packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GPTXT(const char *buff, int buff_sz, nmeaGPTXT *pack)
+{
+    int nsen;
+
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaGPTXT));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    nsen = nmea_scanf(buff, buff_sz,
+        "$GPTXT,%2d,%2d,%2d,%s*",
+        &(pack->xx), &(pack->yy), &(pack->zz),&(txt_buff[0]));
+
+
+    if(nsen != 4 )
+    {
+        nmea_error("GPTXT parse error!");
+        return 0;
+    }
+		
+		return 1;
+}
+
+
+/**
  * \brief Fill nmeaINFO structure by GGA packet data.
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
@@ -385,7 +693,7 @@ void nmea_GPGGA2info(nmeaGPGGA *pack, nmeaINFO *info)
     info->elv = pack->elv;
     info->lat = ((pack->ns == 'N')?pack->lat:-(pack->lat));
     info->lon = ((pack->ew == 'E')?pack->lon:-(pack->lon));
-    info->smask |= GPGGA;
+		info->smask |= GPGGA;
 }
 
 /**
@@ -418,6 +726,35 @@ void nmea_GPGSA2info(nmeaGPGSA *pack, nmeaINFO *info)
 
     info->satinfo.inuse = nuse;
     info->smask |= GPGSA;
+}
+
+/**
+ * \brief Parse GSA packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_BDGSA(const char *buff, int buff_sz, nmeaBDGSA *pack)
+{
+    NMEA_ASSERT(buff && pack);
+
+    memset(pack, 0, sizeof(nmeaBDGSA));
+
+    nmea_trace_buff(buff, buff_sz);
+
+    if(17 != nmea_scanf(buff, buff_sz,
+        "$BDGSA,%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*",
+        &(pack->Smode), &(pack->FS),
+        &(pack->SVID[0]), &(pack->SVID[1]), &(pack->SVID[2]), &(pack->SVID[3]), &(pack->SVID[4]), &(pack->SVID[5]),
+        &(pack->SVID[6]), &(pack->SVID[7]), &(pack->SVID[8]), &(pack->SVID[9]), &(pack->SVID[10]), &(pack->SVID[11]),
+        &(pack->PDOP), &(pack->HDOP), &(pack->VDOP)))
+    {
+        nmea_error("BDGSA parse error!");
+        return 0;
+    }
+
+    return 1;
 }
 
 /**
@@ -479,7 +816,7 @@ void nmea_GPRMC2info(nmeaGPRMC *pack, nmeaINFO *info)
 
     info->utc = pack->utc;
     info->lat = ((pack->ns == 'N')?pack->lat:-(pack->lat));
-    info->lon = ((pack->ew == 'E')?pack->lon:-(pack->lon));
+    info->lon = ((pack->ew == 'E')?pack->lon:-(pack->lon));	
     info->speed = pack->speed * NMEA_TUD_KNOTS;
     info->direction = pack->direction;
     info->smask |= GPRMC;
@@ -498,4 +835,216 @@ void nmea_GPVTG2info(nmeaGPVTG *pack, nmeaINFO *info)
     info->declination = pack->dec;
     info->speed = pack->spk;
     info->smask |= GPVTG;
+}
+
+/**
+ * \brief Fill nmeaINFO structure by GGA packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GNGGA2info(nmeaGNGGA *pack, nmeaINFO *info)
+{
+    NMEA_ASSERT(pack && info);
+
+    info->utc.hour = pack->utc.hour;
+    info->utc.min = pack->utc.min;
+    info->utc.sec = pack->utc.sec;
+    info->utc.hsec = pack->utc.hsec;
+    info->sig = pack->FS;
+    info->HDOP = pack->HDOP;
+    info->elv = pack->Msl;
+    info->lat = ((pack->uLat == 'N')?pack->Lat:-(pack->Lat));
+    info->lon = ((pack->uLon == 'E')?pack->Lon:-(pack->Lon));
+    info->satinfo.inuse = pack->numSv;
+    info->smask |= GNGGA;
+}
+
+
+/**
+ * \brief Fill nmeaINFO structure by RMC packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GNRMC2info(nmeaGNRMC *pack, nmeaINFO *info)
+{
+    NMEA_ASSERT(pack && info);
+
+    if('A' == pack->status)
+    {
+        if(NMEA_SIG_BAD == info->sig)
+            info->sig = NMEA_SIG_MID;
+        if(NMEA_FIX_BAD == info->fix)
+            info->fix = NMEA_FIX_2D;
+    }
+    else if('V' == pack->status)
+    {
+        info->sig = NMEA_SIG_BAD;
+        info->fix = NMEA_FIX_BAD;
+    }
+
+    info->utc = pack->utc;
+    info->lat = ((pack->uLat == 'N')?pack->Lat:-(pack->Lat));
+    info->lon = ((pack->uLon == 'E')?pack->Lon:-(pack->Lon));		
+    info->sog = pack->Spd ;
+    info->speed = pack->Spd * NMEA_TUD_KNOTS;
+    info->direction = pack->Cog;
+    info->mode = pack->mode;
+    info->smask |= GNRMC;
+}
+
+/**
+ * \brief Fill nmeaINFO structure by VTG packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GNVTG2info(nmeaGNVTG *pack, nmeaINFO *info)
+{
+    NMEA_ASSERT(pack && info);
+
+    info->direction = pack->Cogt;
+    info->declination = pack->CogM;
+    info->sog = pack->Sog;
+    info->speed = pack->kph;
+    info->mode = pack->mode;
+    info->smask |= GNVTG;
+}
+
+
+/**
+ * \brief Fill nmeaINFO structure by RMC packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GNZDA2info(nmeaGNZDA *pack, nmeaINFO *info)
+{
+    NMEA_ASSERT(pack && info);
+
+    info->utc = pack->utc;
+    info->smask |= GNZDA;
+}
+
+/**
+ * \brief Fill nmeaINFO structure by GLL packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GNGLL2info(nmeaGNGLL *pack, nmeaINFO *info)
+{
+    NMEA_ASSERT(pack && info);
+
+    if('A' == pack->Value)
+    {
+        if(NMEA_SIG_BAD == info->sig)
+            info->sig = NMEA_SIG_MID;
+        if(NMEA_FIX_BAD == info->fix)
+            info->fix = NMEA_FIX_2D;
+    }
+    else if('V' == pack->Value)
+    {
+        info->sig = NMEA_SIG_BAD;
+        info->fix = NMEA_FIX_BAD;
+    }
+
+    info->lat = ((pack->uLat == 'N')?pack->Lat:-(pack->Lat));
+    info->lon = ((pack->uLon == 'E')?pack->Lon:-(pack->Lon));		
+		info->utc.hour = pack->utc.hour;
+		info->utc.min = pack->utc.min;
+		info->utc.sec = pack->utc.sec;
+		info->utc.hsec = pack->utc.hsec;
+
+    info->mode = pack->mode;
+    info->smask |= GNGLL;
+}
+
+
+/**
+ * \brief Fill nmeaINFO structure by GSV packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_BDGSV2info(nmeaBDGSV *pack, nmeaINFO *info)
+{
+    int isat, isi, nsat;
+
+    NMEA_ASSERT(pack && info);
+
+    if(pack->MsgNo > pack->NumMsg ||
+        pack->MsgNo * NMEA_SATINPACK > NMEA_MAXSAT)
+        return;
+
+    if(pack->MsgNo < 1)
+        pack->MsgNo = 1;
+
+    info->BDsatinfo.inview = pack->numSv;
+
+    nsat = (pack->MsgNo - 1) * NMEA_SATINPACK;
+    nsat = (nsat + NMEA_SATINPACK > pack->numSv)?pack->numSv - nsat:NMEA_SATINPACK;
+
+    for(isat = 0; isat < nsat; ++isat)
+    {
+        isi = (pack->MsgNo - 1) * NMEA_SATINPACK + isat;
+        info->BDsatinfo.sat[isi].id = pack->sat_data[isat].id;
+        info->BDsatinfo.sat[isi].elv = pack->sat_data[isat].elv;
+        info->BDsatinfo.sat[isi].azimuth = pack->sat_data[isat].azimuth;
+        info->BDsatinfo.sat[isi].sig = pack->sat_data[isat].sig;
+    }
+
+    info->smask |= BDGSV;
+}
+
+
+/**
+ * \brief Fill nmeaINFO structure by GSA packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_BDGSA2info(nmeaBDGSA *pack, nmeaINFO *info)
+{
+    int i, j, nuse = 0;
+
+    NMEA_ASSERT(pack && info);
+
+    info->fix = pack->Smode;
+    info->PDOP = pack->PDOP;
+    info->HDOP = pack->HDOP;
+    info->VDOP = pack->VDOP;
+
+    for(i = 0; i < NMEA_MAXSAT; ++i)
+    {
+        for(j = 0; j < info->BDsatinfo.inview; ++j)
+        {
+            if(pack->SVID[i] && pack->SVID[i] == info->BDsatinfo.sat[j].id)
+            {
+                info->BDsatinfo.sat[j].in_use = 1;
+                nuse++;
+            }
+        }
+    }
+
+    info->BDsatinfo.inuse = nuse;
+    info->smask |= BDGSA;
+}
+
+
+
+/**
+ * \brief Fill nmeaINFO structure by GSA packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GPTXT2info(nmeaGPTXT *pack, nmeaINFO *info)
+{
+//	nmea_zero_GPTXT(pack);
+	
+	info->txt_level = pack->zz;
+	info->txt = txt_buff;
+	
+	if(info->txt_level == 0)
+		nmea_info("GPTXT error: %s",&txt_buff[0]);
+	else if(info->txt_level == 1 )
+		nmea_info("GPTXT warning: %s",&txt_buff[0]);
+	else if(info->txt_level == 2 )
+		nmea_info("GPTXT notice: %s",&txt_buff[0]);
+	else if(info->txt_level == 7)
+		nmea_info("GPTXT user info: %s",&txt_buff[0]);
 }

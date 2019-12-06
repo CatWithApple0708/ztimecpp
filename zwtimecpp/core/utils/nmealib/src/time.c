@@ -24,6 +24,10 @@
 #   include <time.h>
 #endif
 
+
+
+
+
 #ifdef NMEA_WIN
 
 void nmea_time_now(nmeaTIME *stm)
@@ -43,21 +47,32 @@ void nmea_time_now(nmeaTIME *stm)
 
 #else /* NMEA_WIN */
 
+//modify by fire 这个函数用于产生系统时间,可以通过RTC为它设置时间，现在设置为默认值
 void nmea_time_now(nmeaTIME *stm)
 {
-    time_t lt;
-    struct tm *tt;
+//    time_t lt ;
+//   struct tm *tt;
 
-    time(&lt);
-    tt = gmtime(&lt);
+    //time(&lt);          //modify by fire 
+   // tt = gmtime(&lt);
 
-    stm->year = tt->tm_year;
-    stm->mon = tt->tm_mon;
-    stm->day = tt->tm_mday;
-    stm->hour = tt->tm_hour;
-    stm->min = tt->tm_min;
-    stm->sec = tt->tm_sec;
+//    stm->year = tt->tm_year;
+//    stm->mon = tt->tm_mon;
+//    stm->day = tt->tm_mday;
+//    stm->hour = tt->tm_hour;
+//    stm->min = tt->tm_min;
+//    stm->sec = tt->tm_sec;
+//    stm->hsec = 0;
+    stm->year = 2014-1900;
+    stm->mon =  0;
+    stm->day = 1;
+    stm->hour = 0;
+    stm->min = 0;
+    stm->sec = 0;
     stm->hsec = 0;
 }
+
+
+
 
 #endif

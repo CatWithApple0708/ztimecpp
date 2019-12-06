@@ -18,6 +18,7 @@
 
 #define NMEA_CONVSTR_BUF    (256)
 #define NMEA_TIMEPARSE_BUF  (256)
+#define NMEA_TXTPARSE_BUF   (256)
 
 #if defined(WINCE) || defined(UNDER_CE)
 #   define  NMEA_CE
@@ -43,7 +44,7 @@
 
 #if !defined(NDEBUG) && !defined(NMEA_CE)
 #   include <assert.h>
-#   define NMEA_ASSERT(x)   assert(x)
+#   define NMEA_ASSERT(x)   //assert(x)       //modify by fire
 #else
 #   define NMEA_ASSERT(x)
 #endif

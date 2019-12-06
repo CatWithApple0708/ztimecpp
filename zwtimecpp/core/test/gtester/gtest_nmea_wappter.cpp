@@ -1,5 +1,6 @@
-#include "gtest/gtest.h"
+#include <math.h>
 #include <functional>
+#include "gtest/gtest.h"
 
 #include "project_mock.hpp"
 #include "zwtimecpp/core/utils/nmea_wappter.hpp"
@@ -49,6 +50,15 @@ TEST_F(GtestNmeaWappter, test) {
     EXPECT_EQ(cpyinfo.getAltitude(), 10.2);
     EXPECT_EQ(cpyinfo.getLatitude(), 50.0127);
     EXPECT_EQ(cpyinfo.getLongitude(), 36.1306);
+  }
+  {
+    string gpsraw ="$GNGGA,092816.000,4004.70688,N,11620.94554,E,1,12,0.9,30.8,M,0.0,M,,*4B\r\n";
+    NmeaINFO cpyinfo;
+    nmeaWappter.parseValue(gpsraw, [&](NmeaINFO info) { cpyinfo = info; });
+    EXPECT_EQ(cpyinfo.isContaninLocationInfo(), true);
+    EXPECT_LE(fabs(cpyinfo.getAltitude() -  30.8),0.0001 );
+    EXPECT_LE(fabs(cpyinfo.getLatitude() - 40.0470688) ,0.0001);
+    EXPECT_LE(fabs(cpyinfo.getLongitude() - 116.2094554), 0.0001);
   }
   {
     string gpsraw =

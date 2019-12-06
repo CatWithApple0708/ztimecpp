@@ -35,7 +35,7 @@ class NmeaINFO {
   NmeaINFO(nmeaINFO info) : info(info) {}
   NmeaINFO() { memset(&info, 0, sizeof(nmeaINFO)); }
   bool isContaninLocationInfo() {
-    return (info.smask & GPGGA);
+    return (info.smask & GPGGA || info.smask & GNGGA);
   }
   double getLongitude() { return info.lon / 100; }
   double getLatitude() { return info.lat / 100; }

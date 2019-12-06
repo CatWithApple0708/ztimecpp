@@ -28,6 +28,7 @@ void StringUnpacker::feddata(const char* rawData, size_t len,
         buf.insert(buf.size(),
                    string(&rawData[strBeginOff],
                           &rawData[strBeginOff] + len - strBeginOff));
+        logger->info("buf {}", buf);
       }
     }
 

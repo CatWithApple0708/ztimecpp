@@ -27,15 +27,17 @@ typedef struct _nmeaPROPERTY
 {
     nmeaTraceFunc   trace_func;
     nmeaErrorFunc   error_func;
+		nmeaErrorFunc	  info_func;
     int             parse_buff_size;
 
 } nmeaPROPERTY;
 
-nmeaPROPERTY * nmea_property();
+nmeaPROPERTY * nmea_property(void);
 
 void nmea_trace(const char *str, ...);
 void nmea_trace_buff(const char *buff, int buff_size);
 void nmea_error(const char *str, ...);
+void nmea_info(const char *str, ...);
 
 #ifdef  __cplusplus
 }

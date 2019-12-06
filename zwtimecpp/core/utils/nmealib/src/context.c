@@ -14,10 +14,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-nmeaPROPERTY * nmea_property()
+nmeaPROPERTY * nmea_property(void)
 {
     static nmeaPROPERTY prop = {
-        0, 0, NMEA_DEF_PARSEBUFF
+        0, 0, 0, NMEA_DEF_PARSEBUFF
         };
 
     return &prop;
@@ -54,6 +54,24 @@ void nmea_error(const char *str, ...)
     va_list arg_list;
     char buff[NMEA_DEF_PARSEBUFF];
     nmeaErrorFunc func = nmea_property()->error_func;
+
+    if(func)
+    {
+        va_start(arg_list, str);
+        size = NMEA_POSIX(vsnprintf)(&buff[0], NMEA_DEF_PARSEBUFF - 1, str, arg_list);
+        va_end(arg_list);
+
+        if(size > 0)
+            (*func)(&buff[0], size);
+    }
+}
+
+void nmea_info(const char *str, ...)
+{
+    int size;
+    va_list arg_list;
+    char buff[NMEA_DEF_PARSEBUFF];
+    nmeaErrorFunc func = nmea_property()->info_func;
 
     if(func)
     {

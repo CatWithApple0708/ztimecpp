@@ -52,3 +52,60 @@ void nmea_zero_GPVTG(nmeaGPVTG *pack)
     pack->spn_n = 'N';
     pack->spk_k = 'K';
 }
+
+void nmea_zero_GNGGA(nmeaGNGGA *pack)
+{
+    memset(pack, 0, sizeof(nmeaGNGGA));
+    nmea_time_now(&pack->utc);
+    pack->uLat = 'N';
+    pack->uLon = 'E';
+    pack->uMsl = 'M';
+    pack->uSep = 'M';
+}
+
+void nmea_zero_GNRMC(nmeaGNRMC *pack)
+{
+    memset(pack, 0, sizeof(nmeaGNRMC));
+    nmea_time_now(&pack->utc);
+    pack->status = 'V';
+    pack->uLat = 'N';
+    pack->uLon = 'E';
+    pack->mvE = 'E';
+}
+
+void nmea_zero_GNVTG(nmeaGNVTG *pack)
+{
+    memset(pack, 0, sizeof(nmeaGNVTG));
+    pack->T = 'T';
+    pack->M = 'M';
+    pack->N = 'N';
+    pack->K = 'K';
+}
+
+void nmea_zero_GNZDA(nmeaGNZDA *pack)
+{
+    memset(pack, 0, sizeof(nmeaGNZDA));
+    nmea_time_now(&pack->utc);
+}
+
+void nmea_zero_GNGLL(nmeaGNGLL *pack)
+{
+    memset(pack, 0, sizeof(nmeaGNGLL));
+    nmea_time_now(&pack->utc);
+    pack->Value = 'V';
+    pack->uLat = 'N';
+    pack->uLon = 'E';
+}
+
+void nmea_zero_BDGSA(nmeaBDGSA *pack)
+{
+    memset(pack, 0, sizeof(nmeaBDGSA));
+    pack->Smode = 'A';
+    pack->FS = NMEA_FIX_BAD;
+}
+
+void nmea_zero_GPTXT(nmeaGPTXT *pack)
+{
+    memset(pack, 0, sizeof(nmeaGPTXT));
+
+}

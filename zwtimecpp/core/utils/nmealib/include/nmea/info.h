@@ -24,7 +24,7 @@
 #define NMEA_FIX_2D         (2)
 #define NMEA_FIX_3D         (3)
 
-#define NMEA_MAXSAT         (12)
+#define NMEA_MAXSAT         (37)
 #define NMEA_SATINPACK      (4)
 #define NMEA_NSATPACKS      (NMEA_MAXSAT / NMEA_SATINPACK)
 
@@ -91,16 +91,21 @@ typedef struct _nmeaINFO
     double  PDOP;       /**< Position Dilution Of Precision */
     double  HDOP;       /**< Horizontal Dilution Of Precision */
     double  VDOP;       /**< Vertical Dilution Of Precision */
-
+   
     double  lat;        /**< Latitude in NDEG - +/-[degree][min].[sec/60] */
     double  lon;        /**< Longitude in NDEG - +/-[degree][min].[sec/60] */
     double  elv;        /**< Antenna altitude above/below mean sea level (geoid) in meters */
+    double  sog;        /**< 数值 对地速度，单位为节 */
     double  speed;      /**< Speed over the ground in kilometers/hour */
     double  direction;  /**< Track angle in degrees True */
     double  declination; /**< Magnetic variation degrees (Easterly var. subtracts from true course) */
-
+    char    mode;       /**< 字符 定位模式标志 (A = 自主模式, D = 差分模式, E = 估算模式, N = 数据无效) */
     nmeaSATINFO satinfo; /**< Satellites information */
-
+    nmeaSATINFO BDsatinfo; /**北斗卫星信息*/
+		
+		int txt_level;
+		char *txt;
+		
 } nmeaINFO;
 
 void nmea_zero_INFO(nmeaINFO *info);

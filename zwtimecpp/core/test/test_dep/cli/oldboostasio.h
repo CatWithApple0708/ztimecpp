@@ -49,9 +49,9 @@ private:
     ContextType& ios;
 };
 
-inline boost::asio::ip::address IpAddressFromString(const std::string& address)
-{
-    return boost::asio::ip::address::from_string(address);
+static inline boost::asio::ip::address IpAddressFromString(
+    const std::string& address) {
+  return boost::asio::ip::address::from_string(address);
 }
 
 } // namespace oldboost

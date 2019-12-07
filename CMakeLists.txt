@@ -147,6 +147,8 @@ add_library(
   zwtimecpp/core/utils/nmealib/src/time.c
   zwtimecpp/core/utils/nmealib/src/tok.c
   zwtimecpp/core/utils/nmea_wappter.cpp
+  zwtimecpp/core/utils/gps_protocol_parsing_process.cpp
+  zwtimecpp/core/utils/gps_protocol_parsing_process.hpp
   zwtimecpp/core/utils/nmea_wappter.hpp
   zwtimecpp/core/utils/utc/utctime.cpp
   zwtimecpp/core/utils/utc/utctime.hpp

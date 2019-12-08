@@ -113,6 +113,7 @@ typedef enum {
   MTC_SealYMotor = 0x0021,
   MTC_TakePhoto = 0x0022,
   MTC_ComplexGarbage = 0x1000,
+  MTC_SpecialOperate0 = 0xffff,
 } UP_module_type_code_t;
 
 typedef enum {

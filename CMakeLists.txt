@@ -44,6 +44,9 @@ if(NOT zwtimecpp_build_on_parent)
 
 else()
   message(STATUS "Compile in parent config")
+  include_directories(${ZTIMECPP_INCLUDE_DIRECTORIES})
+  link_directories(${ZTIMECPP_LINK_DIRECTORIES})
+  link_libraries(${ZTIMECPP_LINK_LIBRARIES})
 endif()
 
 add_library(
@@ -153,8 +156,7 @@ add_library(
   zwtimecpp/core/utils/utc/utctime.cpp
   zwtimecpp/core/utils/utc/utctime.hpp
   zwtimecpp/protocol/uart_protocol_v1/cpp/logger_helper.cpp
-  zwtimecpp/core/utils/gps_info_parse.cpp
-  )
+  zwtimecpp/core/utils/gps_info_parse.cpp)
 ####################################################################
 add_library(zwtimecpptest zwtimecpp/core/test/test_utils/runner_manager.cpp
                           zwtimecpp/core/test/test_utils/runner_manager.hpp)

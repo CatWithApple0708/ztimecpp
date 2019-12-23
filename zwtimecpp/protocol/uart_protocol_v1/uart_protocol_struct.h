@@ -341,6 +341,8 @@ DEFINE_DATA_POINT(TakePhoto) {
 }
 DEFINE_DATA_END(TakePhoto)
 
+#include "zwtimecpp/protocol/uart_protocol_v1/project/mobile_wrapping_machines.h"
+
 typedef struct {
   uint8_t *buf;
   size_t length;

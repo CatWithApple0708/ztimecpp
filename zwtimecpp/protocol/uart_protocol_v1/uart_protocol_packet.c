@@ -5,6 +5,7 @@
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet.h"
 #include <string.h>
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
+#include "zwtimecpp/core/utils/cutils/net.h"
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet_struct_internal.h"
 
 static UP_parameters_container_t container;
@@ -79,6 +80,28 @@ bool UPParametersContainer_push_buf(UP_parameters_container_t* container,
   memcpy(&begin[2], buf, length);
   container->useful_size =
       container->useful_size + length + UP_EACH_PARAMETR_MIN_SIZE;
+  return true;
+}
+
+bool UPParametersContainer_push_float(UP_parameters_container_t* container,
+                                       float value) {
+  if (ARRARY_SIZE(container->parameters) <
+      container->useful_size + sizeof(float) + UP_EACH_PARAMETR_MIN_SIZE) {
+    return false;
+  }
+  uint8_t* begin = &container->parameters[container->useful_size];
+  uint32_t absolute_value = value > 0 ? value : -value;
+
+  //设置长度
+  begin[0] = (sizeof(float) >> 8) & 0xff;
+  begin[1] = (sizeof(float) >> 0) & 0xff;
+
+  memcpy(&begin[2], &value, sizeof(value));
+  transNet(&begin[2], sizeof(value));
+
+  container->useful_size =
+      container->useful_size + sizeof(float) + UP_EACH_PARAMETR_MIN_SIZE;
+
   return true;
 }
 

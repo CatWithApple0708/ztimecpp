@@ -103,3 +103,4 @@ UP_packet_process_ret_t UPPacketContainer_construct(
 bool UPParameter_get_bool(UP_parameter_packet_t packet);
 int32_t UPParameter_get_int32(UP_parameter_packet_t packet);
 UP_buf_t UPParameter_get_buf(UP_parameter_packet_t packet);
+float UPParameter_get_float(UP_parameter_packet_t packet);

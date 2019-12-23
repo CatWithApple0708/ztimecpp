@@ -5,6 +5,7 @@
 #include "uart_protocol_parse.h"
 #include <string.h>
 #include "zwtimecpp/core/utils/cutils/marco_utils.h"
+#include "zwtimecpp/core/utils/cutils/net.h"
 #include "zwtimecpp/protocol/uart_protocol_v1/uart_protocol_packet_struct_internal.h"
 
 void uart_protocol_handler_init(uart_protocol_handler_t* handler) {
@@ -451,6 +452,22 @@ int32_t UPParameter_get_int32(UP_parameter_packet_t packet) {
     value = -value;
   }
   return value;
+}
+
+/**
+ * @brief 根据packet获取int32
+ *
+ * @param packet
+ * @return uint32_t
+ */
+float UPParameter_get_float(UP_parameter_packet_t packet) {
+  if (packet.length != sizeof(float)) {
+    return 0.0;
+  }
+  float ret;
+  memcpy(&ret, packet.buf, sizeof(float));
+  transFromNet((uint8_t*)&ret, sizeof(float));
+  return ret;
 }
 /**
  * @brief 根据packet获取buf

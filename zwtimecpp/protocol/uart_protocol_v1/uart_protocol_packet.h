@@ -91,6 +91,8 @@ bool UPParametersContainer_push_bool(UP_parameters_container_t* container,
                                      bool value);
 bool UPParametersContainer_push_buf(UP_parameters_container_t* container,
                                     uint8_t* buf, uint16_t length);
+bool UPParametersContainer_push_float(UP_parameters_container_t* container,
+                                      float value);
 
 /******************************packet构造**********************************/
 /**

@@ -17,6 +17,7 @@
 #include "zwtimecpp/core/utils/fatall_error.hpp"
 #include "zwtimecpp/core/utils/signal.hpp"
 #include "zwtimecpp/core/utils/backward_helper.hpp"
+#include "zwtimecpp/core/utils/run_when_exit.hpp"
 
 // #include <zwtimecpp/core/helper/exception_helper.hpp>
 using namespace std;
@@ -36,7 +37,7 @@ Thread::Thread(string name, function<void()> run) {
     this->id = pthread_self();
     CoreSystemState::Instance().createThreadInfo(this->name);
     this->threadInitialized = true;
-
+    RUN_WHEN_EXIT(this->waitingForJoin = true);
     try {
       this->run();
     } catch (const std::exception &exception) {

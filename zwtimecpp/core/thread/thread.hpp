@@ -68,6 +68,7 @@ class Thread : public Object {
   string name;
   pthread_t id = 0;
   bool threadInitialized = false;
+  bool waitingForJoin = false;/*当前线程是否运行退出等待回收*/
   Thread(std::function<void()> run);
 
  public:
@@ -83,6 +84,7 @@ class Thread : public Object {
   static void wake(pthread_t threadid);
   void wake();
   void join(function<void()>wakeFunc = nullptr);
+  bool isWaitingForJoin() { return waitingForJoin; }
   pthread_t getId() const;
   ~Thread();
 

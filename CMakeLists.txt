@@ -199,6 +199,8 @@ add_dependencies(core_gtest_main zwtimecpp zwtimecpptest)
 add_executable(core_runner_main
                zwtimecpp/core/test/runner_main.cpp
                zwtimecpp/core/test/runner/show_uart_v1_info.cc
-               zwtimecpp/core/test/runner/test_up_packet_container_dump.cpp)
+               zwtimecpp/core/test/runner/test_up_packet_container_dump.cpp
+               zwtimecpp/core/test/runner/test_lock_helper.cpp
+               )
 target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
 add_dependencies(core_runner_main zwtimecpp zwtimecpptest)

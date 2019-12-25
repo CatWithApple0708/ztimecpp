@@ -103,6 +103,7 @@ static INLINE const char* ModuleType_to_str(UP_module_type_code_t moduleType) {
     CASE_AND_RET(MTC_SealXMotor)
     CASE_AND_RET(MTC_SealYMotor)
     CASE_AND_RET(MTC_TakePhoto)
+    CASE_AND_RET(MTC_MobileWrappingMachine)
     default:
       break;
   }

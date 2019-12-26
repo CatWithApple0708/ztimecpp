@@ -113,6 +113,7 @@ typedef enum {
   MTC_SealYMotor = 0x0021,
   MTC_TakePhoto = 0x0022,
   MTC_ComplexGarbage = 0x1000,
+  MTC_MobileWrappingMachine = 0x1001, //自走式缠绕车
   MTC_SpecialOperate0 = 0xffff,
 } UP_module_type_code_t;
 
@@ -340,6 +341,34 @@ DEFINE_DATA_POINT(TakePhoto) {
   DEFINE_DATA_POINT_ENTRY(TakePhoto, status, 0x0101)
 }
 DEFINE_DATA_END(TakePhoto)
+
+
+/**
+ * @description: 自走式缠绕车相关数据点
+ */
+DEFINE_DATA_POINT(MobileWrappingMachine) {
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisMotorSpeedPID, 0x0100) //底盘驱动轮速度电机PID参数设定
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisMotorAccPID, 0x0101) //底盘驱动轮加速度限位电机PID参数设定
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisMaxAccLimitVal, 0x0102)   //底盘加速度极限值设定(m/s^2)
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisMetreEachPulse, 0x0103)   //底盘编码器脉冲和里程转换关系(m/n 米每个脉冲)
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisSpeedCtrl1, 0x0104)   //底盘速度控制一
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisSpeedCtrl2, 0x0105)   //底盘速度控制二
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chassisInfoReport, 0x01f0)   //底盘信息上报
+
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, slidingColumnMotorSpeedPID, 0x0200)   //膜架升降器电机PID参数设定
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, slidingColumnSpeedCtrl, 0x0201)   //膜架升降器电机速度控制(上升+/下降-)
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, slidingColumnMetreEachPulse, 0x0202)   //膜架升降器编码器脉冲和里程转换关系(m/n 米每个脉冲)
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, slidingColumnInfoReport, 0x02f0)   //膜架升降器信息上报(m)
+
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackMotor0PID, 0x0300)   //膜架控制器预拉伸比调整电机_0 PID参数设定
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackMotor1PID, 0x0301)   //膜架控制器预拉伸比调整电机_1 PID参数设定
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackTensileForcePID, 0x0302)   //膜架控制器拉伸力控制PID参数设定
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackCtrl, 0x0303)   //膜架控制
+
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, commonExceptionStatus, 0x0f00)   //异常状态上报
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, commonExceptionStatusFlag, 0x0f01)   //异常状态上报标志位(true/false)
+}
+DEFINE_DATA_END(MobileWrappingMachine)
 
 #include "zwtimecpp/protocol/uart_protocol_v1/project/mobile_wrapping_machines.h"
 

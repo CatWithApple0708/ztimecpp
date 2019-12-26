@@ -21,7 +21,7 @@ static INLINE bool checkCPUEndian() {
 }
 
 static INLINE void transNet(uint8_t* data, size_t len) {
-  if (len < 0) return;
+  // if (len < 0) return;
   if (checkCPUEndian()) {
     return;
   }
@@ -36,7 +36,7 @@ static INLINE void transNet(uint8_t* data, size_t len) {
 }
 
 static INLINE void transFromNet(uint8_t* data, size_t len) {
-  if (len < 0) return;
+  // if (len < 0) return;
   if (checkCPUEndian()) {
     return;
   }

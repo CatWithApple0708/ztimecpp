@@ -32,4 +32,6 @@ using namespace std;
   __FUNCTION__##__LINE__##lock = true;                                         \
   RUN_WHEN_EXIT(if (__FUNCTION__##__LINE__##lock) lockName.unlock());
 
+#define TRY_LOCK(lockName) TRY_LOCK_RECURSIVE_MUTEX(lockName)
+
 }  // namespace zwsd

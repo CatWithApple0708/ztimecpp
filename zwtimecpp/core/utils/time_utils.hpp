@@ -19,52 +19,43 @@ namespace zwsd {
 namespace core {
 using namespace std;
 using namespace chrono;
-class TimeUtils {
+
+
+template <class T>
+class __TimeUtils {
  public:
-  static time_point<system_clock> zero() {
-    return time_point<system_clock>(nanoseconds(0));
+  static time_point<T> zero() {
+    return time_point<T>(nanoseconds(0));
   }
 
-  static time_point<system_clock> now() { return move(system_clock::now()); }
+  static time_point<T> now() { return move(T::now()); }
 
   static int64_t getus() {
-    return duration_cast<microseconds>(system_clock::now().time_since_epoch())
+    return duration_cast<microseconds>(T::now().time_since_epoch())
         .count();
   }
 
   static int64_t gets() {
-    return duration_cast<seconds>(system_clock::now().time_since_epoch())
+    return duration_cast<seconds>(T::now().time_since_epoch())
         .count();
   }
   static int64_t getms() {
-    return duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+    return duration_cast<milliseconds>(T::now().time_since_epoch())
         .count();
   }
   static int64_t geth() {
-    return duration_cast<hours>(system_clock::now().time_since_epoch()).count();
+    return duration_cast<hours>(T::now().time_since_epoch()).count();
   }
 
-  static int64_t tpToMs(time_point<system_clock> t) {
+  static int64_t tpToMs(time_point<T> t) {
     return duration_cast<milliseconds>(t.time_since_epoch()).count();
   }
 
-  static int64_t tpToUs(time_point<system_clock> t) {
+  static int64_t tpToUs(time_point<T> t) {
     return duration_cast<microseconds>(t.time_since_epoch()).count();
   }
 
-  static int64_t tpToS(time_point<system_clock> t) {
-    return duration_cast<seconds>(t.time_since_epoch()).count();
-  }
-
-  static int64_t tpToMs(time_point<steady_clock> t) {
-    return duration_cast<milliseconds>(t.time_since_epoch()).count();
-  }
-
-  static int64_t tpToUs(time_point<steady_clock> t) {
-    return duration_cast<microseconds>(t.time_since_epoch()).count();
-  }
-
-  static int64_t tpToS(time_point<steady_clock> t) {
+  static int64_t tpToS(time_point<T> t) {
     return duration_cast<seconds>(t.time_since_epoch()).count();
   }
 
@@ -79,45 +70,45 @@ class TimeUtils {
   }
   static int64_t dToNs(nanoseconds ns) { return ns.count(); }
 
-  static inline time_point<system_clock> msToTp(int64_t ms) {
-    time_point<system_clock> tp = time_point<system_clock>(milliseconds(ms));
+  static inline time_point<T> msToTp(int64_t ms) {
+    time_point<T> tp = time_point<T>(milliseconds(ms));
     return move(tp);
   }
 
   /**
    * @brief 时间操作
    */
-  static inline time_point<system_clock> addh(time_point<system_clock> point,
+  static inline time_point<T> addh(time_point<T> point,
                                               int value) {
     return point + hours(value);
   }
-  static inline time_point<system_clock> adds(time_point<system_clock> point,
+  static inline time_point<T> adds(time_point<T> point,
                                               int value) {
     return point + seconds(value);
   }
-  static inline time_point<system_clock> addms(time_point<system_clock> point,
+  static inline time_point<T> addms(time_point<T> point,
                                                int value) {
     return point + milliseconds(value);
   }
-  static inline time_point<system_clock> addus(time_point<system_clock> point,
+  static inline time_point<T> addus(time_point<T> point,
                                                int value) {
     return point + microseconds(value);
   }
 
-  static inline time_point<system_clock> addh(int value) {
-    time_point<system_clock> now = system_clock::now();
+  static inline time_point<T> addh(int value) {
+    time_point<T> now = T::now();
     return addh(now, value);
   }
-  static inline time_point<system_clock> adds(int value) {
-    time_point<system_clock> now = system_clock::now();
+  static inline time_point<T> adds(int value) {
+    time_point<T> now = T::now();
     return adds(now, value);
   }
-  static inline time_point<system_clock> addms(int value) {
-    time_point<system_clock> now = system_clock::now();
+  static inline time_point<T> addms(int value) {
+    time_point<T> now = T::now();
     return addms(now, value);
   }
-  static inline time_point<system_clock> addus(int value) {
-    time_point<system_clock> now = system_clock::now();
+  static inline time_point<T> addus(int value) {
+    time_point<T> now = T::now();
     return addus(now, value);
   }
 
@@ -127,14 +118,14 @@ class TimeUtils {
    * @brief 计算流逝时间
    */
 
-  static int64_t elapsedTimeS(time_point<system_clock> begin) {
-    return dToS(system_clock::now() - begin);
+  static int64_t elapsedTimeS(time_point<T> begin) {
+    return dToS(T::now() - begin);
   }
-  static int64_t elapsedTimeMs(time_point<system_clock> begin) {
-    return dToMs(system_clock::now() - begin);
+  static int64_t elapsedTimeMs(time_point<T> begin) {
+    return dToMs(T::now() - begin);
   }
-  static int64_t elapsedTimeUs(time_point<system_clock> begin) {
-    return dToUs(system_clock::now() - begin);
+  static int64_t elapsedTimeUs(time_point<T> begin) {
+    return dToUs(T::now() - begin);
   }
 
   static int64_t elapsedTimeS(int64_t ms) { return (getms() - ms) / 1000; }
@@ -150,17 +141,17 @@ class TimeUtils {
    * @brief 倒计时　还剩多久
    *
    */
-  static int64_t countdownTimeS(time_point<system_clock> endtime) {
-    return dToS(endtime - system_clock::now());
+  static int64_t countdownTimeS(time_point<T> endtime) {
+    return dToS(endtime - T::now());
   }
-  static int64_t countdownTimeMs(time_point<system_clock> endtime) {
-    return dToMs(endtime - system_clock::now());
+  static int64_t countdownTimeMs(time_point<T> endtime) {
+    return dToMs(endtime - T::now());
   }
-  static int64_t countdownTimeUs(time_point<system_clock> endtime) {
-    return dToUs(endtime - system_clock::now());
+  static int64_t countdownTimeUs(time_point<T> endtime) {
+    return dToUs(endtime - T::now());
   }
-  static int64_t countdownTimeNs(time_point<system_clock> endtime) {
-    return dToNs(endtime - system_clock::now());
+  static int64_t countdownTimeNs(time_point<T> endtime) {
+    return dToNs(endtime - T::now());
   }
 
  public:
@@ -178,5 +169,9 @@ class TimeUtils {
     return UTCTime(*ptminfo);
   }
 };
+
+typedef __TimeUtils<system_clock> TimeUtils;
+typedef __TimeUtils<steady_clock> TimeUtilsSteadyClock;
+
 };  // namespace core
 }  // namespace zwsd

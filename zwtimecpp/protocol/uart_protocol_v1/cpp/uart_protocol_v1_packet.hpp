@@ -175,6 +175,10 @@ class UartProtocolV1Packet {
     UPParametersContainer_push_bool(container, value);
   }
   static void UPParametersContainer_push_value_wappter(
+      UP_parameters_container_t* container, float value) {
+    UPParametersContainer_push_float(container, value);
+  }
+  static void UPParametersContainer_push_value_wappter(
       UP_parameters_container_t* container, vector<uint8_t>& value) {
     UPParametersContainer_push_buf(container, value.data(), value.size());
   }

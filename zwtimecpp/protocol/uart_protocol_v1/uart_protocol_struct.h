@@ -14,7 +14,7 @@
 #endif
 
 #ifndef MAX_SUPPORT_PARAMETER
-#define MAX_SUPPORT_PARAMETER (10)
+#define MAX_SUPPORT_PARAMETER (20)
 #endif
 
 #define MAX_UART_RECEIVE_BUF_NUM (2)

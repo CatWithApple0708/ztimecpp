@@ -70,7 +70,7 @@
   }                                                                     \
   static inline void from_json(const nlohmann::json &j,                 \
                                shared_ptr<className> &pp) {             \
-    if (!pp) return;                                                    \
+    if (!pp) pp.reset(new className());                                 \
     className &p = *pp;                                                 \
     BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
   }                                                                     \
@@ -82,7 +82,7 @@
   }                                                                     \
   static inline void from_json(const nlohmann::json &j,                 \
                                unique_ptr<className> &pp) {             \
-    if (!pp) return;                                                    \
+    if (!pp) pp.reset(new className());                                 \
     className &p = *pp;                                                 \
     BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
   }
@@ -140,7 +140,7 @@
 
 #define BeanDeclearLock(name) \
  private:                     \
-  recursive_mutex name;
+  mutable recursive_mutex name;
 
 #define BeanAttributeWithLock(type, name, initialValue, lock) \
  private:                                                     \
@@ -151,7 +151,11 @@
     std::lock_guard<std::recursive_mutex> __lock__(lock);     \
     this->name = value;                                       \
   }                                                           \
-  const type &get_##name() {                                  \
+  const type &get_##name##Const() const {                     \
+    std::lock_guard<std::recursive_mutex> __lock__(lock);     \
+    return name;                                              \
+  }                                                           \
+  type &get_##name() {                                        \
     std::lock_guard<std::recursive_mutex> __lock__(lock);     \
     return name;                                              \
   }
@@ -161,7 +165,11 @@
   type name{initialValue};                                       \
                                                                  \
  public:                                                         \
-  const type &get_##name() {                                     \
+  const type &get_##name##Const() const {                        \
+    std::lock_guard<std::recursive_mutex> __lock__(lock);        \
+    return name;                                                 \
+  }                                                              \
+  type &get_##name() {                                           \
     std::lock_guard<std::recursive_mutex> __lock__(lock);        \
     return name;                                                 \
   }
@@ -182,7 +190,8 @@
                                                              \
  public:                                                     \
   void set_##name(const type &value) { this->name = value; } \
-  const type &get_##name() { return name; }
+  const type &get_##name##Const() const { return name; }     \
+  type &get_##name() { return name; }
 
 #define BeanAttributeAtomic(type, name, initialValue)        \
  private:                                                    \
@@ -190,14 +199,15 @@
                                                              \
  public:                                                     \
   void set_##name(const type &value) { this->name = value; } \
-  const type get_##name() { return name; }
+  const type get_##name() const { return name; }
 
-#define BeanAttributeGet(type, name, initialValue) \
- private:                                          \
-  type name{initialValue};                         \
-                                                   \
- public:                                           \
-  const type &get_##name() { return name; }
+#define BeanAttributeGet(type, name, initialValue)       \
+ private:                                                \
+  type name{initialValue};                               \
+                                                         \
+ public:                                                 \
+  const type &get_##name##Const() const { return name; } \
+  type &get_##name() { return name; }
 
 #define BeanAttributeSet(type, name, initialValue) \
  private:                                          \

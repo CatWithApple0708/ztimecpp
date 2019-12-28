@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <atomic>
 #include "zwtimecpp/core/logger/logger.hpp"
 #include "zwtimecpp/core/utils/better-enums/enum.h"
 
@@ -20,6 +21,28 @@
  *
  *
  */
+// static inline void to_json(nlohmann::json &j, const std::atomic<bool> &p) {
+//   j = p.load();
+// }
+// static inline void from_json(const nlohmann::json &j, std::atomic<bool> &p) {
+//   bool value{};
+//   j.get_to(value);
+//   p.store(value);
+// }
+
+namespace nlohmann {
+template <typename T>
+struct adl_serializer<std::atomic<T>> {
+  static void to_json(json &j, const std::atomic<T> &p) { j = p.load(); }
+
+  static void from_json(const json &j, std::atomic<T> &p) {
+    T value{};
+    j.get_to(value);
+    p.store(value);
+  }
+};
+}
+
 #if 1
 #define BEAN_UTILS_FROM_JSON_PATTER_EACH(_, index, expression) \
   try {                                                        \
@@ -87,28 +110,9 @@
     BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
   }
 
-#if 0
-/**
- * @export_marco:
- *  BEAN_UTILS_ENABLE_JSON_AND_DUMP
- *  BEAN_UTILS_DECLEAR_PROPERTY
- *  BEAN_UTILS_DEFINE_CLASS
- * @usage:
- */
-
-#define BEAN_UTILS___DECLEAR_PROPERTY(type, name, higherFirstName, \
-                                      defaultValue)                \
-  type name = defaultValue;
-
-#define BEAN_UTILS_DECLEAR_PROPERTY(className) \
-  className##PropertyList(BEAN_UTILS___DECLEAR_PROPERTY)
-
-#define BEAN_UTILS__JSON_DUMP(type, name, ...) j[#name] = p.name;
-#define BEAN_UTILS__JSON_DUMP2(type, name, ...) j.at(#name).get_to(p.name);
-
-#define BEAN_UTILS_ENABLE_JSON_AND_DUMP2(className)                     \
+#define BEAN_UTILS_ENABLE_JSON_AND_DUMP2(className, agrs...)            \
   template <typename OStream>                                           \
-  static inline OStream &operator<<(OStream &os,                        \
+  friend inline OStream &operator<<(OStream &os,                        \
                                     const shared_ptr<className> &c) {   \
     if (!c) return os << "{}";                                          \
     nlohmann::json j;                                                   \
@@ -116,27 +120,41 @@
     return os << j.dump();                                              \
   }                                                                     \
   template <typename OStream>                                           \
-  static inline OStream &operator<<(OStream &os, const className &c) {  \
+  friend inline OStream &operator<<(OStream &os, const className &c) {  \
     nlohmann::json j;                                                   \
     j = c;                                                              \
     return os << j.dump();                                              \
   }                                                                     \
-  static inline void to_json(nlohmann::json &j, const className &p) {   \
-    className##PropertyList(BEAN_UTILS__JSON_DUMP);                     \
+  friend inline void to_json(nlohmann::json &j, const className &p) {   \
+    BEAN_UTILS_TO_JSON_PATTERN(agrs);                                   \
   }                                                                     \
-  static inline void from_json(const nlohmann::json &j, className &p) { \
-    className##PropertyList(BEAN_UTILS__JSON_DUMP2);                    \
+  friend inline void from_json(const nlohmann::json &j, className &p) { \
+    BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
+  }                                                                     \
+  friend inline void to_json(nlohmann::json &j,                         \
+                             const shared_ptr<className> &pp) {         \
+    if (!pp) return;                                                    \
+    className &p = *pp;                                                 \
+    BEAN_UTILS_TO_JSON_PATTERN(agrs);                                   \
+  }                                                                     \
+  friend inline void from_json(const nlohmann::json &j,                 \
+                               shared_ptr<className> &pp) {             \
+    if (!pp) pp.reset(new className());                                 \
+    className &p = *pp;                                                 \
+    BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
+  }                                                                     \
+  friend inline void to_json(nlohmann::json &j,                         \
+                             const unique_ptr<className> &pp) {         \
+    if (!pp) return;                                                    \
+    className &p = *pp;                                                 \
+    BEAN_UTILS_TO_JSON_PATTERN(agrs);                                   \
+  }                                                                     \
+  friend inline void from_json(const nlohmann::json &j,                 \
+                               unique_ptr<className> &pp) {             \
+    if (!pp) pp.reset(new className());                                 \
+    className &p = *pp;                                                 \
+    BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
   }
-
-#define BEAN_UTILS_DEFINE_CLASS(className)  \
-  class className {                         \
-   public:                                  \
-    BEAN_UTILS_DECLEAR_PROPERTY(className); \
-  };                                        \
-  BEAN_UTILS_ENABLE_JSON_AND_DUMP2(className);
-
-//
-#endif
 
 #define BeanDeclearLock(name) \
  private:                     \

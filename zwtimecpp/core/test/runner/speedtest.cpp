@@ -120,7 +120,9 @@ class SpeedTest : public Runner {
     strcpy(file_info + 16, file_name);
 
     // 将需要上传的文件名告诉对方
-    write(tcp_socket, file_info, 144);
+    size_t writeret = write(tcp_socket, file_info, 144);
+    if (writeret != 144) {
+    }
 
     int send_len = 0;  //记录发送了多少字节
     fileLen = len;
@@ -134,15 +136,18 @@ class SpeedTest : public Runner {
       }
 
       //发送数据
-      write(tcp_socket, buf, ret);
+       writeret = write(tcp_socket, buf, ret);
+       if (writeret < 0) {
+       }
 
-      send_len += ret;  //统计发送了多少字节
-      receiveOrSendKB += ret;
-      receiveOrSendKBNotClear += ret;
+       send_len += ret;  //统计发送了多少字节
+       receiveOrSendKB += ret;
+       receiveOrSendKBNotClear += ret;
 
-      //上传文件的百分比
-    //   printf("uploading %.2f%%  %.2f kb/s \n", (float)send_len / len * 100,
-    //          speed.load());
+       //上传文件的百分比
+       //   printf("uploading %.2f%%  %.2f kb/s \n", (float)send_len / len *
+       //   100,
+       //          speed.load());
     }
 
     // 关闭文件
@@ -205,7 +210,9 @@ class SpeedTest : public Runner {
       char file_name[128] = {0};  //文件名称
       char buf[1024] = {0};       //数据缓冲区
       //读取文件大小和文件名称
-      read(new_socket, buf, sizeof(buf));
+      ssize_t readret = read(new_socket, buf, sizeof(buf));
+      if (readret < 0) {
+      }
 
       strncpy(file_len, buf, sizeof(file_len));  //取出文件大小
       strncpy(file_name, buf + sizeof(file_len),
@@ -235,7 +242,7 @@ class SpeedTest : public Runner {
         }
 
         //将数据写入文件
-        write(fd, buf, ret);
+        ret = write(fd, buf, ret);
         receiveOrSendKB += ret;
         write_len += ret;  //记录写入的字节数
         receiveOrSendKBNotClear += ret;

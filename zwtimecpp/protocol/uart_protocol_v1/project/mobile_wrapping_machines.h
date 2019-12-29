@@ -31,6 +31,6 @@ ENUM_HELPER_DEFINE_ENUM(MobileWrappingLocation_t, MobileWrappingLocationList);
  * @brief 使能枚举转换成字符串方法
  *
  */
-ENUM_HELPER_ENABLE_ENUM_TO_STR(mobileWrappingLocationToStr,
-                               MobileWrappingLocation_t,
-                               MobileWrappingLocationList);
+// ENUM_HELPER_ENABLE_ENUM_TO_STR(mobileWrappingLocationToStr,
+//                                MobileWrappingLocation_t,
+//                                MobileWrappingLocationList);

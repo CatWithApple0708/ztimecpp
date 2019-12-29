@@ -18,5 +18,5 @@ ENUM_HELPER_DEFINE_ENUM(HardwareErrorCode_t, HardwareErrorCodeList);
  * @brief 使能枚举转换成字符串方法
  *
  */
-ENUM_HELPER_ENABLE_ENUM_TO_STR(mobileWrappingLocationToStr, HardwareErrorCode_t,
+ENUM_HELPER_ENABLE_ENUM_TO_STR(hardwareErrorCodeToStr, HardwareErrorCode_t,
                                HardwareErrorCodeList);

@@ -44,89 +44,11 @@ T __zwsd_getValue(const std::atomic<T> &v) {
   return v.load();
 }
 
-#if 1
-#define BEAN_UTILS_FROM_JSON_PATTER_EACH(_, index, expression) \
-  try {                                                        \
-    j.at(#expression).get_to(p.expression);                    \
-  } catch (const std::exception &e) {                          \
-  }
-#define BEAN_UTILS_TO_JSON_PATTER_EACH(_, index, expression) \
-  j[#expression] = p.expression;
-#else
-#define BEAN_UTILS_FROM_JSON_PATTER_EACH(_, index, expression)
-#define BEAN_UTILS_TO_JSON_PATTER_EACH(_, index, expression)
-#endif
-
-#define BEAN_UTILS_FROM_JSON_PATTERN(...) \
-  BETTER_ENUMS_ID(                        \
-      BETTER_ENUMS_PP_MAP(BEAN_UTILS_FROM_JSON_PATTER_EACH, _, __VA_ARGS__))
-
-#define BEAN_UTILS_TO_JSON_PATTERN(...) \
-  BETTER_ENUMS_ID(                      \
-      BETTER_ENUMS_PP_MAP(BEAN_UTILS_TO_JSON_PATTER_EACH, _, __VA_ARGS__))
-
-#define BEAN_UTILS_ENABLE_JSON_AND_DUMP(className, agrs...)             \
-  template <typename OStream>                                           \
-  static inline OStream &operator<<(OStream &os,                        \
-                                    const shared_ptr<className> &c) {   \
-    if (!c) return os << "{}";                                          \
-    nlohmann::json j;                                                   \
-    j = *c;                                                             \
-    return os << j.dump();                                              \
-  }                                                                     \
-  template <typename OStream>                                           \
-  static inline OStream &operator<<(OStream &os, const className &c) {  \
-    nlohmann::json j;                                                   \
-    j = c;                                                              \
-    return os << j.dump();                                              \
-  }                                                                     \
-  static inline void to_json(nlohmann::json &j, const className &p) {   \
-    BEAN_UTILS_TO_JSON_PATTERN(agrs);                                   \
-  }                                                                     \
-  static inline void from_json(const nlohmann::json &j, className &p) { \
-    BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
-  }                                                                     \
-  static inline void to_json(nlohmann::json &j,                         \
-                             const shared_ptr<className> &pp) {         \
-    if (!pp) return;                                                    \
-    className &p = *pp;                                                 \
-    BEAN_UTILS_TO_JSON_PATTERN(agrs);                                   \
-  }                                                                     \
-  static inline void from_json(const nlohmann::json &j,                 \
-                               shared_ptr<className> &pp) {             \
-    if (!pp) pp.reset(new className());                                 \
-    className &p = *pp;                                                 \
-    BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
-  }                                                                     \
-  static inline void to_json(nlohmann::json &j,                         \
-                             const unique_ptr<className> &pp) {         \
-    if (!pp) return;                                                    \
-    className &p = *pp;                                                 \
-    BEAN_UTILS_TO_JSON_PATTERN(agrs);                                   \
-  }                                                                     \
-  static inline void from_json(const nlohmann::json &j,                 \
-                               unique_ptr<className> &pp) {             \
-    if (!pp) pp.reset(new className());                                 \
-    className &p = *pp;                                                 \
-    BEAN_UTILS_FROM_JSON_PATTERN(agrs);                                 \
-  }
-
-#define BEAN_UTILS__CPY(_, index, expression) \
-  expression(__zwsd_getValue(expression)),
-#define BEAN_UTILS_CPY(...) \
-  BETTER_ENUMS_ID(BETTER_ENUMS_PP_MAP(BEAN_UTILS__CPY, _, __VA_ARGS__))
 /**
  * @brief 使能对象的复制，打印，序列化，反序列功能
  */
 #define BEAN_UTILS_ENABLE_CPY_AND_DUMP(className, agrs...)                     \
-  template <typename OStream>                                                  \
-  friend inline OStream &operator<<(OStream &os,                               \
-                                    const shared_ptr<className> &c) {          \
-    if (!c) return os << "{}";                                                 \
-    nlohmann::json j;                                                          \
-    j = *c;                                                                    \
-    return os << j.dump();                                                     \
-  }                                                                            \
+\
   template <typename OStream>                                                  \
   friend inline OStream &operator<<(OStream &os, const className &c) {         \
     nlohmann::json j;                                                          \

@@ -21,5 +21,3 @@ static INLINE float pid_inc_process(pid_inc_t* handle, float target,
   float kdvalue = handle->kd * (handle->e0 - 2 * handle->e1 + handle->e2);
   return (kpvalue + kivalue + kdvalue);
 }
-
-static INLINE void pid

@@ -47,6 +47,10 @@ else()
   include_directories(${ZTIMECPP_INCLUDE_DIRECTORIES})
   link_directories(${ZTIMECPP_LINK_DIRECTORIES})
   link_libraries(${ZTIMECPP_LINK_LIBRARIES})
+
+  # message(STATUS "ztimecpp include dir: ${ZTIMECPP_INCLUDE_DIRECTORIES}")
+  # message(STATUS "ztimecpp link dir: ${ZTIMECPP_LINK_DIRECTORIES}")
+  # message(STATUS "ztimecpp link libs: ${ZTIMECPP_LINK_LIBRARIES}")
 endif()
 
 add_library(
@@ -173,8 +177,7 @@ set(GTESTERS
     zwtimecpp/core/test/gtester/gtest_gps_info_parse.cpp
     zwtimecpp/core/test/gtester/gtest_uart_protocol_v1_packet.cpp
     zwtimecpp/core/test/gtester/gtest_run_when_exit.cpp
-    zwtimecpp/core/test/gtester/gtest_net.cpp
-    )
+    zwtimecpp/core/test/gtester/gtest_net.cpp)
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译
@@ -201,8 +204,6 @@ add_executable(core_runner_main
                zwtimecpp/core/test/runner/show_uart_v1_info.cc
                zwtimecpp/core/test/runner/test_up_packet_container_dump.cpp
                zwtimecpp/core/test/runner/test_lock_helper.cpp
-               zwtimecpp/core/test/runner/speedtest.cpp
-
-               )
+               zwtimecpp/core/test/runner/speedtest.cpp)
 target_link_libraries(core_runner_main zwtimecpp zwtimecpptest)
 add_dependencies(core_runner_main zwtimecpp zwtimecpptest)

@@ -81,6 +81,7 @@ class MockSignalListener : public ISignalListener {
 
 /************************matcher*************************** */
 MATCHER_P(SimpleMa, func, "") { return func(arg); }
+MATCHER_P(EqFloat, func, "") { return func(arg); }
 
 MATCHER_P(CArraryU8Ma, expect, "U8数组未匹配") {
   if ((memcmp(expect.data(), arg, expect.size()) != 0)) {

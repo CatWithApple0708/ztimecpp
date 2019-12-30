@@ -44,11 +44,36 @@ T __zwsd_getValue(const std::atomic<T> &v) {
   return v.load();
 }
 
+#if 1
+#define BEAN_UTILS_FROM_JSON_PATTER_EACH(_, index, expression) \
+  try {                                                        \
+    j.at(#expression).get_to(p.expression);                    \
+  } catch (const std::exception &e) {                          \
+  }
+#define BEAN_UTILS_TO_JSON_PATTER_EACH(_, index, expression) \
+  j[#expression] = p.expression;
+#else
+#define BEAN_UTILS_FROM_JSON_PATTER_EACH(_, index, expression)
+#define BEAN_UTILS_TO_JSON_PATTER_EACH(_, index, expression)
+#endif
+
+#define BEAN_UTILS_FROM_JSON_PATTERN(...) \
+  BETTER_ENUMS_ID(                        \
+      BETTER_ENUMS_PP_MAP(BEAN_UTILS_FROM_JSON_PATTER_EACH, _, __VA_ARGS__))
+
+#define BEAN_UTILS_TO_JSON_PATTERN(...) \
+  BETTER_ENUMS_ID(                      \
+      BETTER_ENUMS_PP_MAP(BEAN_UTILS_TO_JSON_PATTER_EACH, _, __VA_ARGS__))
+
+#define BEAN_UTILS__CPY(_, index, expression) \
+  expression(__zwsd_getValue(expression)),
+#define BEAN_UTILS_CPY(...) \
+  BETTER_ENUMS_ID(BETTER_ENUMS_PP_MAP(BEAN_UTILS__CPY, _, __VA_ARGS__))
 /**
  * @brief 使能对象的复制，打印，序列化，反序列功能
  */
 #define BEAN_UTILS_ENABLE_CPY_AND_DUMP(className, agrs...)                     \
-\
+                                                                               \
   template <typename OStream>                                                  \
   friend inline OStream &operator<<(OStream &os, const className &c) {         \
     nlohmann::json j;                                                          \

@@ -11,11 +11,11 @@
 #include <vector>
 #include "zwtimecpp/core/logger/logger.hpp"
 
-#define ZCHECK(ptr)                                                          \
-  if (!(ptr)) {                                                              \
-    logger->error("func: {} line: {} check fail {}", __FUNCTION__, __LINE__, \
-                  #ptr);                                                     \
-    exit(-1);                                                                \
+#define ZCHECK(ptr)                                                     \
+  if (!(ptr)) {                                                         \
+    logger->error("file: {} func: {} line: {} check fail {}", __FILE__, \
+                  __FUNCTION__, __LINE__, #ptr);                        \
+    exit(-1);                                                           \
   }
 
 #define CHECK_AND_RETURN1(exptr, explain)                                   \

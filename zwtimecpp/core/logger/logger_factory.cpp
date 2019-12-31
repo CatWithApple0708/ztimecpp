@@ -477,7 +477,7 @@ void core::SpdLoggerFactory::parseSphLogConfig(string path) {
       }
     }
 
-    spdlog::info("Logger initialize ok");
+    // spdlog::info("Logger initialize ok");
   } catch (const exception& e) {
     spdlog::critical("parse logger config fail {}", e.what());
     exit(-1);

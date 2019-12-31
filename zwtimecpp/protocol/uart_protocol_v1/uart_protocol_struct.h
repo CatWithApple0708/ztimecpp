@@ -113,7 +113,7 @@ typedef enum {
   MTC_SealYMotor = 0x0021,
   MTC_TakePhoto = 0x0022,
   MTC_ComplexGarbage = 0x1000,
-  MTC_MobileWrappingMachine = 0x1001, //自走式缠绕车
+  MTC_MobileWrappingMachine = 0x1001,  //自走式缠绕车
   MTC_SpecialOperate0 = 0xffff,
 } UP_module_type_code_t;
 
@@ -368,6 +368,7 @@ DEFINE_DATA_POINT(MobileWrappingMachine) {
 
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, commonExceptionStatus, 0x0f00)   //异常状态上报
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, commonExceptionStatusFlag, 0x0f01)   //异常状态上报标志位(true/false)
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chargeReport, 0x0f02)   //电量上报
 }
 DEFINE_DATA_END(MobileWrappingMachine)
 

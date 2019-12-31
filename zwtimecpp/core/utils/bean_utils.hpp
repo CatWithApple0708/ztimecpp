@@ -173,13 +173,30 @@ T __zwsd_getValue(const std::atomic<T> &v) {
   const type &get_##name##Const() const { return name; }       \
   type &get_##name() { return name; }
 
-#define BeanAttributeAtomic(type, name, initialValue)          \
+#define BeanAttributeAtomic(type, name, initialValue)                          \
+ private:                                                                      \
+  atomic<type> name{initialValue};                                             \
+                                                                               \
+ public:                                                                       \
+  void set_##name(const type &value) { this->name = {value}; }                 \
+  const type get_##name() const { return name; }                               \
+  type add_##name(const type &addvalue) {                                      \
+    type old = name.load(std::memory_order_consume);                           \
+    type desired = old + addvalue;                                             \
+    while (!name.compare_exchange_weak(                                        \
+        old, desired, std::memory_order_release, std::memory_order_consume)) { \
+      desired = old + addvalue;                                                \
+    }                                                                          \
+    return desired;                                                            \
+  }
+
+#define BeanAttributeAtomicBool(name, initialValue)            \
  private:                                                      \
-  atomic<type> name{initialValue};                             \
+  atomic<bool> name{initialValue};                             \
                                                                \
  public:                                                       \
-  void set_##name(const type &value) { this->name = {value}; } \
-  const type get_##name() const { return name; }
+  void set_##name(const bool &value) { this->name = {value}; } \
+  const bool get_##name() const { return name; }
 
 #define BeanAttributeGet(type, name, initialValue)       \
  private:                                                \

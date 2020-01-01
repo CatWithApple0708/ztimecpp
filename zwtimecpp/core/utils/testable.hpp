@@ -20,7 +20,7 @@ using namespace std;
 class TestListener {
  public:
   virtual ~TestListener() {}
-  virtual void onCall(const string& msg) = 0;
+  virtual void onCall(const string& msg){};
 };
 
 class TestAble {
@@ -30,7 +30,7 @@ class TestAble {
  public:
   void enableTest(shared_ptr<TestListener> listener = nullptr) {
     inTest = true;
-    listener = listener;
+    this->listener = listener;
   }
   bool isInTest() { return inTest; }
 

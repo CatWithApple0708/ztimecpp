@@ -65,8 +65,9 @@ class MockEventListener : public EventHandler {
 
 class MockTestListener : public TestListener {
  public:
-  MOCK_METHOD1(onCall, void(string mark));
+  MOCK_METHOD1(onCall, void(const string& msg));
 };
+
 
 class ISignalListener {
  public:

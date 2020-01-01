@@ -48,3 +48,9 @@ static INLINE const char* MobileWrappingLocationToString(MobileWrappingLocation_
   ENUM_CASE_AND_RET2(kMWL, filmCarriageControllorCoprocessor);
   END_ENUM_CASE();
 }
+
+typedef enum {
+  kMWSV_notSet = 0,
+  kMWSV_bumperSwitch = 0,
+  //定义系统所需要的按键事件
+} MobileWrappingSwitchValue_t;

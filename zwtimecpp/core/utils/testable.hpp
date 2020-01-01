@@ -20,7 +20,7 @@ using namespace std;
 class TestListener {
  public:
   virtual ~TestListener() {}
-  virtual void onCall(string mark) = 0;
+  virtual void onCall(const string& msg) = 0;
 };
 
 class TestAble {
@@ -34,32 +34,9 @@ class TestAble {
   }
   bool isInTest() { return inTest; }
 
-  template <class... T>
-  string makeMarkStr(string funcName, T... args) {
-    // return fmt::format("call:{}", funcName);
-    string ret = "mark:" + funcName + "-";
-    makrMarkStrInter(ret, args...);
-    return ret;
+  void testMark(const string& msg) {
+    if (listener) listener->onCall(msg);
   };
-
-  template <class... T>
-  inline void makrMark(string funcName, T... args) {
-    if (listener) {
-      listener->onCall(funcName, args...);
-    }
-  }
-
- private:
-  template <typename T, typename... Targs>
-  void makrMarkStrInter(string& buf, T value, Targs... values) {
-    makrMarkStrInter(buf, value);
-    makrMarkStrInter(buf, values...);
-  }
-  void makrMarkStrInter(string& buf) {}
-  template <typename T>
-  void makrMarkStrInter(string& buf, T value) {
-    buf = fmt::format("{}-{}", buf, value);
-  }
 
  private:
 };

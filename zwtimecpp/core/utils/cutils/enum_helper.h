@@ -28,3 +28,17 @@
         return "unkownType";                                 \
     }                                                        \
   }
+
+#define ENUM_CASE_AND_RET(var) \
+  case var:                         \
+    return #var;
+
+#define ENUM_CASE_AND_RET2(pre, val) \
+  case pre##_##val:                  \
+    return #val;
+
+#define BEGIN_ENUM_CASE() switch (val) {
+#define END_ENUM_CASE() \
+  default:              \
+    return "unkown";    \
+    }

@@ -29,6 +29,12 @@ class Pid {
     return pid_inc_process(&pid_handle, target, actual);
   }
 
+  void set(float kp, float ki, float kd) {
+    pid_handle.kp = kp;
+    pid_handle.ki = ki;
+    pid_handle.kd = kd;
+  };
+
  private:
 };
 

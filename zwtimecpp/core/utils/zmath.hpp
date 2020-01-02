@@ -17,7 +17,12 @@ static inline int zcmp(float va1, float va2) {
   if (fabs(va1 - va2) <= 1e-6) {
       return 0;
   }
-  return va1 >= va2;
+
+  if (va1 > va2) {
+    return 1;
+  } else {
+    return -1;
+  }
 }
 
 } // namespace zwsd

@@ -23,6 +23,7 @@ using namespace std;
 class Pid {
   pid_inc_t pid_handle;
 
+  bool inited = false;
  public:
   Pid() { memset(&pid_handle, 0, sizeof(pid_inc_t)); }
   float process(float target, float actual) {
@@ -33,7 +34,9 @@ class Pid {
     pid_handle.kp = kp;
     pid_handle.ki = ki;
     pid_handle.kd = kd;
+    inited = true;
   };
+  bool isInited() { return inited; }
 
  private:
 };

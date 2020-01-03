@@ -74,8 +74,8 @@ T __zwsd_getValue(const std::atomic<T> &v) {
  */
 #define BEAN_UTILS_ENABLE_CPY_AND_DUMP(className, agrs...)                     \
                                                                                \
-  template <typename OStream>                                                  \
-  friend inline OStream &operator<<(OStream &os, const className &c) {         \
+  friend inline std::ostream &operator<<(std::ostream &os,                     \
+                                         const className &c) {                 \
     nlohmann::json j;                                                          \
     j = c;                                                                     \
     return os << j.dump();                                                     \

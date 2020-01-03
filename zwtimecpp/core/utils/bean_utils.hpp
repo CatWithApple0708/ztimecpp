@@ -190,12 +190,26 @@ T __zwsd_getValue(const std::atomic<T> &v) {
     return desired;                                                            \
   }
 
+#define BeanAttributeAtomicGet(type, name, initialValue) \
+ private:                                                \
+  atomic<type> name{initialValue};                       \
+                                                         \
+ public:                                                 \
+  const type get_##name() const { return name; }
+
 #define BeanAttributeAtomicBool(name, initialValue)            \
  private:                                                      \
   atomic<bool> name{initialValue};                             \
                                                                \
  public:                                                       \
   void set_##name(const bool &value) { this->name = {value}; } \
+  const bool get_##name() const { return name; }
+
+#define BeanAttributeAtomicBoolGet(name, initialValue) \
+ private:                                              \
+  atomic<bool> name{initialValue};                     \
+                                                       \
+ public:                                               \
   const bool get_##name() const { return name; }
 
 #define BeanAttributeGet(type, name, initialValue)       \

@@ -14,7 +14,6 @@ typedef struct {
 
 static INLINE float pid_inc_process(pid_inc_t* handle, float target,
                                      float actual) {
-  float ret = 0;
   handle->e0 = target - actual;
   float kpvalue = handle->kp * (handle->e0 - handle->e1);
   float kivalue = handle->ki * handle->e0;

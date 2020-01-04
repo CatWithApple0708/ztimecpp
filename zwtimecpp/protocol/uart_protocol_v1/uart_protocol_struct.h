@@ -369,6 +369,7 @@ DEFINE_DATA_POINT(MobileWrappingMachine) {
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, commonExceptionStatus, 0x0f00)   //异常状态上报
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, commonExceptionStatusFlag, 0x0f01)   //异常状态上报标志位(true/false)
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, chargeReport, 0x0f02)   //电量上报
+  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, switchReport, 0x0f03)   //开关量上报
 }
 DEFINE_DATA_END(MobileWrappingMachine)
 

@@ -51,9 +51,13 @@ static INLINE const char* MobileWrappingLocationToString(MobileWrappingLocation_
 
 typedef enum {
   kMWSV_notSet = 0,
-  kMWSV_bumperSwitch = 0,
-  kMWSV_flimBottomLimterSwitch = 0,  //模架底部限位器
-  kMWSV_flimTopLimterSwitch = 0,     //模架顶部限位器
-  kMWSV_flimLimterSwitch = 0,        //模架上的限位器
+  kMWSV_bumperSwitch = 1,
+  kMWSV_flimBottomLimterSwitch = 2,  //模架底部限位器
+  kMWSV_flimTopLimterSwitch = 3,     //模架顶部限位器
+  kMWSV_flimLimterSwitch = 4,        //模架上的限位器
+  kMWSV_bootUpSwitch = 5,        //模架上的限位器
+  kMWSV_startSwitch = 6,        //模架上的限位器
+  kMWSV_resetSwitch = 7,        //模架上的限位器
+  kMWSV_emergencyStopSwitch = 8,        //模架上的限位器
   //定义系统所需要的按键事件
 } MobileWrappingSwitchValue_t;

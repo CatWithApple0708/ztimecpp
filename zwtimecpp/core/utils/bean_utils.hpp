@@ -67,7 +67,7 @@ T __zwsd_getValue(const std::atomic<T> &v) {
       BETTER_ENUMS_PP_MAP(BEAN_UTILS_TO_JSON_PATTER_EACH, _, __VA_ARGS__))
 
 #define BEAN_UTILS__CPY(_, index, expression) \
-  expression(__zwsd_getValue(expression)),
+  expression(__zwsd_getValue(cpy.expression)),
 #define BEAN_UTILS_CPY(...) \
   BETTER_ENUMS_ID(BETTER_ENUMS_PP_MAP(BEAN_UTILS__CPY, _, __VA_ARGS__))
 /**

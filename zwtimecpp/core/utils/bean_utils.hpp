@@ -12,6 +12,7 @@
 #include <vector>
 #include "zwtimecpp/core/logger/logger.hpp"
 #include "zwtimecpp/core/utils/better-enums/enum.h"
+#include "zwtimecpp/core/utils/nod/nod.hpp"
 
 /**
  * @export_marco:
@@ -203,6 +204,19 @@ T __zwsd_getValue(const std::atomic<T> &v) {
                                                                \
  public:                                                       \
   void set_##name(const bool &value) { this->name = {value}; } \
+  const bool get_##name() const { return name; }
+
+#define BeanAttributeAtomicBoolWithSignal(name, initialValue)   \
+ private:                                                       \
+  atomic<bool> name{initialValue};                              \
+                                                                \
+ public:                                                        \
+  nod::signal<void(bool oldValue, bool toValue)> signal_##name; \
+  void set_##name(const bool &value) {                          \
+    bool oldValue = this->name;                                 \
+    this->name = {value};                                       \
+    if (oldValue != value) signal_##name(oldValue, value);      \
+  }                                                             \
   const bool get_##name() const { return name; }
 
 #define BeanAttributeAtomicBoolGet(name, initialValue) \

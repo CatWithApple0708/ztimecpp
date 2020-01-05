@@ -361,7 +361,7 @@ DEFINE_DATA_POINT(MobileWrappingMachine) {
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, slidingColumnInfoReport, 0x02f0)   //膜架升降器信息上报(m)
 
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackMotor0PID, 0x0300)   //膜架控制器预拉伸比调整电机_0 PID参数设定
-  DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackMotor1PID, 0x0301)   //膜架控制器预拉伸比调整电机_1 PID参数设定
+  // DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackMotor1PID, 0x0301)   //膜架控制器预拉伸比调整电机_1 PID参数设定
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackTensileForcePID, 0x0302)   //膜架控制器拉伸力控制PID参数设定
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackCtrl, 0x0303)   //膜架控制
   DEFINE_DATA_POINT_ENTRY(MobileWrappingMachine, membraneRackInfoReport, 0x0304)   //膜架信息上报

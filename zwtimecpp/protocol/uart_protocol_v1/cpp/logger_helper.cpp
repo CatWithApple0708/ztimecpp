@@ -119,6 +119,9 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
 #define LOG_SUB_PACKET_CONFIG(value) \
   logger->log(lev, "* subpacket {}: {}", #value, subPacket->value);
 
+#define LOG_SUB_PACKET_CONFIG_DATAPOINT() \
+  logger->log(lev, "* subpacket {}: {:#04x}", "dataPoint", subPacket->dataPoint);
+
 #define LOG_SUB_PACKET_PARAMETER()                                             \
   if (subPacket->parameter_container &&                                        \
       subPacket->parameter_container->parameters) {                            \
@@ -186,7 +189,7 @@ void UartProtocolV1LoggerHelper::dump(logger_t logger, level::level_enum lev,
     LOG_SUB_PACKET_CONFIG(moduleType)
     LOG_SUB_PACKET_CONFIG(moduleNum)
     LOG_SUB_PACKET_CONFIG(operate_code)
-    LOG_SUB_PACKET_CONFIG(dataPoint)
+    LOG_SUB_PACKET_CONFIG_DATAPOINT()
     LOG_SUB_PACKET_PARAMETER();
 
   } else if (packet->basicPacket.type == kSystemEventReportPacket) {

@@ -49,7 +49,7 @@ static inline OStream &operator<<(OStream &os, PacketType_t packetType) {
     default:
       break;
   }
-  return os << "unkownCode:" << (int)packetType;
+  return os << "unkown packetType:" << (int)packetType;
 }
 
 template <typename OStream>
@@ -69,7 +69,7 @@ static inline OStream &operator<<(OStream &os, UP_error_code_t errorCode) {
     default:
       break;
   }
-  return os << "unkownCode:" << (int)errorCode;
+  return os << "unkown errorCode:" << (int)errorCode;
 }
 
 template <typename OStream>
@@ -85,14 +85,13 @@ static inline OStream &operator<<(OStream &os, UP_operate_code_t operateCode) {
     default:
       break;
   }
-  return os << "unkownCode:" << (int)operateCode;
+  return os << "unkown operateCode:" << (int)operateCode;
 }
 
 template <typename OStream>
 static inline OStream &operator<<(OStream &os,
                                   UP_module_type_code_t moduleType) {
   switch (moduleType) {
-    CASE_AND_RET(MTC_NotSet)
     CASE_AND_RET(MTC_HumanSensor)
     CASE_AND_RET(MTC_IndicatorLight)
     CASE_AND_RET(MTC_Light)
@@ -121,10 +120,13 @@ static inline OStream &operator<<(OStream &os,
     CASE_AND_RET(MTC_SealXMotor)
     CASE_AND_RET(MTC_SealYMotor)
     CASE_AND_RET(MTC_TakePhoto)
+    CASE_AND_RET(MTC_ComplexGarbage)
+    CASE_AND_RET(MTC_MobileWrappingMachine)
+    CASE_AND_RET(MTC_SpecialOperate0)
     default:
       break;
   }
-  return os << "unkownCode:" << (int)moduleType;
+  return os << "unkown moduleType:" << (int)moduleType;
 }
 
 #undef CASE_AND_RET

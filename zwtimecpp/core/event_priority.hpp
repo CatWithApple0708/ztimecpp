@@ -3,16 +3,17 @@
 //
 
 #pragma once
-#include <memory>
 #include <fstream>
 #include <iostream>
 #include <list>
 #include <map>
 #include <memory>
+#include <memory>
+#include <set>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <set>
+#include "zwtimecpp/core/utils/bean_utils.hpp"
 #include "zwtimecpp/core/utils/better-enums/enum.h"
 namespace zwsd {
 namespace core {

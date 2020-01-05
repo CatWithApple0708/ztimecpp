@@ -81,6 +81,12 @@ T __zwsd_getValue(const std::atomic<T> &v) {
     j = c;                                                                     \
     return os << j.dump();                                                     \
   }                                                                            \
+  friend inline std::ostream &operator<<(std::ostream &os,                     \
+                                         const shared_ptr<className> &c) {     \
+    nlohmann::json j;                                                          \
+    j = c;                                                                     \
+    return os << j.dump();                                                     \
+  }                                                                            \
   friend inline void to_json(nlohmann::json &j, const className &p) {          \
     BEAN_UTILS_TO_JSON_PATTERN(agrs);                                          \
   }                                                                            \

@@ -12,7 +12,7 @@
 #include <cstring>
 #include <iosfwd>
 #include <stdexcept>
-
+#include "zwtimecpp/core/utils/nlohmann/json.hpp"
 
 
 // Feature detection.
@@ -1140,7 +1140,22 @@ operator >>(std::basic_istream<Char, Traits>& stream, Enum &value)             \
         BETTER_ENUMS_DEFAULT_DECLARE_INITIALIZE,                               \
         BETTER_ENUMS_DEFAULT_DEFINE_INITIALIZE,                                \
         BETTER_ENUMS_DEFAULT_CALL_INITIALIZE,                                  \
-        Enum, Underlying, __VA_ARGS__))
+        Enum, Underlying, __VA_ARGS__))\
+        static inline std::ostream &operator<<(std::ostream &os, const Enum &c) {\
+            return os << c._to_string();\
+        }\
+        inline void to_json(nlohmann::json &j, const Enum &p) {\
+        j = p._to_string();\
+        }\
+        inline void from_json(const nlohmann::json &j, Enum &p) {\
+        try {\
+        if (j.is_string()) {\
+        string str = j;\
+        p = p._from_string(str.c_str());\
+        }\
+        } catch (const std::exception &e) {\
+        }\
+        }
 
 #define SLOW_ENUM(Enum, Underlying, ...)                                       \
     BETTER_ENUMS_ID(BETTER_ENUMS_TYPE(                                         \
@@ -1152,7 +1167,23 @@ operator >>(std::basic_istream<Char, Traits>& stream, Enum &value)             \
         BETTER_ENUMS_DECLARE_EMPTY_INITIALIZE,                                 \
         BETTER_ENUMS_DO_NOT_DEFINE_INITIALIZE,                                 \
         BETTER_ENUMS_DO_NOT_CALL_INITIALIZE,                                   \
-        Enum, Underlying, __VA_ARGS__))
+        Enum, Underlying, __VA_ARGS__))                                        \
+        static inline std::ostream &operator<<(std::ostream &os, const Enum &c) {\
+            return os << c._to_string();\
+        }\
+        inline void to_json(nlohmann::json &j, const Enum &p) {\
+        j = p._to_string();\
+        }\
+        inline void from_json(const nlohmann::json &j, Enum &p) {\
+        try {\
+        if (j.is_string()) {\
+        string str = j;\
+        p = p._from_string(str.c_str());\
+        }\
+        } catch (const std::exception &e) {\
+        }\
+        }
+
 
 #else
 
@@ -1166,8 +1197,23 @@ operator >>(std::basic_istream<Char, Traits>& stream, Enum &value)             \
         BETTER_ENUMS_DO_DECLARE_INITIALIZE,                                    \
         BETTER_ENUMS_DO_DEFINE_INITIALIZE,                                     \
         BETTER_ENUMS_DO_CALL_INITIALIZE,                                       \
-        Enum, Underlying, __VA_ARGS__))
-
+        Enum, Underlying, __VA_ARGS__))                                        \
+        static inline std::ostream &operator<<(std::ostream &os, const Enum &c) {\
+            return os << c._to_string();\
+        }\
+        inline void to_json(nlohmann::json &j, const Enum &p) {\
+        j = p._to_string();\
+        }\
+        inline void from_json(const nlohmann::json &j, Enum &p) {\
+        try {\
+        if (j.is_string()) {\
+        string str = j;\
+        p = p._from_string(str.c_str());\
+        }\
+        } catch (const std::exception &e) {\
+        }\
+        }
+                                                                          
 #endif
 
 

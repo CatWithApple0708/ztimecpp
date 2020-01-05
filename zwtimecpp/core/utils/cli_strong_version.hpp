@@ -24,11 +24,6 @@
   cli::Cli clivar(std::move(rootMenu));                                    \
   clivar.ExitAction(                                                       \
       [](auto &out) { out << "Goodbye and thanks for all the fish.\n"; }); \
-  cli::CliLocalTerminalSession localSession(clivar, ioc, std::cout, 200);  \
-  localSession.ExitAction([&ioc](auto &out) {                              \
-    out << "Closing App...\n";                                             \
-    ioc.stop();                                                            \
-  });                                                                      \
   cli::CliTelnetServer cli_server(ioc,__port, clivar);                    \
   cli_server.ExitAction(                                                   \
       [](auto &out) { out << "Terminating this session...\n"; });          \
@@ -54,11 +49,6 @@
   cli::Cli clivar(std::move(rootMenu));                                    \
   clivar.ExitAction(                                                       \
       [](auto &out) { out << "Goodbye and thanks for all the fish.\n"; }); \
-  cli::CliLocalTerminalSession localSession(clivar, ioc, std::cout, 200);  \
-  localSession.ExitAction([&ioc](auto &out) {                              \
-    out << "Closing App...\n";                                             \
-    ioc.stop();                                                            \
-  });                                                                      \
   cli::CliTelnetServer cli_server(ioc,__port, clivar);                    \
   cli_server.ExitAction(                                                   \
       [](auto &out) { out << "Terminating this session...\n"; });          \

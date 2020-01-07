@@ -70,6 +70,11 @@ T __zwsd_getValue(const std::atomic<T> &v) {
   expression(__zwsd_getValue(cpy.expression)),
 #define BEAN_UTILS_CPY(...) \
   BETTER_ENUMS_ID(BETTER_ENUMS_PP_MAP(BEAN_UTILS__CPY, _, __VA_ARGS__))
+
+#define BEAN_UTILS__EQ_CPY(_, index, expression) \
+  this->expression = __zwsd_getValue(cpy.expression);
+#define BEAN_UTILS_EQ_CPY(...) \
+  BETTER_ENUMS_ID(BETTER_ENUMS_PP_MAP(BEAN_UTILS__EQ_CPY, _, __VA_ARGS__))
 /**
  * @brief 使能对象的复制，打印，序列化，反序列功能
  */
@@ -123,7 +128,10 @@ T __zwsd_getValue(const std::atomic<T> &v) {
                                                                                \
  public:                                                                       \
   className(const className &cpy) : BEAN_UTILS_CPY(agrs) ____pad____(false) {} \
-  className &operator=(const className &other) { return *this; }
+  className operator=(const className &cpy) {                                  \
+    BEAN_UTILS_EQ_CPY(agrs);                                                   \
+    return *this;                                                              \
+  }
 
 #define BeanDeclearLock(name) \
  private:                     \

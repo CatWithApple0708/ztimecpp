@@ -177,7 +177,9 @@ set(GTESTERS
     zwtimecpp/core/test/gtester/gtest_gps_info_parse.cpp
     zwtimecpp/core/test/gtester/gtest_uart_protocol_v1_packet.cpp
     zwtimecpp/core/test/gtester/gtest_run_when_exit.cpp
-    zwtimecpp/core/test/gtester/gtest_net.cpp)
+    zwtimecpp/core/test/gtester/gtest_net.cpp
+    zwtimecpp/core/test/gtester/gtest_zmath.cpp
+    )
 
 if(NOT zwtimecpp_build_on_parent)
   #单独编译

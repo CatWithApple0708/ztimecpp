@@ -36,6 +36,9 @@ typedef shared_ptr<logger> logger_t;
 #define CREATE_LOGGER(loggerName) \
   zwsd::core::SpdLoggerFactory::createLogger(#loggerName)
 
+#define GET_LOGGER(loggerName) \
+  zwsd::core::SpdLoggerFactory::createLogger(#loggerName)
+
 #define ENABLE_LOGGER_STATIC(loggerName) \
   static zwsd::core::logger_t logger =   \
       zwsd::core::SpdLoggerFactory::createLogger(#loggerName);

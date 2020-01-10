@@ -114,6 +114,7 @@ typedef enum {
   MTC_TakePhoto = 0x0022,
   MTC_ComplexGarbage = 0x1000,
   MTC_MobileWrappingMachine = 0x1001,  //自走式缠绕车
+  MTC_GarbageCar = 0x1002,             //垃圾车改造
   MTC_SpecialOperate0 = 0xffff,
 } UP_module_type_code_t;
 
@@ -374,6 +375,19 @@ DEFINE_DATA_POINT(MobileWrappingMachine) {
 DEFINE_DATA_END(MobileWrappingMachine)
 
 #include "zwtimecpp/protocol/uart_protocol_v1/project/mobile_wrapping_machines.h"
+
+
+/**
+ * @description: 自走式缠绕车相关数据点
+ */
+DEFINE_DATA_POINT(GarbageCar) {
+  DEFINE_DATA_POINT_ENTRY(GarbageCar, weighBattery, 0x0100) //称重板电池电量
+  DEFINE_DATA_POINT_ENTRY(GarbageCar, mainCtrlBattery, 0x0101) //主控板电池电量
+  DEFINE_DATA_POINT_ENTRY(GarbageCar, weighLowBattery, 0x0102) //称重板低电量提醒
+  DEFINE_DATA_POINT_ENTRY(GarbageCar, mainCtrlLowBattery, 0x0103) //主控板低电量提醒
+}
+DEFINE_DATA_END(GarbageCar)
+
 
 typedef struct {
   uint8_t *buf;

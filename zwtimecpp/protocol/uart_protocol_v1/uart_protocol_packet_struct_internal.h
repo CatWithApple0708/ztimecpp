@@ -90,7 +90,7 @@ typedef struct {
 #define HIGH_UINT16(value) ((value >> 8) & 0xff)
 #define LOW_UINT16(value) ((value >> 0) & 0xff)
 
-INLINE uint16_t UPIBasicPacketHeader_get_packet_length(
+static INLINE uint16_t UPIBasicPacketHeader_get_packet_length(
     UPAnalysis_basic_packet_header_t* header) {
   return BIG_ENGINE_UINT8S_TO_UINT16(header->length[0], header->length[1]);
 }

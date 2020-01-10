@@ -155,6 +155,27 @@ T __zwsd_getValue(const std::atomic<T> &v) {
     return name;                                              \
   }
 
+#define BeanAttributeWithLockWithSignal(type, name, initialValue, lock)       \
+ private:                                                                     \
+  type name{initialValue};                                                    \
+                                                                              \
+ public:                                                                      \
+  nod::signal<void(const type &oldValue, const type &toValue)> signal_##name; \
+  void set_##name(const type &value) {                                        \
+    std::lock_guard<std::recursive_mutex> __lock__(lock);                     \
+    this->name = {value};                                                     \
+    type olevalue = {this->name};                                             \
+    signal_##name(olevalue, value);                                           \
+  }                                                                           \
+  const type &get_##name##Const() const {                                     \
+    std::lock_guard<std::recursive_mutex> __lock__(lock);                     \
+    return name;                                                              \
+  }                                                                           \
+  type &get_##name() {                                                        \
+    std::lock_guard<std::recursive_mutex> __lock__(lock);                     \
+    return name;                                                              \
+  }
+
 #define BeanAttributeWithLockGet(type, name, initialValue, lock) \
  private:                                                        \
   type name{initialValue};                                       \

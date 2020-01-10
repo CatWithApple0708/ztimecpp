@@ -23,6 +23,19 @@ using namespace std;
     __zsignalConnections.push_back(move(connection));                        \
   }
 
+#define LISTEN_TO1(signal, type, do_what)                                   \
+  {                                                                         \
+    nod::scoped_connection connection = signal.connect([&]() { do_what; }); \
+    __zsignalConnections.push_back(move(connection));                       \
+  }
+
+#define LISTEN_TO2(signal, type, do_what)                  \
+  {                                                        \
+    nod::scoped_connection connection =                    \
+        signal.connect([&](const type& now) { do_what; }); \
+    __zsignalConnections.push_back(move(connection));      \
+  }
+
 #define LISTEN_TO_SCOPED(id, signal, type, do_what)                        \
   nod::scoped_connection __connection_##id =                               \
       signal.connect([&](const type& last, const type& now) { do_what; }); \

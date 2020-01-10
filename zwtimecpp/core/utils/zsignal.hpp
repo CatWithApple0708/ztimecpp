@@ -16,11 +16,15 @@ using namespace std;
 #define ENABLE_SIGNAL_LISTENER() \
   list<nod::scoped_connection> __zsignalConnections;
 
-#define LISTEN_TO(signal, type, do_what)                         \
-  {                                                              \
-    nod::scoped_connection connection = signal.connect(          \
-        [this](const type& last, const type& now) { do_what; }); \
-    __zsignalConnections.push_back(move(connection));            \
+#define LISTEN_TO(signal, type, do_what)                                     \
+  {                                                                          \
+    nod::scoped_connection connection =                                      \
+        signal.connect([&](const type& last, const type& now) { do_what; }); \
+    __zsignalConnections.push_back(move(connection));                        \
   }
+
+#define LISTEN_TO_SCOPED(id, signal, type, do_what)                        \
+  nod::scoped_connection __connection_##id =                               \
+      signal.connect([&](const type& last, const type& now) { do_what; }); \
 
 }  // namespace zwsd

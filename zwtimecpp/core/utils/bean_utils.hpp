@@ -205,6 +205,30 @@ T __zwsd_getValue(const std::atomic<T> &v) {
     return desired;                                                            \
   }
 
+#define BeanAttributeAtomicWithSignal(type, name, initialValue)                \
+ private:                                                                      \
+  atomic<type> name{initialValue};                                             \
+                                                                               \
+ public:                                                                       \
+  nod::signal<void(const type &oldValue, const type &toValue)> signal_##name;  \
+                                                                               \
+  void set_##name(const type &value) {                                         \
+    type old = name;                                                           \
+    this->name = {value};                                                      \
+    signal_##name(old, value);                                                 \
+  }                                                                            \
+  const type get_##name() const { return name; }                               \
+  type add_##name(const type &addvalue) {                                      \
+    type old = name.load(std::memory_order_consume);                           \
+    type desired = old + addvalue;                                             \
+    while (!name.compare_exchange_weak(                                        \
+        old, desired, std::memory_order_release, std::memory_order_consume)) { \
+      desired = old + addvalue;                                                \
+    }                                                                          \
+    signal_##name(old, desired);                                               \
+    return desired;                                                            \
+  }
+
 #define BeanAttributeAtomicGet(type, name, initialValue) \
  private:                                                \
   atomic<type> name{initialValue};                       \
@@ -220,17 +244,17 @@ T __zwsd_getValue(const std::atomic<T> &v) {
   void set_##name(const bool &value) { this->name = {value}; } \
   const bool get_##name() const { return name; }
 
-#define BeanAttributeAtomicBoolWithSignal(name, initialValue)   \
- private:                                                       \
-  atomic<bool> name{initialValue};                              \
-                                                                \
- public:                                                        \
-  nod::signal<void(bool oldValue, bool toValue)> signal_##name; \
-  void set_##name(const bool &value) {                          \
-    bool oldValue = this->name;                                 \
-    this->name = {value};                                       \
-    if (oldValue != value) signal_##name(oldValue, value);      \
-  }                                                             \
+#define BeanAttributeAtomicBoolWithSignal(name, initialValue)                 \
+ private:                                                                     \
+  atomic<bool> name{initialValue};                                            \
+                                                                              \
+ public:                                                                      \
+  nod::signal<void(const bool &oldValue, const bool &toValue)> signal_##name; \
+  void set_##name(const bool &value) {                                        \
+    bool oldValue = this->name;                                               \
+    this->name = {value};                                                     \
+    if (oldValue != value) signal_##name(oldValue, value);                    \
+  }                                                                           \
   const bool get_##name() const { return name; }
 
 #define BeanAttributeAtomicBoolGet(name, initialValue) \

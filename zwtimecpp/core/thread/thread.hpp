@@ -116,6 +116,7 @@ class ThisThread {
   bool getExitFlag();
   void sleep();
   void sleepForMs(int ms);
+  void wake();
 };
 
 }  // namespace core

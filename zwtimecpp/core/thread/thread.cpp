@@ -160,3 +160,4 @@ void ThisThread::sleep() { threadInfo->signal.sleep(); }
 void ThisThread::sleepForMs(int ms) {
   threadInfo->signal.sleep_for_us(ms * 1000);
 }
+void ThisThread::wake() { threadInfo->signal.notify(); };

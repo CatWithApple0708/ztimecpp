@@ -57,6 +57,6 @@
 #endif
 
 #define ZCLI_ADD_TO_MENU(menu, name, parameter, do_what) \
-  menu->Insert(#name, [&] parameter { do_what; }, #name "" #parameter);
+  menu->Insert(name, [&] parameter { do_what; }, name "" #parameter);
 
 //

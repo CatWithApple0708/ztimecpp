@@ -10,6 +10,9 @@ typedef enum {
   kSensorException,  //传感器异常,例如不能读到正确的传感器信息
   kLostConnection,   //通信异常
 
+  //设备异常,如果不知道出错原因时，均使用该错误码
+  kDeviceError,
+
   //缠绕车异常
   kMachinesMeetsObstacle = 0x1000
 } HardwareErrorCode_t;
@@ -23,5 +26,6 @@ static INLINE const char* HardwareErrorCodeToString(HardwareErrorCode_t val) {
   ENUM_CASE_AND_RET(kSensorException);
   ENUM_CASE_AND_RET(kLostConnection);
   ENUM_CASE_AND_RET(kMachinesMeetsObstacle);
+  ENUM_CASE_AND_RET(kDeviceError);
   END_ENUM_CASE();
 }

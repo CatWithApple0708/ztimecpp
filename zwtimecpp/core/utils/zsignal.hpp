@@ -16,6 +16,10 @@ using namespace std;
 #define ENABLE_SIGNAL_LISTENER() \
   list<nod::scoped_connection> __zsignalConnections;
 
+/**
+ * @brief SignalType (last value, cur value)
+ * 
+ */
 #define LISTEN_TO(signal, type, do_what)                                     \
   {                                                                          \
     nod::scoped_connection connection =                                      \
@@ -23,12 +27,20 @@ using namespace std;
     __zsignalConnections.push_back(move(connection));                        \
   }
 
+/**
+ * @brief SignalType(void)
+ * 
+ */
 #define LISTEN_TO1(signal, type, do_what)                                   \
   {                                                                         \
     nod::scoped_connection connection = signal.connect([&]() { do_what; }); \
     __zsignalConnections.push_back(move(connection));                       \
   }
 
+/**
+ * @brief SignalType(const Type curValue)
+ * 
+ */
 #define LISTEN_TO2(signal, type, do_what)                  \
   {                                                        \
     nod::scoped_connection connection =                    \

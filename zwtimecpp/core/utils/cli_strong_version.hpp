@@ -59,4 +59,7 @@
 #define ZCLI_ADD_TO_MENU(menu, name, parameter, do_what) \
   menu->Insert(name, [&] parameter { do_what; }, name "" #parameter);
 
+#define ZCLI_ADD_TO_MENU_CPY(menu, name, parameter, do_what) \
+  menu->Insert(name, [=] parameter { do_what; }, name "" #parameter);
+
 //

@@ -162,9 +162,12 @@ T __zwsd_getValue(const std::atomic<T> &v) {
  public:                                                                      \
   nod::signal<void(const type &oldValue, const type &toValue)> signal_##name; \
   void set_##name(const type &value) {                                        \
-    std::lock_guard<std::recursive_mutex> __lock__(lock);                     \
-    this->name = {value};                                                     \
-    type olevalue = {this->name};                                             \
+    type olevalue{initialValue};                                              \
+    {                                                                         \
+      std::lock_guard<std::recursive_mutex> __lock__(lock);                   \
+      olevalue = {this->name};                                           \
+      this->name = {value};                                                   \
+    }                                                                         \
     signal_##name(olevalue, value);                                           \
   }                                                                           \
   const type &get_##name##Const() const {                                     \
@@ -234,7 +237,7 @@ T __zwsd_getValue(const std::atomic<T> &v) {
   nod::signal<void(const type &oldValue, const type &toValue)> signal_##name;  \
                                                                                \
   void set_##name(const type &value) {                                         \
-    type old = name;                                                           \
+    type old = this->name;                                                     \
     this->name = {value};                                                      \
     signal_##name(old, value);                                                 \
   }                                                                            \

@@ -19,7 +19,7 @@ using namespace std;
 using namespace zwsd;
 using namespace core;
 int main(int argc, char const* argv[]) {
-  logger_t s_logger = SpdLoggerFactory::createLogger("RunnerMain");
+  logger_t s_logger = SpdLoggerFactory::Instance().createLogger("RunnerMain");
   Z_WARP_THREAD(main);
 
   argh::parser cmdl;

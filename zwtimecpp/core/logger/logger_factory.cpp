@@ -513,24 +513,17 @@ class MonitoringSpdLoggerConfigTask {
   ~MonitoringSpdLoggerConfigTask() { wthread->join(); }
 };
 
-static unique_ptr<MonitoringSpdLoggerConfigTask> spdMonitoringtask;
-
-void SpdLoggerFactory::startMonitoringConfigFile() {
-  if (!spdMonitoringtask) {
-    spdMonitoringtask.reset(new MonitoringSpdLoggerConfigTask());
-  }
-}
-
-static std::mutex createLogger_lock;
-static atomic_bool initializeLogger = {false};
-static set<string> s_loggerNames;
 shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
   lock_guard<mutex> lock_gu(createLogger_lock);
-
-  if (s_loggerNames.find(loggerName) == s_loggerNames.end()) {
-    s_loggerNames.insert(loggerName);
+  if (!loggerName.empty()) {
+    if (s_loggerNames.size() == 0) {
+      s_loggerNames.insert(loggerName);
+    } else {
+      if (s_loggerNames.find(loggerName) == s_loggerNames.end()) {
+        s_loggerNames.insert(loggerName);
+      }
+    }
   }
-
   // TODO:当使用gtest进行单元测试的时候，logger似乎会被清空，原因未知
   if (!get(kRootLogerName)) {
     initializeLogger = false;

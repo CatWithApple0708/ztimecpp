@@ -148,7 +148,7 @@ ThisThread::ThisThread() {
       CoreSystemState::Instance().getThreadInfo(pthread_self());
   if (!threadInfo) {
     zwsd::core::logger_t logger =
-        zwsd::core::SpdLoggerFactory::createLogger("ThisThread");
+        zwsd::core::SpdLoggerFactory::Instance().createLogger("ThisThread");
     FatallError(logger,fmt::format(
                 "Thread {} not call "
                 "CoreSystemState::Instance().createThreadInfo(name)",pthread_self()));

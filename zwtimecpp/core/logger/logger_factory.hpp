@@ -26,31 +26,39 @@ using namespace std;
 using namespace spdlog;
 typedef shared_ptr<logger> logger_t;
 
-#define ENABLE_LOGGER(loggerName)                              \
- public:                                                       \
-  zwsd::core::logger_t logger =                                \
-      zwsd::core::SpdLoggerFactory::createLogger(#loggerName); \
-                                                               \
+#define ENABLE_LOGGER(loggerName)                                         \
+ public:                                                                  \
+  zwsd::core::logger_t logger =                                           \
+      zwsd::core::SpdLoggerFactory::Instance().createLogger(#loggerName); \
+                                                                          \
  private:
 
 #define CREATE_LOGGER(loggerName) \
-  zwsd::core::SpdLoggerFactory::createLogger(#loggerName)
+  zwsd::core::SpdLoggerFactory::Instance().createLogger(#loggerName)
 
 #define GET_LOGGER(loggerName) \
-  zwsd::core::SpdLoggerFactory::createLogger(#loggerName)
+  zwsd::core::SpdLoggerFactory::Instance().createLogger(#loggerName)
 
 #define ENABLE_LOGGER_STATIC(loggerName) \
   static zwsd::core::logger_t logger =   \
-      zwsd::core::SpdLoggerFactory::createLogger(#loggerName);
+      zwsd::core::SpdLoggerFactory::Instance().createLogger(#loggerName);
 
 class SpdLoggerFactory {
- public:
-  static shared_ptr<logger> createLogger(string loggerName);
-  static void startMonitoringConfigFile();
-  static set<string> loggerNames();
+  SpdLoggerFactory(){};
+   std::mutex createLogger_lock;
+   atomic_bool initializeLogger = {false};
+   set<string> s_loggerNames;
+
+  public:
+   static SpdLoggerFactory& Instance() {
+     static SpdLoggerFactory factory;
+     return factory;
+  }
+  shared_ptr<logger> createLogger(string loggerName);
+  set<string> loggerNames();
 
  private:
-  static void parseSphLogConfig(string path);
+  void parseSphLogConfig(string path);
 };
 }  // namespace core
 }  // namespace zwsd

@@ -47,6 +47,7 @@ class SpdLoggerFactory {
  public:
   static shared_ptr<logger> createLogger(string loggerName);
   static void startMonitoringConfigFile();
+  static set<string> loggerNames();
 
  private:
   static void parseSphLogConfig(string path);

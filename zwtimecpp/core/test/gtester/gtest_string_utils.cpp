@@ -81,3 +81,23 @@ TEST(TestStringUtils, test_popback) {
     EXPECT_EQ(in, "");
   }
 }
+
+TEST(TestStringUtils, test_contain) {
+  {
+    string in = "hello111111";
+    StringUtils::popback(in, 3);
+    EXPECT_TRUE(StringUtils::IsContainsStrIgnoreCase(in, "llo"));
+    EXPECT_TRUE(StringUtils::IsContainsStr(in, "llo"));
+    EXPECT_TRUE(!StringUtils::IsContainsStr(in, "Llo"));
+    EXPECT_TRUE(StringUtils::IsContainsStrIgnoreCase(in, "Llo"));
+  }
+
+  {
+    string in = "hello111111";
+    StringUtils::popback(in, 3);
+    EXPECT_TRUE(!StringUtils::IsContainsStrIgnoreCase(in, "232"));
+    EXPECT_TRUE(!StringUtils::IsContainsStr(in, "232"));
+    EXPECT_TRUE(!StringUtils::IsContainsStr(in, "232"));
+    EXPECT_TRUE(!StringUtils::IsContainsStrIgnoreCase(in, "232"));
+  }
+}

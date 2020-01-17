@@ -523,9 +523,13 @@ void SpdLoggerFactory::startMonitoringConfigFile() {
 
 static std::mutex createLogger_lock;
 static atomic_bool initializeLogger = {false};
+static set<string> s_loggerNames;
 shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
-
   lock_guard<mutex> lock_gu(createLogger_lock);
+
+  if (s_loggerNames.find(loggerName) == s_loggerNames.end()) {
+    s_loggerNames.insert(loggerName);
+  }
 
   // TODO:当使用gtest进行单元测试的时候，logger似乎会被清空，原因未知
   if (!get(kRootLogerName)) {
@@ -561,3 +565,5 @@ shared_ptr<logger> SpdLoggerFactory::createLogger(string loggerName) {
   }
   return nullptr;
 }
+
+set<string> SpdLoggerFactory::loggerNames() { return s_loggerNames; }

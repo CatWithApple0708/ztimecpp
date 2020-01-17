@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -213,6 +214,38 @@ class StringUtils {
     }
     string end = in.substr(in.size() - pattern.size());
     return (end == pattern);
+  }
+
+  static string toUpper(const string& value) {
+    string cpy = value;
+    transform(cpy.begin(), cpy.end(), cpy.begin(), ::toupper);
+    return cpy;
+  }
+  static string toLower(const string& value) {
+    string cpy = value;
+    transform(cpy.begin(), cpy.end(), cpy.begin(), ::tolower);
+    return cpy;
+  }
+
+  static bool IsContainsStr(const string& str,const string& contains_str) {
+    string::size_type idx = str.find(contains_str);
+    if (idx != string::npos) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static bool IsContainsStrIgnoreCase(const string& _str,
+                                      const string& _contains_str) {
+    string str = toLower(_str);
+    string contains_str = toLower(_contains_str);
+    string::size_type idx = str.find(contains_str);
+    if (idx != string::npos) {
+      return true;
+    } else {
+      return false;
+    }
   }
 };
 

@@ -113,3 +113,6 @@
     t _tc = (c);             \
     zclamp(_tv, _tf, _tc);   \
   })
+
+#define __MARCO_TO_STR(name) #name
+#define MARCO_TO_STR(name) __MARCO_TO_STR(name)

@@ -18,7 +18,7 @@ using namespace std;
   list<nod::scoped_connection> __zsignalConnections; \
   unique_ptr<WorkQueue> __zsignalWorkQueue{          \
       new WorkQueue(#ClassName "SignalWorkQueue")};
-
+#if 1
 /**
  * @brief SignalType (last value, cur value)
  *
@@ -55,7 +55,41 @@ using namespace std;
         });                                                \
     __zsignalConnections.push_back(move(connection));      \
   }
+#else
+/**
+ * @brief SignalType (last value, cur value)
+ *
+ */
+#define LISTEN_TO(signal, type, do_what)                           \
+  {                                                                \
+    nod::scoped_connection connection =                            \
+        signal.connect([this](const type& last, const type& now) { \
+           do_what;         \
+        });                                                        \
+    __zsignalConnections.push_back(move(connection));              \
+  }
 
+/**
+ * @brief SignalType(void)
+ *
+ */
+#define LISTEN_TO1(signal, type, do_what)                                      \
+  {                                                                            \
+    nod::scoped_connection connection = signal.connect([this]() { do_what; }); \
+    __zsignalConnections.push_back(move(connection));                          \
+  }
+
+/**
+ * @brief SignalType(const Type curValue)
+ *
+ */
+#define LISTEN_TO2(signal, type, do_what)                     \
+  {                                                           \
+    nod::scoped_connection connection =                       \
+        signal.connect([this](const type& now) { do_what; }); \
+    __zsignalConnections.push_back(move(connection));         \
+  }
+#endif
 /**
  * @Warning:使用这个宏的时候注意参数是以拷贝的形式传递进去的，局部变量并不会在运算中修改
  */

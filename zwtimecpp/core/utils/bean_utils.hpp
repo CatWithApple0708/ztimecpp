@@ -203,13 +203,13 @@ T __zwsd_getValue(const std::atomic<T> &v) {
     this->name = {value};                                        \
   }
 
-#define BeanAttribute(type, name, initialValue)                \
- private:                                                      \
-  type name{initialValue};                                     \
-                                                               \
- public:                                                       \
-  void set_##name(const type &value) { this->name = {value}; } \
-  const type &get_##name##Const() const { return name; }       \
+#define BeanAttribute(type, name, initialValue)              \
+ private:                                                    \
+  type name{initialValue};                                   \
+                                                             \
+ public:                                                     \
+  void set_##name(const type &value) { this->name = value; } \
+  const type &get_##name##Const() const { return name; }     \
   type &get_##name() { return name; }
 
 #define BeanAttributeAtomic(type, name, initialValue)                          \
@@ -238,7 +238,7 @@ T __zwsd_getValue(const std::atomic<T> &v) {
                                                                                \
   void set_##name(const type &value) {                                         \
     type old = this->name;                                                     \
-    this->name = {value};                                                      \
+    this->name = value;                                                      \
     signal_##name(old, value);                                                 \
   }                                                                            \
   const type get_##name() const { return name; }                               \
@@ -252,6 +252,20 @@ T __zwsd_getValue(const std::atomic<T> &v) {
     signal_##name(old, desired);                                               \
     return desired;                                                            \
   }
+
+#define BeanAttributeWithSignal(type, name, initialValue)                     \
+ private:                                                                     \
+  atomic<type> name{initialValue};                                            \
+                                                                              \
+ public:                                                                      \
+  nod::signal<void(const type &oldValue, const type &toValue)> signal_##name; \
+                                                                              \
+  void set_##name(const type &value) {                                        \
+    type old = this->name;                                                    \
+    this->name = value;                                                       \
+    signal_##name(old, value);                                                \
+  }                                                                           \
+  const type get_##name() const { return name; }
 
 #define BeanAttributeAtomicGet(type, name, initialValue) \
  private:                                                \

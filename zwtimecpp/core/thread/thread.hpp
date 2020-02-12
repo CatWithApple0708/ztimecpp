@@ -109,10 +109,12 @@ class Thread : public Object {
   void callDefaultExceptionHandler(const std::exception &exception);
 };
 class ThisThread {
+  ENABLE_LOGGER(ThisThread);
   shared_ptr<ThreadInfo> threadInfo;
 
  public:
   ThisThread();
+  pthread_t getId() const { return pthread_self(); }
   bool getExitFlag();
   void sleep();
   void sleepForMs(int ms);

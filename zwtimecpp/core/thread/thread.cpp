@@ -144,15 +144,14 @@ void Thread::callDefaultExceptionHandler(const std::exception &exception) {
 }
 
 ThisThread::ThisThread() {
-  threadInfo =
-      CoreSystemState::Instance().getThreadInfo(pthread_self());
+  threadInfo = CoreSystemState::Instance().getThreadInfo(pthread_self());
   if (!threadInfo) {
-    zwsd::core::logger_t logger =
-        zwsd::core::SpdLoggerFactory::Instance().createLogger("ThisThread");
-    FatallError(logger,fmt::format(
-                "Thread {} not call "
-                "CoreSystemState::Instance().createThreadInfo(name)",pthread_self()));
+    string stackInfo = getStackInfo();
+    Z_WARP_THREAD(unkown_thread);
+    logger->warn("thread {} not reg thread info ,stackInfo: {}", pthread_self(),
+                 stackInfo);
   }
+  threadInfo = CoreSystemState::Instance().getThreadInfo(pthread_self());
 };
 
 bool ThisThread::getExitFlag() { return threadInfo->threadExitFlag; }

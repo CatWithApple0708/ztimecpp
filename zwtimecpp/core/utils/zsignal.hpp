@@ -14,59 +14,51 @@
 namespace zwsd {
 using namespace std;
 
-#define ENABLE_SIGNAL_LISTENER(ClassName)            \
-  list<nod::scoped_connection> __zsignalConnections; \
-  unique_ptr<WorkQueue> __zsignalWorkQueue{          \
-      new WorkQueue(#ClassName "SignalWorkQueue")};
+#define ENABLE_SIGNAL_LISTENER(ClassName) \
+  list<nod::scoped_connection> __zsignalConnections;
+
 #if 1
 /**
  * @brief SignalType (last value, cur value)
  *
  */
-#define LISTEN_TO(signal, type, do_what)                           \
-  {                                                                \
-    nod::scoped_connection connection =                            \
-        signal.connect([this](const type& last, const type& now) { \
-          __zsignalWorkQueue->EnQueue([=]() { do_what; });         \
-        });                                                        \
-    __zsignalConnections.push_back(move(connection));              \
+#define LISTEN_TO(signal, type, do_what)                         \
+  {                                                              \
+    nod::scoped_connection connection = signal.connect(          \
+        [this](const type& last, const type& now) { do_what; }); \
+    __zsignalConnections.push_back(move(connection));            \
   }
 
 /**
  * @brief SignalType(void)
  *
  */
-#define LISTEN_TO1(signal, type, do_what)                               \
-  {                                                                     \
-    nod::scoped_connection connection = signal.connect(                 \
-        [this]() { __zsignalWorkQueue->EnQueue([=]() { do_what; }); }); \
-    __zsignalConnections.push_back(move(connection));                   \
+#define LISTEN_TO1(signal, type, do_what)                                      \
+  {                                                                            \
+    nod::scoped_connection connection = signal.connect([this]() { do_what; }); \
+    __zsignalConnections.push_back(move(connection));                          \
   }
 
 /**
  * @brief SignalType(const Type curValue)
  *
  */
-#define LISTEN_TO2(signal, type, do_what)                  \
-  {                                                        \
-    nod::scoped_connection connection =                    \
-        signal.connect([this](const type& now) {           \
-          __zsignalWorkQueue->EnQueue([=]() { do_what; }); \
-        });                                                \
-    __zsignalConnections.push_back(move(connection));      \
+#define LISTEN_TO2(signal, type, do_what)                     \
+  {                                                           \
+    nod::scoped_connection connection =                       \
+        signal.connect([this](const type& now) { do_what; }); \
+    __zsignalConnections.push_back(move(connection));         \
   }
 #else
 /**
  * @brief SignalType (last value, cur value)
  *
  */
-#define LISTEN_TO(signal, type, do_what)                           \
-  {                                                                \
-    nod::scoped_connection connection =                            \
-        signal.connect([this](const type& last, const type& now) { \
-           do_what;         \
-        });                                                        \
-    __zsignalConnections.push_back(move(connection));              \
+#define LISTEN_TO(signal, type, do_what)                         \
+  {                                                              \
+    nod::scoped_connection connection = signal.connect(          \
+        [this](const type& last, const type& now) { do_what; }); \
+    __zsignalConnections.push_back(move(connection));            \
   }
 
 /**
@@ -96,7 +88,7 @@ using namespace std;
 #define LISTEN_TO_SCOPED(id, signal, type, do_what)           \
   nod::scoped_connection __connection_##id =                  \
       signal.connect([=](const type& last, const type& now) { \
-        __zsignalWorkQueue->EnQueue([=]() { do_what; });      \
+        do_what;                                              \
                                                               \
       });
 

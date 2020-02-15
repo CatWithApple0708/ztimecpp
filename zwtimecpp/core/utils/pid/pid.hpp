@@ -42,6 +42,13 @@ class Pid {
   };
   bool isInited() { return inited; }
 
+  void clear() {
+    pid_handle.current = 0;
+    pid_handle.e0 = 0;
+    pid_handle.e1 = 0;
+    pid_handle.e2 = 0;
+  }
+
  private:
 };
 
